@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group 'damon140.com'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+}
