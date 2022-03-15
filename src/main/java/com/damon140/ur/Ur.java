@@ -45,11 +45,13 @@ public class Ur {
 
     private final Map<Team, Integer> completedCounters;
 
+    private Team currentTeam = Team.white; // white starts
+
     public Ur() throws NoSuchAlgorithmException {
         counters = new HashMap<>();
         completedCounters = new HashMap<>();
-        completedCounters.put(Team.top, 0);
-        completedCounters.put(Team.bottom, 0);
+        completedCounters.put(Team.black, 0);
+        completedCounters.put(Team.white, 0);
 
     }
 
@@ -60,13 +62,13 @@ public class Ur {
             case bottom_run_on_4:
                 return Square.shared_1;
             case shared_8:
-                return team == Team.top ? Square.top_run_off_1 : Square.bottom_run_off_1;
+                return team == Team.black ? Square.top_run_off_1 : Square.bottom_run_off_1;
             case top_run_off_2:
             case bottom_run_off_2:
                 return Square.off_board_finished;
                 // FIXME: test here
             case off_board_unstarted:
-                return team == Team.top ? Square.top_run_on_1 : Square.bottom_run_on_1;
+                return team == Team.black ? Square.top_run_on_1 : Square.bottom_run_on_1;
         }
         // regular sequence
         return Square.values()[1 + square.ordinal()];
@@ -97,6 +99,16 @@ public class Ur {
     success, success_takes_other, over_run, collision_self, collision_other, illegal
      */
 
+    public Team currentTeam() {
+        return this.currentTeam;
+    }
+
+    public boolean skipTurn(Move move) {
+        if (0 == move.count) {
+            this.currentTeam = this.currentTeam.other();
+        }
+    }
+
     public boolean moveCounter(Move move) {
         return moveCounter(move.team, move.square, move.count);
     }
@@ -112,14 +124,19 @@ public class Ur {
 
         Square newSquare = calculateNewSquare(team, square, count);
 
-        // FIXME: return illegal move if new same as old
-
+        if (0 == count) {
+            return false; // illegal move of zero
+        }
 
         Team occupant = counters.get(newSquare);
 
         // FIXME: Damon is safe square logic needed here?
-        if (null != occupant && team == occupant) {
-            return false; // clashes with own counter
+        if (null != occupant) {
+            if (team == occupant) {
+                return false; // clashes with own counter
+            } else {
+                // FIXME: impl take other counter here
+            }
         }
 
         counters.remove(square);
@@ -129,10 +146,12 @@ public class Ur {
             completedCounters.put(team, 1 + completedCounters.get(team));
         }
 
+        currentTeam = this.currentTeam.other();
+
         return true;
     }
 
-    public enum Team { bottom, top };
+    public enum Team {white, black};
 
     public static class Dice {
 
