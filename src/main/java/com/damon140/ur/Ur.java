@@ -1,24 +1,29 @@
 package com.damon140.ur;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Ur {
 
     public enum Square {
         off_board_unstarted,
 
-        top_run_on_1,
-        top_run_on_2,
-        top_run_on_3,
-        top_run_on_4,
+        black_run_on_1,
+        black_run_on_2,
+        black_run_on_3,
+        black_run_on_4,
 
-        top_run_off_1,
-        top_run_off_2,
+        black_run_off_1,
+        black_run_off_2,
 
         shared_1,
         shared_2,
@@ -29,13 +34,13 @@ public class Ur {
         shared_7,
         shared_8,
 
-        bottom_run_on_1,
-        bottom_run_on_2,
-        bottom_run_on_3,
-        bottom_run_on_4,
+        white_run_on_1,
+        white_run_on_2,
+        white_run_on_3,
+        white_run_on_4,
 
-        bottom_run_off_1,
-        bottom_run_off_2,
+        white_run_off_1,
+        white_run_off_2,
 
         off_board_finished,
         ;
@@ -54,24 +59,32 @@ public class Ur {
         completedCounters.put(Team.white, 0);
     }
 
-    public String state() {
+    public Set<String> state() {
+        return new TreeSet<>(List.of(
+                "counters: " + counters.toString(),
+                "completedCounters: " + completedCounters.toString(),
+                "currentTeam: " + currentTeam.toString()
+        ));
+    }
 
+    public  Map<Square, Team> getCounters() {
+        return counters;
     }
 
     public static Square calculateNewSquare(Team team, Square square) {
         // special cases
         switch (square) {
-            case top_run_on_4:
-            case bottom_run_on_4:
+            case black_run_on_4:
+            case white_run_on_4:
                 return Square.shared_1;
             case shared_8:
-                return team == Team.black ? Square.top_run_off_1 : Square.bottom_run_off_1;
-            case top_run_off_2:
-            case bottom_run_off_2:
+                return team == Team.black ? Square.black_run_off_1 : Square.white_run_off_1;
+            case black_run_off_2:
+            case white_run_off_2:
                 return Square.off_board_finished;
-                // FIXME: test here
+            // FIXME: test here
             case off_board_unstarted:
-                return team == Team.black ? Square.top_run_on_1 : Square.bottom_run_on_1;
+                return team == Team.black ? Square.black_run_on_1 : Square.white_run_on_1;
         }
         // regular sequence
         return Square.values()[1 + square.ordinal()];
@@ -90,6 +103,7 @@ public class Ur {
 
     private static final int COUNTERS_PER_PLAYER = 7;
 
+    @AllArgsConstructor
     @Data
     public static class Move {
         private final Team team;
@@ -159,10 +173,13 @@ public class Ur {
 
     public enum Team {
         white, black;
+
         public Team other() {
             return Team.values()[(this.ordinal() + 1) % 2];
         }
-    };
+    }
+
+    ;
 
     public static class Dice {
 

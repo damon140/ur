@@ -1,32 +1,79 @@
 package com.damon140.ur;
 
-import static com.damon140.ur.Ur.Square.*;
-import static com.damon140.ur.Ur.Team.white;
-import static com.damon140.ur.Ur.Team.black;
-
 import com.damon140.ur.Ur.Dice;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.is;
+import static com.damon140.ur.Ur.Square.*;
+import static com.damon140.ur.Ur.Square.off_board_unstarted;
+import static com.damon140.ur.Ur.Team.black;
+import static com.damon140.ur.Ur.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class UrTest {
 
     @Test
-    public void d() throws NoSuchAlgorithmException {
-        Ur ur = new Ur();
+    public void initialStateTest() throws NoSuchAlgorithmException {
+        givenNewGame();
+        thenStateIsInitial();
+    }
 
+    @Test
+    public void whiteRolls1() throws NoSuchAlgorithmException {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 1);
+        thenWhiteHasCounterAt(white_run_on_1);
+    }
+
+    @Test
+    public void whiteAndBlackRoll1() throws NoSuchAlgorithmException {
+        givenNewGame();
+    }
+
+    // illegal move 1 on 1
+    // 4 and double and still white's move
+    // black takes white
+
+    private Ur ur = null;
+
+    // --------------------------------------
+    // Given section
+    // --------------------------------------
+
+    public void givenNewGame() throws NoSuchAlgorithmException {
+        ur = new Ur();
+    }
+
+    // --------------------------------------
+    // When section
+    // --------------------------------------
+
+    private void whenMove(Ur.Team white, Ur.Square square, int i) {
+        ur.moveCounter(new Ur.Move(white, square, i));
+    }
+
+    // --------------------------------------
+    // Then section
+    // --------------------------------------
+
+    public void thenStateIsInitial() {
         // FIXME: need a state function, use multi line strings
-        assertThat(ur.state(), is("""
-                
-                """));
+        Set<String> state = ur.state();
+        System.out.println(state);
+
+        // TODO: switch to contains helper & yaml??
+        assertThat(state.contains("currentTeam: white"), is(true));
+        assertThat(state.contains("counters: {}"), is(true));
+        assertThat(state.contains("completedCounters: {black=0, white=0}"), is(true));
+    }
+
+    private void thenWhiteHasCounterAt(Ur.Square square) {
+        assertThat(ur.getCounters().get(square), is(white));
     }
 
     @Test

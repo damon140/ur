@@ -2,6 +2,9 @@ plugins {
     id 'java'
 }
 
+sourceCompatibility = '1.17'
+targetCompatibility = '1.17'
+
 group 'damon140.com'
 version '1.0-SNAPSHOT'
 
