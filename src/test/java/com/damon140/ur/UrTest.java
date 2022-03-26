@@ -1,11 +1,18 @@
 package com.damon140.ur;
 
-
 import static com.damon140.ur.Ur.Square.*;
 import static com.damon140.ur.Ur.Team.white;
 import static com.damon140.ur.Ur.Team.black;
 
+import com.damon140.ur.Ur.Dice;
 import org.junit.jupiter.api.Test;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,10 +20,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class UrTest {
 
     @Test
+    public void d() throws NoSuchAlgorithmException {
+        Ur ur = new Ur();
+
+        // FIXME: need a state function, use multi line strings
+        assertThat(ur.state(), is("""
+                
+                """));
+    }
+
+    @Test
+    public void dice() throws NoSuchAlgorithmException {
+        Dice d = new Dice();
+
+        IntSummaryStatistics rolls = IntStream.range(0, 1000)
+                .map(i -> d.roll())
+                .summaryStatistics();
+
+        assertThat(rolls.getMin(), is(0));
+        assertThat(rolls.getMax(), is(4));
+    }
+
+    @Test
+    public void other() {
+        assertThat(black.other(), is(white));
+        assertThat(white.other(), is(black));
+    }
+
+    @Test
     public void calculateNewSquareNoArgs() {
         assertThat(Ur.calculateNewSquare(black, off_board_unstarted, 2), is(top_run_on_2));
         assertThat(Ur.calculateNewSquare(white, off_board_unstarted, 2), is(bottom_run_on_2));
-
 
         assertThat(Ur.calculateNewSquare(black, top_run_on_1, 1), is(top_run_on_2));
         assertThat(Ur.calculateNewSquare(black, top_run_on_1, 3), is(top_run_on_4));

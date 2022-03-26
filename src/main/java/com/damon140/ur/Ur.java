@@ -52,6 +52,9 @@ public class Ur {
         completedCounters = new HashMap<>();
         completedCounters.put(Team.black, 0);
         completedCounters.put(Team.white, 0);
+    }
+
+    public String state() {
 
     }
 
@@ -104,9 +107,12 @@ public class Ur {
     }
 
     public boolean skipTurn(Move move) {
-        if (0 == move.count) {
-            this.currentTeam = this.currentTeam.other();
+        if (0 != move.count) {
+            return false;
         }
+
+        this.currentTeam = this.currentTeam.other();
+        return true;
     }
 
     public boolean moveCounter(Move move) {
@@ -151,7 +157,12 @@ public class Ur {
         return true;
     }
 
-    public enum Team {white, black};
+    public enum Team {
+        white, black;
+        public Team other() {
+            return Team.values()[(this.ordinal() + 1) % 2];
+        }
+    };
 
     public static class Dice {
 
