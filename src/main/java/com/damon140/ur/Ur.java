@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Ur {
 
@@ -65,6 +66,48 @@ public class Ur {
                 "completedCounters: " + completedCounters.toString(),
                 "currentTeam: " + currentTeam.toString()
         ));
+    }
+
+    public enum BoardPart {
+        white, black, empty, space;
+
+        public static BoardPart from(Team team) {
+            if (null == team) {
+                return empty;
+            }
+            if (Team.white == team) {
+                return white;
+            }
+            return black;
+        }
+    }
+
+    List<List<Square>> verticalBoard = List.of(
+            List.of(Square.white_run_on_4, Square.shared_1, Square.black_run_on_4),
+            List.of(Square.white_run_on_3, Square.shared_2, Square.black_run_on_3),
+            List.of(Square.white_run_on_2, Square.shared_3, Square.black_run_on_2),
+            List.of(Square.white_run_on_1, Square.shared_4, Square.black_run_on_1),
+            List.of(null, Square.shared_5, null),
+            List.of(null, Square.shared_6, null),
+            List.of(Square.white_run_off_2, Square.shared_7, Square.black_run_off_1),
+            List.of(Square.white_run_off_1, Square.shared_8, Square.black_run_off_1)
+            );
+
+    public List<List<BoardPart>> verticalBoard() {
+        return verticalBoard.stream()
+                .map(l -> l.stream()
+                        .map(square -> {
+                            if (null == square) {
+                                return BoardPart.space;
+                            }
+                            return BoardPart.from(counters.get(square));
+                        })
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> verticalBoardStrings() {
+
     }
 
     public  Map<Square, Team> getCounters() {
