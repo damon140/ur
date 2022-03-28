@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.security.NoSuchAlgorithmException;
 import java.util.IntSummaryStatistics;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.damon140.ur.Ur.Square.*;
@@ -27,6 +28,16 @@ public class UrTest {
     public void initialStateTest()  {
         givenNewGame();
         thenStateIsInitial();
+    }
+
+    @Test
+    public void asdfa() {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 1);
+        thenSmallBoardIs("""
+                ...w  ..
+                ........
+                ....  ..""");
     }
 
     @Test
@@ -105,6 +116,16 @@ public class UrTest {
     private void thenMoveWasIllegal() {
         assertThat(moveResult, is(false));
     }
+
+    private void thenSmallBoardIs(String s) {
+        String smallBoard = this.ur.horizontalBoardStrings()
+                .stream()
+                .collect(Collectors.joining("\n"));
+        assertThat(s, is(smallBoard));
+    }
+
+    // FIXME: Damon want fullTextBoard
+
 
     @Test
     public void dice()  {

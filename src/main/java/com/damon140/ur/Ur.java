@@ -2,15 +2,10 @@ package com.damon140.ur;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Ur {
@@ -71,6 +66,17 @@ public class Ur {
     public enum BoardPart {
         white, black, empty, space;
 
+        public String ch() {
+            switch (this) {
+                case empty:
+                    return ".";
+                case space:
+                    return " ";
+            }
+            ;
+            return this.name().substring(0, 1);
+        }
+
         public static BoardPart from(Team team) {
             if (null == team) {
                 return empty;
@@ -80,22 +86,41 @@ public class Ur {
             }
             return black;
         }
+
     }
 
-    List<List<Square>> verticalBoard = List.of(
-            List.of(Square.white_run_on_4, Square.shared_1, Square.black_run_on_4),
-            List.of(Square.white_run_on_3, Square.shared_2, Square.black_run_on_3),
-            List.of(Square.white_run_on_2, Square.shared_3, Square.black_run_on_2),
-            List.of(Square.white_run_on_1, Square.shared_4, Square.black_run_on_1),
-            List.of(null, Square.shared_5, null),
-            List.of(null, Square.shared_6, null),
-            List.of(Square.white_run_off_2, Square.shared_7, Square.black_run_off_1),
-            List.of(Square.white_run_off_1, Square.shared_8, Square.black_run_off_1)
-            );
+    final static Square[][] VERTICAL_BOARD = {
+            {Square.white_run_on_4, Square.shared_1, Square.black_run_on_4},
+            {Square.white_run_on_3, Square.shared_2, Square.black_run_on_3},
+            {Square.white_run_on_2, Square.shared_3, Square.black_run_on_2},
+            {Square.white_run_on_1, Square.shared_4, Square.black_run_on_1},
+            {null, Square.shared_5, null},
+            {null, Square.shared_6, null},
+            {Square.white_run_off_2, Square.shared_7, Square.black_run_off_2},
+            {Square.white_run_off_1, Square.shared_8, Square.black_run_off_1}
+    };
+
+    static Square[][] HORIZONTAL_BOARD;
+
+    static {
+        int nRows = VERTICAL_BOARD.length;
+        int nCols = VERTICAL_BOARD[0].length;
+        HORIZONTAL_BOARD = new Square[nCols][nRows];
+
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++) {
+                HORIZONTAL_BOARD[j][i] = VERTICAL_BOARD[i][j];
+            }
+        }
+    }
 
     public List<List<BoardPart>> verticalBoard() {
-        return verticalBoard.stream()
-                .map(l -> l.stream()
+        return board(VERTICAL_BOARD);
+    }
+
+    private List<List<BoardPart>> board(Square[][] xxx) {
+        return Arrays.stream(xxx)
+                .map(l -> Arrays.stream(l)
                         .map(square -> {
                             if (null == square) {
                                 return BoardPart.space;
@@ -107,10 +132,23 @@ public class Ur {
     }
 
     public List<String> verticalBoardStrings() {
-
+        return verticalBoard().stream()
+                .map(l -> l.stream()
+                        .map(BoardPart::ch)
+                        .collect(Collectors.joining("")))
+                .toList();
     }
 
-    public  Map<Square, Team> getCounters() {
+
+    public List<String> horizontalBoardStrings() {
+        return board(HORIZONTAL_BOARD).stream()
+                .map(l -> l.stream()
+                        .map(BoardPart::ch)
+                        .collect(Collectors.joining("")))
+                .toList();
+    }
+
+    public Map<Square, Team> getCounters() {
         return counters;
     }
 
