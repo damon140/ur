@@ -42,6 +42,8 @@ public class Ur {
         ;
     }
 
+    public static final int COUNTER_COUNT = 7;
+
     private final Map<Square, Team> counters;
 
     private final Map<Team, Integer> completedCounters;
@@ -114,6 +116,29 @@ public class Ur {
         }
     }
 
+    public List<String> horizontalFullBoardStrings() {
+        Deque<String> board = new ArrayDeque<>(horizontalSmallBoardStrings());
+        board.addFirst(countersHorizontal(Team.white));
+        board.addLast(countersHorizontal(Team.black));
+        return board.stream().toList();
+    }
+
+    public String countersHorizontal(Team team) {
+        int completed = completedCounters.get(team);
+        int unstarted = COUNTER_COUNT - completed;
+        String teamChar = BoardPart.from(team).ch();
+
+        return teamChar.repeat(unstarted) + " " + teamChar.repeat(completed);
+    }
+
+    public List<String> horizontalSmallBoardStrings() {
+        return board(HORIZONTAL_BOARD).stream()
+                .map(l -> l.stream()
+                        .map(BoardPart::ch)
+                        .collect(Collectors.joining("")))
+                .toList();
+    }
+
     public List<List<BoardPart>> verticalBoard() {
         return board(VERTICAL_BOARD);
     }
@@ -129,23 +154,6 @@ public class Ur {
                         })
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-    }
-
-    public List<String> verticalBoardStrings() {
-        return verticalBoard().stream()
-                .map(l -> l.stream()
-                        .map(BoardPart::ch)
-                        .collect(Collectors.joining("")))
-                .toList();
-    }
-
-
-    public List<String> horizontalBoardStrings() {
-        return board(HORIZONTAL_BOARD).stream()
-                .map(l -> l.stream()
-                        .map(BoardPart::ch)
-                        .collect(Collectors.joining("")))
-                .toList();
     }
 
     public Map<Square, Team> getCounters() {

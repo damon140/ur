@@ -31,21 +31,21 @@ public class UrTest {
     }
 
     @Test
-    public void asdfa() {
-        givenNewGame();
-        whenMove(white, off_board_unstarted, 1);
-        thenSmallBoardIs("""
-                ...w  ..
-                ........
-                ....  ..""");
-    }
-
-    @Test
     public void whiteRolls1()  {
         givenNewGame();
         whenMove(white, off_board_unstarted, 1);
         thenWhiteHasCounterAt(white_run_on_1);
-        //thenMoveWasLegal();
+        thenMoveWasLegal();
+        thenSmallBoardIs("""
+                ...w  ..
+                ........
+                ....  ..""");
+        thenHorizontalFullBoardIs("""
+                wwwwww  
+                ...w  ..
+                ........
+                ....  ..
+                bbbbbbb """);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class UrTest {
     }
 
     private void thenSmallBoardIs(String s) {
-        String smallBoard = this.ur.horizontalBoardStrings()
+        String smallBoard = this.ur.horizontalSmallBoardStrings()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
