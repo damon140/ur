@@ -125,10 +125,11 @@ public class Ur {
 
     public String countersHorizontal(Team team) {
         int completed = completedCounters.get(team);
-        int unstarted = COUNTER_COUNT - completed;
+        int unstarted = COUNTER_COUNT - (int) counters.values().stream().filter(t -> team == t).count();
+        int padding = 1 + COUNTER_COUNT - completed - unstarted;
         String teamChar = BoardPart.from(team).ch();
 
-        return teamChar.repeat(unstarted) + " " + teamChar.repeat(completed);
+        return teamChar.repeat(unstarted) + " ".repeat(padding) + teamChar.repeat(completed);
     }
 
     public List<String> horizontalSmallBoardStrings() {

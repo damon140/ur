@@ -45,7 +45,8 @@ public class UrTest {
                 ...w  ..
                 ........
                 ....  ..
-                bbbbbbb """);
+                bbbbbbb""");
+        thenItsBlacksMove();
     }
 
     @Test
@@ -55,7 +56,14 @@ public class UrTest {
         whenMove(black, off_board_unstarted, 1);
         thenWhiteHasCounterAt(white_run_on_1);
         thenBlackHasCounterAt(black_run_on_1);
-        //thenMoveWasLegal();
+        thenMoveWasLegal();
+        thenHorizontalFullBoardIs("""
+                wwwwww  
+                ...w  ..
+                ........
+                ...b  ..
+                bbbbbbb""");
+        thenItsWhitesMove();
     }
 
     @Test public void illegalMoveOntoOwnCounter() {
@@ -63,10 +71,39 @@ public class UrTest {
         whenMove(white, off_board_unstarted, 1);
         whenMove(white, off_board_unstarted, 1);
         thenMoveWasIllegal();
+        thenItsWhitesMove();
     }
 
-    // @Test public void 4 ontoFlowerAnd still white's move() {}
-    // @Test public void blackTakesWhite() {}
+    @Test
+    public void move4ontoFlowerAndStillWhiteMove() {
+       givenNewGame();
+       whenMove(white, off_board_unstarted, 4);
+       thenMoveWasLegal();
+       thenItsWhitesMove();
+       thenHorizontalFullBoardIs("""
+              wwwwww  
+              w...  ..
+              ........
+              ....  ..
+              bbbbbbb""");
+    }
+
+    // FIXME: Damon debug here
+    @Test
+    public void blackTakesWhite() {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 4);
+        whenMove(black, off_board_unstarted, 4);
+        whenMove(white, white_run_on_4, 1);
+        whenMove(black, black_run_on_4, 1);
+        thenItsWhitesMove();
+        thenHorizontalFullBoardIs("""
+              wwwwwww  
+              ....  ..
+              b.......
+              ....  ..
+              bbbbbb """);
+    }
 
     private Ur ur = null;
 
@@ -124,8 +161,25 @@ public class UrTest {
         assertThat(s, is(smallBoard));
     }
 
-    // FIXME: Damon want fullTextBoard
+    private void thenMoveWasLegal() {
+        assertThat(this.moveResult, is(true));
+    }
 
+    private void thenHorizontalFullBoardIs(String wantedBoard) {
+        String board = this.ur.horizontalFullBoardStrings()
+                .stream()
+                .map(l -> l.trim())
+                .collect(Collectors.joining("\n"));
+        assertThat(wantedBoard, is(board));
+    }
+
+    private void thenItsWhitesMove() {
+        assertThat(ur.currentTeam(), is(white));
+    }
+
+    private void thenItsBlacksMove() {
+        assertThat(ur.currentTeam(), is(black));
+    }
 
     @Test
     public void dice()  {
