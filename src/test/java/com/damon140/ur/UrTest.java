@@ -4,6 +4,8 @@ import com.damon140.ur.Ur.Dice;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.IntSummaryStatistics;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,12 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 public class UrTest {
 
-    private boolean moveResult;
-
-    @Test
-    public void printBoard() {
-
-    }
+    private Deque<Boolean> moveResult = new ArrayDeque<>();
 
     @Test
     public void initialStateTest()  {
@@ -53,7 +50,9 @@ public class UrTest {
     public void whiteAndBlackRoll1()  {
         givenNewGame();
         whenMove(white, off_board_unstarted, 1);
+        thenMoveWasLegal();
         whenMove(black, off_board_unstarted, 1);
+        thenMoveWasLegal();
         thenWhiteHasCounterAt(white_run_on_1);
         thenBlackHasCounterAt(black_run_on_1);
         thenMoveWasLegal();
@@ -62,7 +61,7 @@ public class UrTest {
                 ...w  ..
                 ........
                 ...b  ..
-                bbbbbbb""");
+                bbbbbb  """);
         thenItsWhitesMove();
     }
 
@@ -88,14 +87,15 @@ public class UrTest {
               bbbbbbb""");
     }
 
-    // FIXME: Damon debug here
     @Test
     public void blackTakesWhite() {
         givenNewGame();
         whenMove(white, off_board_unstarted, 4);
         whenMove(black, off_board_unstarted, 4);
         whenMove(white, white_run_on_4, 1);
+        printBoard();
         whenMove(black, black_run_on_4, 1);
+
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
               wwwwwww  
@@ -103,7 +103,44 @@ public class UrTest {
               b.......
               ....  ..
               bbbbbb """);
+        thenAllMovesWereLegal();
     }
+
+
+
+//    @Test
+//    public void bothTeamsGetSafe() {
+//        givenNewGame();
+//        whenMove(white, off_board_unstarted, 4);
+//        whenMove(white, off_board_unstarted, 4);
+//        whenMove(white, off_board_unstarted, 4);
+//
+//        whenMove(black, off_board_unstarted, 4);
+//        whenMove(black, off_board_unstarted, 4);
+//        whenMove(black, off_board_unstarted, 3);
+//
+//        whenMove(white, off_board_unstarted, 2)
+//        whenMove(white, off_board_unstarted, 1)
+//
+//        whenMove(black, off_board_unstarted, 3);
+//        whenMove(black, off_board_unstarted, 1);
+//
+//        whenMove(white, white_run_on_4, 1);
+//        printBoard();
+//
+//        thenMoveWasLegal();
+//        whenMove(black, black_run_on_4, 1);
+//        thenMoveWasLegal();
+//
+//        thenItsWhitesMove();
+//        thenHorizontalFullBoardIs("""
+//              wwwww w
+//              ....  ..
+//              ........
+//              ....  ..
+//              bbbbb b""");
+//    }
+
 
     private Ur ur = null;
 
@@ -124,7 +161,7 @@ public class UrTest {
     // --------------------------------------
 
     private void whenMove(Ur.Team white, Ur.Square square, int i) {
-        moveResult = ur.moveCounter(new Ur.Move(white, square, i));
+        moveResult.push(ur.moveCounter(new Ur.Move(white, square, i)));
     }
 
     // --------------------------------------
@@ -162,7 +199,7 @@ public class UrTest {
     }
 
     private void thenMoveWasLegal() {
-        assertThat(this.moveResult, is(true));
+        assertThat(this.moveResult.peekLast(), is(true));
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
@@ -170,7 +207,7 @@ public class UrTest {
                 .stream()
                 .map(l -> l.trim())
                 .collect(Collectors.joining("\n"));
-        assertThat(wantedBoard, is(board));
+        assertThat(board, is(wantedBoard));
     }
 
     private void thenItsWhitesMove() {
@@ -179,6 +216,23 @@ public class UrTest {
 
     private void thenItsBlacksMove() {
         assertThat(ur.currentTeam(), is(black));
+    }
+
+    private void thenAllMovesWereLegal() {
+        for (int i = 0; i < this.moveResult.size(); i++) {
+          var r = this.moveResult.getFirst();
+          if (!r) {
+              assertThat("Move [" + i+1 + "] was illegal", false, is(true));
+          }
+        }
+    }
+
+    // TODO: add to all test failings
+    public void printBoard() {
+        this.ur.horizontalFullBoardStrings()
+                .stream()
+                .map(l -> l.trim())
+                .forEach(l -> System.out.println(l));
     }
 
     @Test

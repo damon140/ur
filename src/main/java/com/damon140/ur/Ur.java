@@ -40,6 +40,10 @@ public class Ur {
 
         off_board_finished,
         ;
+
+        public boolean dontRollAgain() {
+            return Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
+        }
     }
 
     public static final int COUNTER_COUNT = 7;
@@ -228,8 +232,10 @@ public class Ur {
             return false; // can't add any more counters
         }
 
-        if (counters.containsKey(square) && counters.get(square) == team) {
-            return false; // counter not on square
+        if (square != Square.off_board_unstarted
+                && counters.containsKey(square)
+                && counters.get(square) != team) {
+            return false; // teams counter not on square to move from
         }
 
         Square newSquare = calculateNewSquare(team, square, count);
@@ -240,7 +246,7 @@ public class Ur {
 
         Team occupant = counters.get(newSquare);
 
-        // FIXME: Damon is safe square logic needed here?
+        // FIXME: Damon safe square logic needed here
         if (null != occupant) {
             if (team == occupant) {
                 return false; // clashes with own counter
@@ -256,7 +262,9 @@ public class Ur {
             completedCounters.put(team, 1 + completedCounters.get(team));
         }
 
-        currentTeam = this.currentTeam.other();
+        if (square.dontRollAgain()) {
+            currentTeam = this.currentTeam.other();
+        }
 
         return true;
     }
