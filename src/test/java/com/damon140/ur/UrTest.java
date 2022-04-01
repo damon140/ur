@@ -25,6 +25,7 @@ public class UrTest {
     public void initialStateTest()  {
         givenNewGame();
         thenStateIsInitial();
+        thenAllMovesWereLegal();
     }
 
     @Test
@@ -68,6 +69,8 @@ public class UrTest {
     @Test public void illegalMoveOntoOwnCounter() {
         givenNewGame();
         whenMove(white, off_board_unstarted, 1);
+        whenMove(black, off_board_unstarted, 1);
+        thenAllMovesWereLegal();
         whenMove(white, off_board_unstarted, 1);
         thenMoveWasIllegal();
         thenItsWhitesMove();
@@ -90,11 +93,14 @@ public class UrTest {
     @Test
     public void blackTakesWhite() {
         givenNewGame();
-        whenMove(white, off_board_unstarted, 4);
-        whenMove(black, off_board_unstarted, 4);
-        whenMove(white, white_run_on_4, 1);
+        whenMove(white, off_board_unstarted, 3);
         printBoard();
-        whenMove(black, black_run_on_4, 1);
+        whenMove(black, off_board_unstarted, 3);
+        printBoard();
+        whenMove(white, white_run_on_3, 2);
+        printBoard();
+        whenMove(black, black_run_on_3, 2);
+        printBoard();
 
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
@@ -106,40 +112,83 @@ public class UrTest {
         thenAllMovesWereLegal();
     }
 
+    @Test
+    public void blackTakesWhiteUsingDoubles() {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 4);
+        whenMove(white, white_run_on_4, 1);
+        thenItsBlacksMove();
+        whenMove(black, off_board_unstarted, 4);
+        whenMove(black, black_run_on_4, 1);
+        thenItsWhitesMove();
+        thenHorizontalFullBoardIs("""
+              wwwwwww  
+              ....  ..
+              b.......
+              ....  ..
+              bbbbbb """);
+        thenAllMovesWereLegal();
+    }
 
+    @Test
+    public void whiteGetSafe() {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 4);
+        whenMove(white, white_run_on_4, 4);
+        whenMove(white, shared_4, 4);
 
-//    @Test
-//    public void bothTeamsGetSafe() {
-//        givenNewGame();
-//        whenMove(white, off_board_unstarted, 4);
-//        whenMove(white, off_board_unstarted, 4);
-//        whenMove(white, off_board_unstarted, 4);
-//
-//        whenMove(black, off_board_unstarted, 4);
-//        whenMove(black, off_board_unstarted, 4);
-//        whenMove(black, off_board_unstarted, 3);
-//
-//        whenMove(white, off_board_unstarted, 2)
-//        whenMove(white, off_board_unstarted, 1)
-//
-//        whenMove(black, off_board_unstarted, 3);
-//        whenMove(black, off_board_unstarted, 1);
-//
-//        whenMove(white, white_run_on_4, 1);
-//        printBoard();
-//
-//        thenMoveWasLegal();
-//        whenMove(black, black_run_on_4, 1);
-//        thenMoveWasLegal();
-//
-//        thenItsWhitesMove();
-//        thenHorizontalFullBoardIs("""
-//              wwwww w
-//              ....  ..
-//              ........
-//              ....  ..
-//              bbbbb b""");
-//    }
+        whenMove(black, off_board_unstarted, 4);
+        whenMove(black, black_run_on_4, 4);
+        whenMove(black, shared_4, 3);
+
+        whenMove(white, shared_8, 3);
+        thenWhiteCompletedCountIs(1);
+
+        assertThat(ur.countersHorizontal(white), is("wwwwww w"));
+
+        thenItsBlacksMove();
+        thenHorizontalFullBoardIs("""
+              wwwwww w
+              ....  ..
+              ......b.
+              ....  ..
+              bbbbbb """);
+        thenAllMovesWereLegal();
+    }
+
+    @Test
+    public void bothTeamsGetSafe() {
+        givenNewGame();
+        whenMove(white, off_board_unstarted, 4);
+        whenMove(white, white_run_on_4, 4);
+        whenMove(white, shared_4, 4);
+        printBoard();
+
+        whenMove(black, off_board_unstarted, 4);
+        whenMove(black, black_run_on_4, 4);
+        whenMove(black, shared_4, 3);
+        printBoard();
+
+        whenMove(white, shared_8, 3);
+        printBoard();
+
+        whenMove(black, shared_7, 4);
+        printBoard();
+
+        whenMove(white, white_run_on_4, 1);
+        printBoard();
+
+        whenMove(black, black_run_on_4, 1);
+
+        thenItsWhitesMove();
+        thenHorizontalFullBoardIs("""
+              wwwwww w
+              ....  ..
+              ........
+              ....  ..
+              bbbbbb b""");
+        thenAllMovesWereLegal();
+    }
 
 
     private Ur ur = null;
@@ -161,7 +210,8 @@ public class UrTest {
     // --------------------------------------
 
     private void whenMove(Ur.Team white, Ur.Square square, int i) {
-        moveResult.push(ur.moveCounter(new Ur.Move(white, square, i)));
+        boolean result = ur.moveCounter(new Ur.Move(white, square, i));
+        moveResult.add(result);
     }
 
     // --------------------------------------
@@ -176,7 +226,7 @@ public class UrTest {
         // TODO: switch to contains helper & yaml??
         assertThat(state.contains("currentTeam: white"), is(true));
         assertThat(state.contains("counters: {}"), is(true));
-        assertThat(state.contains("completedCounters: {black=0, white=0}"), is(true));
+        assertThat(state.contains("completedCounters: {white=0, black=0}"), is(true));
     }
 
     private void thenWhiteHasCounterAt(Ur.Square square) {
@@ -188,7 +238,7 @@ public class UrTest {
     }
 
     private void thenMoveWasIllegal() {
-        assertThat(moveResult, is(false));
+        assertThat(moveResult.peekLast(), is(false));
     }
 
     private void thenSmallBoardIs(String s) {
@@ -222,9 +272,13 @@ public class UrTest {
         for (int i = 0; i < this.moveResult.size(); i++) {
           var r = this.moveResult.getFirst();
           if (!r) {
-              assertThat("Move [" + i+1 + "] was illegal", false, is(true));
+              assertThat("Move [" + (i + 1) + "] was illegal", false, is(true));
           }
         }
+    }
+
+    private void thenWhiteCompletedCountIs(int count) {
+        assertThat(ur.completedCount(white), is(count));
     }
 
     // TODO: add to all test failings

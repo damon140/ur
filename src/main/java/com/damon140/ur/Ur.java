@@ -42,7 +42,7 @@ public class Ur {
         ;
 
         public boolean dontRollAgain() {
-            return Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
+            return !Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
         }
     }
 
@@ -54,9 +54,13 @@ public class Ur {
 
     private Team currentTeam = Team.white; // white starts
 
+    public int completedCount(Team team) {
+        return completedCounters.get(team);
+    }
+
     public Ur() throws NoSuchAlgorithmException {
         counters = new HashMap<>();
-        completedCounters = new HashMap<>();
+        completedCounters = new TreeMap<>();
         completedCounters.put(Team.black, 0);
         completedCounters.put(Team.white, 0);
     }
@@ -129,7 +133,7 @@ public class Ur {
 
     public String countersHorizontal(Team team) {
         int completed = completedCounters.get(team);
-        int unstarted = COUNTER_COUNT - (int) counters.values().stream().filter(t -> team == t).count();
+        int unstarted = COUNTER_COUNT - (int) counters.values().stream().filter(t -> team == t).count() - completed;
         int padding = 1 + COUNTER_COUNT - completed - unstarted;
         String teamChar = BoardPart.from(team).ch();
 
@@ -166,22 +170,13 @@ public class Ur {
     }
 
     public static Square calculateNewSquare(Team team, Square square) {
-        // special cases
-        switch (square) {
-            case black_run_on_4:
-            case white_run_on_4:
-                return Square.shared_1;
-            case shared_8:
-                return team == Team.black ? Square.black_run_off_1 : Square.white_run_off_1;
-            case black_run_off_2:
-            case white_run_off_2:
-                return Square.off_board_finished;
-            // FIXME: test here
-            case off_board_unstarted:
-                return team == Team.black ? Square.black_run_on_1 : Square.white_run_on_1;
-        }
-        // regular sequence
-        return Square.values()[1 + square.ordinal()];
+        return switch (square) {
+            case black_run_on_4, white_run_on_4 -> Square.shared_1;
+            case shared_8 -> team == Team.black ? Square.black_run_off_1 : Square.white_run_off_1;
+            case black_run_off_2, white_run_off_2 -> Square.off_board_finished;
+            case off_board_unstarted -> team == Team.black ? Square.black_run_on_1 : Square.white_run_on_1;
+            default -> Square.values()[1 + square.ordinal()];
+        };
     }
 
     public static Square calculateNewSquare(Team team, Square square, int count) {
@@ -251,18 +246,19 @@ public class Ur {
             if (team == occupant) {
                 return false; // clashes with own counter
             } else {
-                // FIXME: impl take other counter here
+                // FIXME: to an unstarted counter change??
             }
         }
 
+        // move counter
         counters.remove(square);
-        counters.put(newSquare, team);
-
-        if (newSquare == Square.off_board_finished) {
+        if (newSquare != Square.off_board_finished) {
+            counters.put(newSquare, team);
+        } else {
             completedCounters.put(team, 1 + completedCounters.get(team));
         }
 
-        if (square.dontRollAgain()) {
+        if (newSquare.dontRollAgain()) {
             currentTeam = this.currentTeam.other();
         }
 
