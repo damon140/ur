@@ -44,6 +44,10 @@ public class Ur {
         public boolean dontRollAgain() {
             return !Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
         }
+
+        public boolean isSafeSquare() {
+            return shared_4 == this;
+        }
     }
 
     public static final int COUNTER_COUNT = 7;
@@ -263,6 +267,39 @@ public class Ur {
         }
 
         return true;
+    }
+
+    public List<Square> askMoves(Team team, int roll) {
+        List<Square> squares = new ArrayList();
+
+        // roll on square
+        squares.add(canUseOrNull(team, calculateNewSquare(team, Square.off_board_unstarted, roll)));
+
+        // current counters
+        squares.addAll(this.counters.entrySet()
+                .stream()
+                .filter(entry -> team == entry.getValue())
+                .map(entry -> entry.getKey())
+                 .map(sq -> canUseOrNull(team, calculateNewSquare(team, sq, roll)))
+                .collect(Collectors.toList()));
+
+        return squares.stream()
+                .filter(s -> null != s)
+                .collect(Collectors.toList());
+    }
+
+    private Square canUseOrNull(Team team, Square square) {
+        // if empty
+        if (!this.counters.containsKey(square)) {
+            return square;
+        }
+        // or other counter and not a safe square
+        Team occupantTeam = this.counters.get(square);
+        if (occupantTeam != team && square.isSafeSquare()) {
+            return square;
+        }
+
+        return null;
     }
 
     public enum Team {

@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.IntSummaryStatistics;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,12 +21,20 @@ import static org.hamcrest.Matchers.is;
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
+    private List<Ur.Square> lastAskMoves;
 
     @Test
     public void initialStateTest()  {
         givenNewGame();
         thenStateIsInitial();
         thenAllMovesWereLegal();
+    }
+
+    @Test
+    public void whiteFirstMove() {
+        givenNewGame();
+        whenAskMoves(white, 1);
+        thenMovesAre(white_run_on_1);
     }
 
     @Test
@@ -209,10 +218,15 @@ public class UrTest {
     // When section
     // --------------------------------------
 
-    private void whenMove(Ur.Team white, Ur.Square square, int i) {
-        boolean result = ur.moveCounter(new Ur.Move(white, square, i));
+    private void whenMove(Ur.Team team, Ur.Square square, int i) {
+        boolean result = ur.moveCounter(new Ur.Move(team, square, i));
         moveResult.add(result);
     }
+
+    private void whenAskMoves(Ur.Team team, int roll) {
+        this.lastAskMoves = ur.askMoves(team, roll);
+    }
+
 
     // --------------------------------------
     // Then section
@@ -279,6 +293,11 @@ public class UrTest {
 
     private void thenWhiteCompletedCountIs(int count) {
         assertThat(ur.completedCount(white), is(count));
+    }
+
+
+    private void thenMovesAre(Ur.Square square) {
+        assertThat(this.lastAskMoves, is(List.of(square)));
     }
 
     // TODO: add to all test failings
