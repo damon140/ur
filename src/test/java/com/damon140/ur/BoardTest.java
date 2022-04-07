@@ -10,6 +10,11 @@ import static org.hamcrest.Matchers.is;
 
 public class BoardTest {
 
+    @Test
+    public void other() {
+        assertThat(black.other(), is(white));
+        assertThat(white.other(), is(black));
+    }
 
     @Test
     public void calculateNewSquareNoArgs() {

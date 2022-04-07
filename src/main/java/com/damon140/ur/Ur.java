@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,9 @@ public class Ur {
 
     private final Board board;
 
-    public Ur() throws NoSuchAlgorithmException {
+    public Ur(Board board) throws NoSuchAlgorithmException {
         // FIXME: switch to pass in && remove accessor
-        this.board = new Board();
+        this.board = board;
     }
 
     public Set<String> state() {
@@ -34,10 +35,6 @@ public class Ur {
 
     public Team currentTeam() {
         return this.board.currentTeam();
-    }
-
-    public Board getBoard() {
-        return board;
     }
 
     @AllArgsConstructor
@@ -115,7 +112,7 @@ public class Ur {
     }
 
     public List<Square> askMoves(Team team, int roll) {
-        List<Square> squares = new ArrayList();
+        List<Square> squares = new ArrayList<>();
 
         // roll on square
         squares.add(canUseOrNull(team, calculateNewSquare(team, Square.off_board_unstarted, roll)));
@@ -124,12 +121,12 @@ public class Ur {
         squares.addAll(this.board.getCounters().entrySet()
                 .stream()
                 .filter(entry -> team == entry.getValue())
-                .map(entry -> entry.getKey())
-                 .map(sq -> canUseOrNull(team, calculateNewSquare(team, sq, roll)))
-                .collect(Collectors.toList()));
+                .map(Map.Entry::getKey)
+                .map(sq -> canUseOrNull(team, calculateNewSquare(team, sq, roll)))
+                .toList());
 
         return squares.stream()
-                .filter(s -> null != s)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

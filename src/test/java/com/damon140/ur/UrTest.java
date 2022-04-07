@@ -22,6 +22,8 @@ public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
     private List<Board.Square> lastAskMoves;
+    private Board board;
+
 
     @Test
     public void initialStateTest()  {
@@ -153,7 +155,7 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(ur.getBoard().countersHorizontal(white), is("wwwwww w"));
+        assertThat(board.countersHorizontal(white), is("wwwwww w"));
 
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
@@ -194,6 +196,18 @@ public class UrTest {
         thenAllMovesWereLegal();
     }
 
+    //
+    @Test
+    public void noMovesForRoll() {
+        givenGame("""
+                wwwww
+              ....  w.
+              ........
+              ....  ..
+               bbbbbbb""");
+        // ???
+    }
+
 
     private Ur ur = null;
 
@@ -203,7 +217,8 @@ public class UrTest {
 
     public void givenNewGame()  {
         try {
-            ur = new Ur();
+            board = new Board();
+            ur = new Ur(board);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -251,7 +266,7 @@ public class UrTest {
     }
 
     private void thenSmallBoardIs(String s) {
-        String smallBoard = this.ur.getBoard().horizontalSmallBoardStrings()
+        String smallBoard = this.board.horizontalSmallBoardStrings()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
@@ -262,7 +277,7 @@ public class UrTest {
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
-        String board = this.ur.getBoard().horizontalFullBoardStrings()
+        String board = this.board.horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .collect(Collectors.joining("\n"));
@@ -287,7 +302,7 @@ public class UrTest {
     }
 
     private void thenWhiteCompletedCountIs(int count) {
-        assertThat(ur.getBoard().completedCount(white), is(count));
+        assertThat(this.board.completedCount(white), is(count));
     }
 
 
@@ -297,34 +312,10 @@ public class UrTest {
 
     // TODO: add to all test failings
     public void printBoard() {
-        this.ur.getBoard().horizontalFullBoardStrings()
+        this.board.horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .forEach(l -> System.out.println(l));
     }
-
-    @Test
-    public void dice()  {
-        Dice d;
-        try {
-            d = new Dice();
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
-
-        IntSummaryStatistics rolls = IntStream.range(0, 1000)
-                .map(i -> d.roll())
-                .summaryStatistics();
-
-        assertThat(rolls.getMin(), is(0));
-        assertThat(rolls.getMax(), is(4));
-    }
-
-    @Test
-    public void other() {
-        assertThat(black.other(), is(white));
-        assertThat(white.other(), is(black));
-    }
-
 
 }
