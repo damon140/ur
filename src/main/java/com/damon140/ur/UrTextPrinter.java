@@ -6,9 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static com.damon140.ur.Ur.Team.white;
+import static com.damon140.ur.Board.Team.white;
 
 @AllArgsConstructor
 public class UrTextPrinter {
@@ -40,7 +39,7 @@ public class UrTextPrinter {
         return joiner.toString();
     }
 
-    public static String square(Ur.Team team) {
+    public static String square(Board.Team team) {
         String variable = team == white ? "w" : "b";
         return square(variable);
     }

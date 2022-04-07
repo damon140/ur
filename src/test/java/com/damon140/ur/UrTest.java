@@ -1,6 +1,6 @@
 package com.damon140.ur;
 
-import com.damon140.ur.Ur.Dice;
+import com.damon140.ur.Board.Dice;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
@@ -12,16 +12,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.damon140.ur.Ur.Square.*;
-import static com.damon140.ur.Ur.Team.black;
-import static com.damon140.ur.Ur.Team.white;
+import static com.damon140.ur.Board.Square.*;
+import static com.damon140.ur.Board.Team.black;
+import static com.damon140.ur.Board.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
-    private List<Ur.Square> lastAskMoves;
+    private List<Board.Square> lastAskMoves;
 
     @Test
     public void initialStateTest()  {
@@ -153,7 +153,7 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(ur.countersHorizontal(white), is("wwwwww w"));
+        assertThat(ur.getBoard().countersHorizontal(white), is("wwwwww w"));
 
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
@@ -213,12 +213,12 @@ public class UrTest {
     // When section
     // --------------------------------------
 
-    private void whenMove(Ur.Team team, Ur.Square square, int i) {
+    private void whenMove(Board.Team team, Board.Square square, int i) {
         boolean result = ur.moveCounter(new Ur.Move(team, square, i));
         moveResult.add(result);
     }
 
-    private void whenAskMoves(Ur.Team team, int roll) {
+    private void whenAskMoves(Board.Team team, int roll) {
         this.lastAskMoves = ur.askMoves(team, roll);
     }
 
@@ -238,11 +238,11 @@ public class UrTest {
         assertThat(state.contains("completedCounters: {white=0, black=0}"), is(true));
     }
 
-    private void thenWhiteHasCounterAt(Ur.Square square) {
+    private void thenWhiteHasCounterAt(Board.Square square) {
         assertThat(ur.getCounters().get(square), is(white));
     }
 
-    private void thenBlackHasCounterAt(Ur.Square square) {
+    private void thenBlackHasCounterAt(Board.Square square) {
         assertThat(ur.getCounters().get(square), is(black));
     }
 
@@ -251,7 +251,7 @@ public class UrTest {
     }
 
     private void thenSmallBoardIs(String s) {
-        String smallBoard = this.ur.horizontalSmallBoardStrings()
+        String smallBoard = this.ur.getBoard().horizontalSmallBoardStrings()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
@@ -262,7 +262,7 @@ public class UrTest {
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
-        String board = this.ur.horizontalFullBoardStrings()
+        String board = this.ur.getBoard().horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .collect(Collectors.joining("\n"));
@@ -287,17 +287,17 @@ public class UrTest {
     }
 
     private void thenWhiteCompletedCountIs(int count) {
-        assertThat(ur.completedCount(white), is(count));
+        assertThat(ur.getBoard().completedCount(white), is(count));
     }
 
 
-    private void thenMovesAre(Ur.Square square) {
+    private void thenMovesAre(Board.Square square) {
         assertThat(this.lastAskMoves, is(List.of(square)));
     }
 
     // TODO: add to all test failings
     public void printBoard() {
-        this.ur.horizontalFullBoardStrings()
+        this.ur.getBoard().horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .forEach(l -> System.out.println(l));
@@ -326,54 +326,5 @@ public class UrTest {
         assertThat(white.other(), is(black));
     }
 
-    @Test
-    public void calculateNewSquareNoArgs() {
-        assertThat(Ur.calculateNewSquare(black, off_board_unstarted, 2), is(black_run_on_2));
-        assertThat(Ur.calculateNewSquare(white, off_board_unstarted, 2), is(white_run_on_2));
-
-        assertThat(Ur.calculateNewSquare(black, black_run_on_1, 1), is(black_run_on_2));
-        assertThat(Ur.calculateNewSquare(black, black_run_on_1, 3), is(black_run_on_4));
-        assertThat(Ur.calculateNewSquare(black, black_run_on_1, 4), is(shared_1));
-
-        assertThat(Ur.calculateNewSquare(black, shared_1, 7), is(shared_8));
-
-        assertThat(Ur.calculateNewSquare(black, shared_8, 1), is(black_run_off_1));
-        assertThat(Ur.calculateNewSquare(white, shared_8, 1), is(white_run_off_1));
-
-        assertThat(Ur.calculateNewSquare(black, black_run_off_1, 2), is(off_board_finished));
-        assertThat(Ur.calculateNewSquare(white, white_run_off_1, 2), is(off_board_finished));
-    }
-
-    @Test
-    public void calculateNewSquare() {
-        assertThat(Ur.calculateNewSquare(black, off_board_unstarted), is(black_run_on_1));
-        assertThat(Ur.calculateNewSquare(white, off_board_unstarted), is(white_run_on_1));
-
-        // FIXME: these should be illegal
-        assertThat(Ur.calculateNewSquare(white, black_run_on_1), is(black_run_on_2));
-        assertThat(Ur.calculateNewSquare(white, black_run_on_2), is(black_run_on_3));
-        assertThat(Ur.calculateNewSquare(white, black_run_on_3), is(black_run_on_4));
-
-        assertThat(Ur.calculateNewSquare(black, black_run_on_1), is(black_run_on_2));
-        assertThat(Ur.calculateNewSquare(black, black_run_on_2), is(black_run_on_3));
-        assertThat(Ur.calculateNewSquare(black, black_run_on_3), is(black_run_on_4));
-
-        assertThat(Ur.calculateNewSquare(white, black_run_on_4), is(shared_1));
-        assertThat(Ur.calculateNewSquare(white, shared_1), is(shared_2));
-        assertThat(Ur.calculateNewSquare(white, shared_2), is(shared_3));
-        assertThat(Ur.calculateNewSquare(white, shared_3), is(shared_4));
-        assertThat(Ur.calculateNewSquare(white, shared_4), is(shared_5));
-        assertThat(Ur.calculateNewSquare(white, shared_5), is(shared_6));
-        assertThat(Ur.calculateNewSquare(white, shared_6), is(shared_7));
-        assertThat(Ur.calculateNewSquare(white, shared_7), is(shared_8));
-
-        assertThat(Ur.calculateNewSquare(white, shared_8), is(white_run_off_1));
-        assertThat(Ur.calculateNewSquare(white, white_run_off_1), is(white_run_off_2));
-        assertThat(Ur.calculateNewSquare(white, white_run_off_2), is(off_board_finished));
-
-        assertThat(Ur.calculateNewSquare(black, shared_8), is(black_run_off_1));
-        assertThat(Ur.calculateNewSquare(black, black_run_off_1), is(black_run_off_2));
-        assertThat(Ur.calculateNewSquare(black, black_run_off_2), is(off_board_finished));
-    }
 
 }
