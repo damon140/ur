@@ -11,7 +11,7 @@ import static org.hamcrest.core.Is.is;
 
 class UrTextPrinterTest {
 
-
+// TODO
 //    @Test
 //    public void printBoard() {
 //        assertThat(UrTextPrinter.board(ur), is("""
@@ -29,9 +29,9 @@ class UrTextPrinterTest {
     @Test
     public void printBlankSquare() {
         assertThat(blank(), is("" +
-                "     \r\n" +
-                "     \r\n" +
-                "     \r\n"));
+                "   \n" +
+                "   \n" +
+                "   \n"));
     }
 
     @Test

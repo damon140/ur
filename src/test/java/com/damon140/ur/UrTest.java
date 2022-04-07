@@ -184,11 +184,6 @@ public class UrTest {
         whenMove(black, shared_7, 4);
         printBoard();
 
-        whenMove(white, white_run_on_4, 1);
-        printBoard();
-
-        whenMove(black, black_run_on_4, 1);
-
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
               wwwwww w
