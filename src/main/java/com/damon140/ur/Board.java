@@ -2,16 +2,9 @@ package com.damon140.ur;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Board {
 
@@ -30,6 +23,63 @@ public class Board {
         completedCounters.put(Team.white, 0);
     }
 
+    // FIXME: test for this thing
+    public Board(String game) {
+        // parse board
+        Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
+        String whiteLine = deque.removeFirst();
+        String blackLine = deque.removeLast();
+        completedCounters = new TreeMap<>();
+        completedCounters.put(Team.black, completedCountersFromString(blackLine));
+        completedCounters.put(Team.white, completedCountersFromString(whiteLine));
+
+        // TODO: tidy & shrink
+        List<Square> topBoard = Arrays.stream(HORIZONTAL_BOARD[0]).toList();
+        String topHozRow = deque.removeFirst();
+        List<Square> midBoard = Arrays.stream(HORIZONTAL_BOARD[1]).toList();
+        String midHozRow = deque.removeFirst();
+        List<Square> botBoard = Arrays.stream(HORIZONTAL_BOARD[2]).toList();
+        String botHozRow = deque.removeFirst();
+
+        counters = new HashMap<>();
+        extracted(topBoard, topHozRow, counters);
+        extracted(midBoard, midHozRow, counters);
+        extracted(botBoard, botHozRow, counters);
+    }
+
+    private void extracted(List<Square> maybeSparseBoard, String row, Map<Square, Team> target) {
+        List<Square> boardRow = maybeSparseBoard.stream().filter(Objects::nonNull).toList();
+        List<String> chars = row.chars().mapToObj(c -> Character.toString(c))
+                .filter(c -> {
+                    boolean equals = BoardPart.space.ch.equals(c);
+                    return !equals;
+                })
+                .toList();
+        Map<Square, String> topRow = zipToMap(boardRow, chars);
+        topRow.entrySet().stream()
+                .filter(e -> Team.isTeamChar(e.getValue()))
+                .forEach(e -> {
+                    target.put(e.getKey(), Team.fromCh(e.getValue()));
+                });
+    }
+
+    public static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
+        return IntStream.range(0, keys.size()).boxed()
+                .collect(Collectors.toMap(keys::get, values::get));
+    }
+
+    private int completedCountersFromString(String countersString) {
+        ArrayDeque<String> deque = Arrays.stream(countersString.split(" "))
+                .collect(Collectors.toCollection(ArrayDeque::new));
+
+        if (1 == deque.size()) {
+            // no completed counters as only unstarted counters
+            return 0;
+        }
+
+        return deque.getLast().length();
+
+    }
 
     public List<String> horizontalFullBoardStrings() {
         Deque<String> board = new ArrayDeque<>(horizontalSmallBoardStrings());
@@ -42,15 +92,14 @@ public class Board {
         int completed = completedCounters.get(team);
         int unstarted = COUNTERS_PER_PLAYER - (int) counters.values().stream().filter(t -> team == t).count() - completed;
         int padding = 1 + COUNTERS_PER_PLAYER - completed - unstarted;
-        String teamChar = BoardPart.from(team).ch();
 
-        return teamChar.repeat(unstarted) + " ".repeat(padding) + teamChar.repeat(completed);
+        return team.ch.repeat(unstarted) + " ".repeat(padding) + team.ch.repeat(completed);
     }
 
     public List<String> horizontalSmallBoardStrings() {
         return board(HORIZONTAL_BOARD).stream()
                 .map(l -> l.stream()
-                        .map(BoardPart::ch)
+                        .map(b -> b.ch)
                         .collect(Collectors.joining("")))
                 .toList();
     }
@@ -84,8 +133,6 @@ public class Board {
     public int completedCount(Team team) {
         return completedCounters.get(team);
     }
-
-
 
     public static Square calculateNewSquare(Team team, Square square) {
         return switch (square) {
@@ -126,6 +173,14 @@ public class Board {
 
     public Map<Team, Integer> getCompletedCounters() {
         return completedCounters;
+    }
+
+    public int unstartedCount(Team team) {
+        long inProgressCounters = this.counters.entrySet()
+                .stream()
+                .filter(e -> team == e.getValue())
+                .count();
+        return COUNTERS_PER_PLAYER - (int) inProgressCounters;
     }
 
     public enum Square {
@@ -169,17 +224,15 @@ public class Board {
     }
 
     public enum BoardPart {
-        white, black, empty, space;
+        white(Team.white.ch),
+        black(Team.black.ch),
+        empty("."),
+        space(" ");
 
-        public String ch() {
-            switch (this) {
-                case empty:
-                    return ".";
-                case space:
-                    return " ";
-            }
-            ;
-            return this.name().substring(0, 1);
+        private final String ch;
+
+        BoardPart(String ch) {
+            this.ch = ch;
         }
 
         public static BoardPart from(Team team) {
@@ -193,7 +246,6 @@ public class Board {
         }
 
     }
-
 
     final static Square[][] VERTICAL_BOARD = {
             {Square.white_run_on_4, Square.shared_1, Square.black_run_on_4},
@@ -220,11 +272,26 @@ public class Board {
         }
     }
 
+    // TODO: light & dark as less racist names??
     public enum Team {
         white, black;
 
+        public final String ch;
+
+        Team() {
+            ch = this.name().substring(0, 1);
+        }
+
         public Team other() {
             return Team.values()[(this.ordinal() + 1) % 2];
+        }
+
+        public static boolean isTeamChar(String value) {
+            return value.equals(white.ch) || value.equals(black.ch);
+        }
+
+        public static Team fromCh(String value) {
+            return white.ch.equals(value) ? white : black;
         }
     }
 

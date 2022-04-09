@@ -39,6 +39,12 @@ public class UrTest {
         thenMovesAre(white_run_on_1);
     }
 
+    // TODO: check 2 moves returned
+
+
+
+
+
     @Test
     public void whiteRolls1()  {
         givenNewGame();
@@ -218,6 +224,15 @@ public class UrTest {
     public void givenNewGame()  {
         try {
             board = new Board();
+            ur = new Ur(board);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void givenGame(String game) {
+        try {
+            board = new Board(game);
             ur = new Ur(board);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
