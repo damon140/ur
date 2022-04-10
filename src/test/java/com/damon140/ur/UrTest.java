@@ -1,16 +1,13 @@
 package com.damon140.ur;
 
-import com.damon140.ur.Board.Dice;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.damon140.ur.Board.Square.*;
 import static com.damon140.ur.Board.Team.black;
@@ -202,18 +199,30 @@ public class UrTest {
         thenAllMovesWereLegal();
     }
 
-    //
     @Test
-    public void noMovesForRoll() {
+    public void offBoardMove() {
         givenGame("""
                 wwwww
               ....  w.
               ........
               ....  ..
                bbbbbbb""");
-        // ???
+        whenAskMoves(white, 1);
+        thenMovesAre(List.of(white_run_on_1, off_board_finished));
     }
 
+    @Test
+    public void noMovesForRoll() {
+        // FIXME: Damon, parsing bug here, off board not parsed correctly
+        givenGame("""
+               wwwwww
+              ....  w.
+              ........
+              ....  ..
+               bbbbbbb""");
+        whenAskMoves(white, 2);
+        thenNoMovesAreLegal();
+    }
 
     private Ur ur = null;
 
@@ -249,13 +258,18 @@ public class UrTest {
     }
 
     private void whenAskMoves(Board.Team team, int roll) {
-        this.lastAskMoves = ur.askMoves(team, roll);
+        List<Board.Square> zz = ur.askMoves(team, roll);
+        this.lastAskMoves = zz;
     }
-
 
     // --------------------------------------
     // Then section
     // --------------------------------------
+
+
+    private void thenNoMovesAreLegal() {
+        assertThat(this.lastAskMoves, is(List.of()));
+    }
 
     public void thenStateIsInitial() {
         // FIXME: need a state function, use multi line strings
@@ -322,7 +336,11 @@ public class UrTest {
 
 
     private void thenMovesAre(Board.Square square) {
-        assertThat(this.lastAskMoves, is(List.of(square)));
+        thenMovesAre(List.of(square));
+    }
+
+    private void thenMovesAre(List squares) {
+        assertThat(this.lastAskMoves, is(squares));
     }
 
     // TODO: add to all test failings

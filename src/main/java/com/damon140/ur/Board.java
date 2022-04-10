@@ -144,15 +144,20 @@ public class Board {
         };
     }
 
-    public static Square calculateNewSquare(Team team, Square square, int count) {
+    // TODO: switch to new illegal_sqaure square instead of opt
+    public static Optional<Square> calculateNewSquare(Team team, Square square, int count) {
+        // TODO: simplify
         if (square == Square.off_board_finished) {
-            return Square.off_board_finished;
+            return Optional.of(Square.off_board_finished);
         }
         Square newSquare = square;
         for (int looper = 0; looper < count; looper++) {
+            if (Square.off_board_finished == newSquare) {
+                return Optional.empty();
+            }
             newSquare = calculateNewSquare(team, newSquare);
         }
-        return newSquare;
+        return Optional.of(newSquare);
     }
 
     public Map<Square, Team> getCounters() {
@@ -175,12 +180,21 @@ public class Board {
         return completedCounters;
     }
 
+    // FIXME: Damon, this is counting wrong
     public int unstartedCount(Team team) {
         long inProgressCounters = this.counters.entrySet()
                 .stream()
                 .filter(e -> team == e.getValue())
                 .count();
-        return COUNTERS_PER_PLAYER - (int) inProgressCounters;
+        int finishedCounters = this.completedCounters.get(team);
+
+        return COUNTERS_PER_PLAYER - finishedCounters - (int) inProgressCounters;
+    }
+
+    public boolean allStartedOrComplete(Team team) {
+        int completed = this.completedCount(team);
+        int inProgress = this.counters.size();
+        return COUNTERS_PER_PLAYER == completed + inProgress;
     }
 
     public enum Square {

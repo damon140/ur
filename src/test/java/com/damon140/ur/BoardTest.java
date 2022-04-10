@@ -38,25 +38,25 @@ public class BoardTest {
     }
 
     @Test
-    public void calculateNewSquareNoArgs() {
-        assertThat(Board.calculateNewSquare(black, off_board_unstarted, 2), is(black_run_on_2));
-        assertThat(Board.calculateNewSquare(white, off_board_unstarted, 2), is(white_run_on_2));
+    public void calculateNewSquareWithRoll() {
+        assertThat(Board.calculateNewSquare(black, off_board_unstarted, 2).get(), is(black_run_on_2));
+        assertThat(Board.calculateNewSquare(white, off_board_unstarted, 2).get(), is(white_run_on_2));
 
-        assertThat(Board.calculateNewSquare(black, black_run_on_1, 1), is(black_run_on_2));
-        assertThat(Board.calculateNewSquare(black, black_run_on_1, 3), is(black_run_on_4));
-        assertThat(Board.calculateNewSquare(black, black_run_on_1, 4), is(shared_1));
+        assertThat(Board.calculateNewSquare(black, black_run_on_1, 1).get(), is(black_run_on_2));
+        assertThat(Board.calculateNewSquare(black, black_run_on_1, 3).get(), is(black_run_on_4));
+        assertThat(Board.calculateNewSquare(black, black_run_on_1, 4).get(), is(shared_1));
 
-        assertThat(Board.calculateNewSquare(black, shared_1, 7), is(shared_8));
+        assertThat(Board.calculateNewSquare(black, shared_1, 7).get(), is(shared_8));
 
-        assertThat(Board.calculateNewSquare(black, shared_8, 1), is(black_run_off_1));
-        assertThat(Board.calculateNewSquare(white, shared_8, 1), is(white_run_off_1));
+        assertThat(Board.calculateNewSquare(black, shared_8, 1).get(), is(black_run_off_1));
+        assertThat(Board.calculateNewSquare(white, shared_8, 1).get(), is(white_run_off_1));
 
-        assertThat(Board.calculateNewSquare(black, black_run_off_1, 2), is(off_board_finished));
-        assertThat(Board.calculateNewSquare(white, white_run_off_1, 2), is(off_board_finished));
+        assertThat(Board.calculateNewSquare(black, black_run_off_1, 2).get(), is(off_board_finished));
+        assertThat(Board.calculateNewSquare(white, white_run_off_1, 2).get(), is(off_board_finished));
     }
 
     @Test
-    public void calculateNewSquare() {
+    public void calculateNewSquareNoArgs() {
         assertThat(Board.calculateNewSquare(black, off_board_unstarted), is(black_run_on_1));
         assertThat(Board.calculateNewSquare(white, off_board_unstarted), is(white_run_on_1));
 

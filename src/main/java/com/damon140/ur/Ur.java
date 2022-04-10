@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,11 @@ public class Ur {
             return false; // teams counter not on square to move from
         }
 
-        Square newSquare = calculateNewSquare(team, square, count);
+        Optional<Square> newSquareOpt = calculateNewSquare(team, square, count);
+        if (newSquareOpt.isEmpty()) {
+            return false;
+        }
+        Square newSquare = newSquareOpt.get();
 
         if (0 == count) {
             return false; // illegal move of zero
@@ -114,15 +119,20 @@ public class Ur {
     public List<Square> askMoves(Team team, int roll) {
         List<Square> squares = new ArrayList<>();
 
-        // roll on square
-        squares.add(canUseOrNull(team, calculateNewSquare(team, Square.off_board_unstarted, roll)));
+        if (!this.board.allStartedOrComplete(team)) {
+            // start a new counter
+            squares.add(canUseOrNull(team, calculateNewSquare(team, Square.off_board_unstarted, roll)));
+        }
 
         // current counters
         squares.addAll(this.board.getCounters().entrySet()
                 .stream()
                 .filter(entry -> team == entry.getValue())
                 .map(Map.Entry::getKey)
-                .map(sq -> canUseOrNull(team, calculateNewSquare(team, sq, roll)))
+                .map(sq -> {
+                    Optional<Square> newSq = calculateNewSquare(team, sq, roll);
+                    return canUseOrNull(team, newSq);
+                })
                 .toList());
 
         return squares.stream()
@@ -130,7 +140,12 @@ public class Ur {
                 .collect(Collectors.toList());
     }
 
-    private Square canUseOrNull(Team team, Square square) {
+    private Square canUseOrNull(Team team, Optional<Square> squareOpt) {
+        if (squareOpt.isEmpty()) {
+            return null;
+        }
+
+        Square square = squareOpt.get();
         // if empty
         if (!this.board.getCounters().containsKey(square)) {
             return square;
