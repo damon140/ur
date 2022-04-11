@@ -137,6 +137,7 @@ public class Ur {
 
         return squares.stream()
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.toList());
     }
 

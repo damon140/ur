@@ -3,10 +3,7 @@ package com.damon140.ur;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.damon140.ur.Board.Square.*;
@@ -18,8 +15,9 @@ import static org.hamcrest.Matchers.is;
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
-    private List<Board.Square> lastAskMoves;
+    private List<Board.Square> lastAskMoves = List.of();
     private Board board;
+    private Ur ur;
 
 
     @Test
@@ -35,12 +33,6 @@ public class UrTest {
         whenAskMoves(white, 1);
         thenMovesAre(white_run_on_1);
     }
-
-    // TODO: check 2 moves returned
-
-
-
-
 
     @Test
     public void whiteRolls1()  {
@@ -208,12 +200,11 @@ public class UrTest {
               ....  ..
                bbbbbbb""");
         whenAskMoves(white, 1);
-        thenMovesAre(List.of(white_run_on_1, off_board_finished));
+        thenMovesAre(white_run_on_1, off_board_finished);
     }
 
     @Test
     public void noMovesForRoll() {
-        // FIXME: Damon, parsing bug here, off board not parsed correctly
         givenGame("""
                wwwwww
               ....  w.
@@ -224,7 +215,19 @@ public class UrTest {
         thenNoMovesAreLegal();
     }
 
-    private Ur ur = null;
+    @Test
+    public void manyMovesForWhite() {
+        givenGame("""
+              
+              .w.w  w.
+              w.w.w.w.
+              ....  ..
+               bbbbbbb""");
+        whenAskMoves(white, 1);
+        thenMovesAre(white_run_on_2, white_run_on_4, shared_2, shared_4, shared_6, shared_8, off_board_finished);
+    }
+
+
 
     // --------------------------------------
     // Given section
@@ -334,13 +337,12 @@ public class UrTest {
         assertThat(this.board.completedCount(white), is(count));
     }
 
-
-    private void thenMovesAre(Board.Square square) {
-        thenMovesAre(List.of(square));
-    }
-
-    private void thenMovesAre(List squares) {
-        assertThat(this.lastAskMoves, is(squares));
+    private void thenMovesAre(Board.Square... squares) {
+        List<Board.Square> sortedInput = Arrays.asList(squares)
+                .stream()
+                .sorted()
+                .toList();
+        assertThat(this.lastAskMoves, is(sortedInput));
     }
 
     // TODO: add to all test failings
