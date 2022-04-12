@@ -309,19 +309,4 @@ public class Board {
         }
     }
 
-    public static class Dice {
-
-        private final SecureRandom random;
-
-        public Dice() throws NoSuchAlgorithmException {
-            random = SecureRandom.getInstanceStrong();
-        }
-
-        public int roll() {
-            return random.ints(4, 0, 2)
-                    .sum();
-        }
-
-    }
-
 }

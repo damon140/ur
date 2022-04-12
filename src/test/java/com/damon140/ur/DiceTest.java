@@ -13,9 +13,9 @@ public class DiceTest {
 
     @Test
     public void dice()  {
-        Board.Dice d;
+        Dice d;
         try {
-            d = new Board.Dice();
+            d = new Dice();
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }

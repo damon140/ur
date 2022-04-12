@@ -19,6 +19,11 @@ public class UrTextPrinter {
 //
 //    }
 
+    public static String drawVerticle(Board board) {
+        List<List<Board.BoardPart>> parts = board.verticalBoard();
+        return "";
+    }
+
     public static String join(String... stringSquaresArr) {
         List<List<String>> stringSquares = Arrays.stream(stringSquaresArr)
                 .map(s -> List.of(s.split("\n")))

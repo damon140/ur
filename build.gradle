@@ -26,6 +26,11 @@ application {
     mainClassName = javaMainClass
 }
 
+run {
+    // set a standard input
+    standardInput = System.in
+}
+
 
 dependencies {
 
