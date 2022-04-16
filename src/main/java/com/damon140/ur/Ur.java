@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.damon140.ur.Board.Square.off_board_unstarted;
 import static com.damon140.ur.Board.Team;
 import static com.damon140.ur.Board.calculateNewSquare;
 
@@ -67,20 +68,27 @@ public class Ur {
         return moveCounter(move.team, move.square, move.count);
     }
 
-    private boolean moveCounter(Team team, Square square, int count) {
+    public boolean moveCounter(Square square, int count) {
+        return moveCounter(board.currentTeam(), square, count);
+    }
+
+    private boolean moveCounter(Team team, Square fromSquare, int count) {
+
+        // FIXMME: check correct team,
+        // FIXME: + and x on board
 
         // FIXME: move condition to Board method allOut
         if (board.allCountersStarted(team)) {
             return false; // can't add any more counters
         }
 
-        if (square != Square.off_board_unstarted
-                && board.getCounters().containsKey(square)
-                && board.getCounters().get(square) != team) {
+        if (fromSquare != off_board_unstarted
+                && board.getCounters().containsKey(fromSquare)
+                && board.getCounters().get(fromSquare) != team) {
             return false; // teams counter not on square to move from
         }
 
-        Optional<Square> newSquareOpt = calculateNewSquare(team, square, count);
+        Optional<Square> newSquareOpt = calculateNewSquare(team, fromSquare, count);
         if (newSquareOpt.isEmpty()) {
             return false;
         }
@@ -102,7 +110,7 @@ public class Ur {
         }
 
         // move counter
-        board.getCounters().remove(square);
+        board.getCounters().remove(fromSquare);
         if (newSquare != Square.off_board_finished) {
             board.getCounters().put(newSquare, team);
         } else {
@@ -116,12 +124,13 @@ public class Ur {
         return true;
     }
 
+    // FIXME: switch to to from map
     public List<Square> askMoves(Team team, int roll) {
         List<Square> squares = new ArrayList<>();
 
         if (!this.board.allStartedOrComplete(team)) {
             // start a new counter
-            squares.add(canUseOrNull(team, calculateNewSquare(team, Square.off_board_unstarted, roll)));
+            squares.add(canUseOrNull(team, calculateNewSquare(team, off_board_unstarted, roll)));
         }
 
         // current counters

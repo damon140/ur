@@ -1,6 +1,7 @@
 package com.damon140.ur;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -28,24 +29,39 @@ public class Game {
 
         Scanner scanner = new Scanner(System.in);
 
-        // need loop
-        System.out.println(board.horizontalFullBoardStrings().stream().collect(Collectors.joining("\r\n")));
-        System.out.println("");
+        while (true) {
+            // need loop
+            System.out.println(board.horizontalFullBoardStrings().stream().collect(Collectors.joining("\r\n")));
+            System.out.println(board.currentTeam() + "'s turn");
+            System.out.println("");
 
-        int roll = dice.roll();
-        System.out.println("Roll is: " + roll);
+            int roll = dice.roll();
+            System.out.println("Roll is: " + roll);
 
-        AtomicInteger index = new AtomicInteger(1);
-        String moveDesc = ur.askMoves(board.currentTeam(), roll)
-                .stream()
-                .map(square -> index.getAndIncrement() + " " + square)
-                .collect(Collectors.joining("\r\n"));
-        System.out.println(moveDesc);
+            AtomicInteger index = new AtomicInteger(1);
+            List<Board.Square> moves = ur.askMoves(board.currentTeam(), roll);
+            String moveDesc = moves
+                    .stream()
+                    .map(square -> index.getAndIncrement() + " " + square)
+                    .collect(Collectors.joining("\r\n"));
+            System.out.println(moveDesc);
+            System.out.println("x - quit ");
+            System.out.println("");
+            System.out.println("input: ");
+            String input = scanner.nextLine();
 
-        System.out.println("input: ");
-        String name = scanner.nextLine();
+            System.out.println("got " + input);
 
-        System.out.println("got " + name);
+            if ("x".equals(input)) {
+                System.out.println("Done!!");
+                return;
+            }
+
+            int moveIndex = Integer.parseInt(input.trim());
+            // FIXME: moves are not working properly???
+            Board.Square square = moves.get(moveIndex - 1);
+            ur.moveCounter(square, roll);
+        }
     }
 
 }

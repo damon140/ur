@@ -19,7 +19,6 @@ public class UrTest {
     private Board board;
     private Ur ur;
 
-
     @Test
     public void initialStateTest()  {
         givenNewGame();
