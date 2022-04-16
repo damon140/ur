@@ -1,14 +1,24 @@
 package com.damon140.ur;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Board {
 
     private static final int COUNTERS_PER_PLAYER = 7;
+    private static final String COUNTER_START_SEPARATOR = "|";
 
     private final Map<Square, Team> counters;
 
@@ -23,7 +33,6 @@ public class Board {
         completedCounters.put(Team.white, 0);
     }
 
-    // FIXME: test for this thing
     public Board(String game) {
         // parse board
         Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
@@ -68,8 +77,11 @@ public class Board {
                 .collect(Collectors.toMap(keys::get, values::get));
     }
 
+
+
+
     private int completedCountersFromString(String countersString) {
-        ArrayDeque<String> deque = Arrays.stream(countersString.split(" "))
+        ArrayDeque<String> deque = Arrays.stream(countersString.split(COUNTER_START_SEPARATOR))
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
         if (1 == deque.size()) {
@@ -93,7 +105,8 @@ public class Board {
         int unstarted = COUNTERS_PER_PLAYER - (int) counters.values().stream().filter(t -> team == t).count() - completed;
         int padding = 1 + COUNTERS_PER_PLAYER - completed - unstarted;
 
-        return team.ch.repeat(unstarted) + " ".repeat(padding) + team.ch.repeat(completed);
+        String teamCh = team.ch;
+        return teamCh.repeat(unstarted) + " ".repeat(padding-1) + COUNTER_START_SEPARATOR + teamCh.repeat(completed);
     }
 
     public List<String> horizontalSmallBoardStrings() {
@@ -115,7 +128,7 @@ public class Board {
                             if (null == square) {
                                 return BoardPart.space;
                             }
-                            return BoardPart.from(counters.get(square));
+                            return BoardPart.from(square, counters.get(square));
                         })
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
@@ -229,17 +242,23 @@ public class Board {
         ;
 
         public boolean dontRollAgain() {
-            return !Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
+            return !rollAgain();
         }
 
         public boolean isSafeSquare() {
             return shared_4 == this;
         }
+
+        public boolean rollAgain() {
+            return Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
+        }
     }
 
     public enum BoardPart {
+        // FIXME: Damon, add new parts, * for roll again
         white(Team.white.ch),
         black(Team.black.ch),
+        star("*"),
         empty("."),
         space(" ");
 
@@ -249,14 +268,19 @@ public class Board {
             this.ch = ch;
         }
 
-        public static BoardPart from(Team team) {
-            if (null == team) {
-                return empty;
-            }
+        public static BoardPart from(Square square, Team team) {
+            // need teams first so that we draw a w in precedence to a * or .
             if (Team.white == team) {
                 return white;
             }
-            return black;
+            if (Team.black == team) {
+                return black;
+            }
+            if (square.rollAgain()) {
+                return star;
+            }
+
+            return empty;
         }
 
     }

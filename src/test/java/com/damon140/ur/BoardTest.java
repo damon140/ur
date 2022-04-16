@@ -2,7 +2,9 @@ package com.damon140.ur;
 
 import org.junit.jupiter.api.Test;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.damon140.ur.Board.Square.*;
 import static com.damon140.ur.Board.Team.black;
@@ -29,6 +31,23 @@ public class BoardTest {
 
         assertThat(b.unstartedCount(white), is(6));
         assertThat(b.unstartedCount(black), is(7));
+    }
+
+    @Test
+    public void horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() throws NoSuchAlgorithmException {
+        Board b = new Board();
+        b.getCounters().put(white_run_on_1, white);
+        b.getCounters().put(black_run_on_1, black);
+        b.getCompletedCounters().put(white, 1);
+        b.getCompletedCounters().put(black, 1);
+
+        String string = b.horizontalFullBoardStrings().stream().collect(Collectors.joining("\n"));
+        assertThat(string, is("""
+                                wwwww |w
+                                *..w  *.
+                                ...*....
+                                *..b  *.
+                                bbbbb |b"""));
     }
 
     @Test

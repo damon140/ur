@@ -40,15 +40,15 @@ public class UrTest {
         thenWhiteHasCounterAt(white_run_on_1);
         thenMoveWasLegal();
         thenSmallBoardIs("""
-                ...w  ..
-                ........
-                ....  ..""");
+                *..w  *.
+                ...*....
+                *...  *.""");
         thenHorizontalFullBoardIs("""
-                wwwwww  
-                ...w  ..
-                ........
-                ....  ..
-                bbbbbbb""");
+                wwwwww | 
+                *..w  *.
+                ...*....
+                *...  *.
+                bbbbbbb|""");
         thenItsBlacksMove();
     }
 
@@ -63,11 +63,11 @@ public class UrTest {
         thenBlackHasCounterAt(black_run_on_1);
         thenMoveWasLegal();
         thenHorizontalFullBoardIs("""
-                wwwwww  
-                ...w  ..
-                ........
-                ...b  ..
-                bbbbbb  """);
+                wwwwww |
+                *..w  *.
+                ...*....
+                *..b  *.
+                bbbbbb |""");
         thenItsWhitesMove();
     }
 
@@ -88,11 +88,11 @@ public class UrTest {
        thenMoveWasLegal();
        thenItsWhitesMove();
        thenHorizontalFullBoardIs("""
-              wwwwww  
-              w...  ..
-              ........
-              ....  ..
-              bbbbbbb""");
+              wwwwww |
+              w...  *.
+              ...*....
+              *...  *.
+              bbbbbbb|""");
     }
 
     @Test
@@ -109,11 +109,11 @@ public class UrTest {
 
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
-              wwwwwww  
-              ....  ..
-              b.......
-              ....  ..
-              bbbbbb """);
+              wwwwwww| 
+              *...  *.
+              b..*....
+              *...  *.
+              bbbbbb |""");
         thenAllMovesWereLegal();
     }
 
@@ -127,11 +127,11 @@ public class UrTest {
         whenMove(black, black_run_on_4, 1);
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
-              wwwwwww  
-              ....  ..
-              b.......
-              ....  ..
-              bbbbbb """);
+              wwwwwww| 
+              *...  *.
+              b..*....
+              *...  *.
+              bbbbbb |""");
         thenAllMovesWereLegal();
     }
 
@@ -149,15 +149,15 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(board.countersHorizontal(white), is("wwwwww w"));
+        assertThat(board.countersHorizontal(white), is("wwwwww|w"));
 
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
-              wwwwww w
-              ....  ..
-              ......b.
-              ....  ..
-              bbbbbb """);
+              wwwwww|w
+              *...  *.
+              ...*..b.
+              *...  *.
+              bbbbbb |""");
         thenAllMovesWereLegal();
     }
 
@@ -182,11 +182,11 @@ public class UrTest {
 
         thenItsWhitesMove();
         thenHorizontalFullBoardIs("""
-              wwwwww w
-              ....  ..
-              ........
-              ....  ..
-              bbbbbb b""");
+              wwwwww|w
+              *...  *.
+              ...*....
+              *...  *.
+              bbbbbb|b""");
         thenAllMovesWereLegal();
     }
 
@@ -194,9 +194,9 @@ public class UrTest {
     public void offBoardMove() {
         givenGame("""
                 wwwww
-              ....  w.
-              ........
-              ....  ..
+              *...  w.
+              ...*....
+              *...  *.
                bbbbbbb""");
         whenAskMoves(white, 1);
         thenMovesAre(white_run_on_1, off_board_finished);
@@ -204,12 +204,13 @@ public class UrTest {
 
     @Test
     public void noMovesForRoll() {
+        // FIXME: Damon fix parsing
         givenGame("""
-               wwwwww
-              ....  w.
-              ........
-              ....  ..
-               bbbbbbb""");
+              |wwwwww
+              *...  w.
+              ...*....
+              *...  *.
+              |bbbbbbb""");
         whenAskMoves(white, 2);
         thenNoMovesAreLegal();
     }
@@ -220,7 +221,7 @@ public class UrTest {
               
               .w.w  w.
               w.w.w.w.
-              ....  ..
+              *...  *.
                bbbbbbb""");
         whenAskMoves(white, 1);
         thenMovesAre(white_run_on_2, white_run_on_4, shared_2, shared_4, shared_6, shared_8, off_board_finished);
