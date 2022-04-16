@@ -17,11 +17,11 @@ public class BoardTest {
     @Test
     public void constructor_givenString_thenBoard() {
         Board b = new Board("""
-                wwwwww  
+                wwwwww |
                 ...w  ..
                 ........
                 ....  ..
-                bbbbbbb """);
+                bbbbbbb|""");
 
         assertThat(b.getCompletedCounters().size(), is(2));
         assertThat(b.getCompletedCounters().get(white), is(0));

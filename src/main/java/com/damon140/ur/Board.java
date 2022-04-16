@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,6 +20,7 @@ public class Board {
 
     private static final int COUNTERS_PER_PLAYER = 7;
     private static final String COUNTER_START_SEPARATOR = "|";
+    private static final String COUNTER_START_SEPARATOR_PATTERN = Pattern.quote(COUNTER_START_SEPARATOR);
 
     private final Map<Square, Team> counters;
 
@@ -81,7 +83,7 @@ public class Board {
 
 
     private int completedCountersFromString(String countersString) {
-        ArrayDeque<String> deque = Arrays.stream(countersString.split(COUNTER_START_SEPARATOR))
+        ArrayDeque<String> deque = Arrays.stream(countersString.replaceAll(" ", "").split(COUNTER_START_SEPARATOR_PATTERN))
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
         if (1 == deque.size()) {

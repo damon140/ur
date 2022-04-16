@@ -204,7 +204,7 @@ public class UrTest {
 
     @Test
     public void noMovesForRoll() {
-        // FIXME: Damon fix parsing
+        // FIXME: Damon fix parsing, is not recognising as white all finished
         givenGame("""
               |wwwwww
               *...  w.
