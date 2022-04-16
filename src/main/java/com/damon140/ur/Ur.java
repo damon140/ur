@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -125,29 +127,27 @@ public class Ur {
     }
 
     // FIXME: switch to to from map
-    public List<Square> askMoves(Team team, int roll) {
-        List<Square> squares = new ArrayList<>();
+    public Map<Square, Square> askMoves(Team team, int roll) {
+        Map<Square, Square> moves = new HashMap<>();
 
         if (!this.board.allStartedOrComplete(team)) {
             // start a new counter
-            squares.add(canUseOrNull(team, calculateNewSquare(team, off_board_unstarted, roll)));
+            moves.put(off_board_unstarted, canUseOrNull(team, calculateNewSquare(team, off_board_unstarted, roll)));
         }
 
         // current counters
-        squares.addAll(this.board.getCounters().entrySet()
+        this.board.getCounters().entrySet()
                 .stream()
                 .filter(entry -> team == entry.getValue())
                 .map(Map.Entry::getKey)
-                .map(sq -> {
-                    Optional<Square> newSq = calculateNewSquare(team, sq, roll);
-                    return canUseOrNull(team, newSq);
-                })
-                .toList());
+                .forEach(startSquare -> {
+                    Square endSquare = canUseOrNull(team, calculateNewSquare(team, startSquare, roll));
+                    moves.put(startSquare, endSquare);
+                });
 
-        return squares.stream()
-                .filter(Objects::nonNull)
-                .sorted()
-                .collect(Collectors.toList());
+        moves.values().removeIf(Objects::isNull);
+
+        return moves;
     }
 
     private Square canUseOrNull(Team team, Optional<Square> squareOpt) {

@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.is;
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
-    private List<Board.Square> lastAskMoves = List.of();
+    private Map<Board.Square, Board.Square> lastAskMoves = Map.of();
     private Board board;
     private Ur ur;
 
@@ -260,8 +260,7 @@ public class UrTest {
     }
 
     private void whenAskMoves(Board.Team team, int roll) {
-        List<Board.Square> zz = ur.askMoves(team, roll);
-        this.lastAskMoves = zz;
+        this.lastAskMoves = ur.askMoves(team, roll);
     }
 
     // --------------------------------------
@@ -270,7 +269,7 @@ public class UrTest {
 
 
     private void thenNoMovesAreLegal() {
-        assertThat(this.lastAskMoves, is(List.of()));
+        assertThat(this.lastAskMoves, is(Map.of()));
     }
 
     public void thenStateIsInitial() {
@@ -336,12 +335,19 @@ public class UrTest {
         assertThat(this.board.completedCount(white), is(count));
     }
 
-    private void thenMovesAre(Board.Square... squares) {
-        List<Board.Square> sortedInput = Arrays.asList(squares)
+    private void thenMovesAre(Board.Square... destinationSquares) {
+        List<Board.Square> sortedInput = Arrays.asList(destinationSquares)
                 .stream()
                 .sorted()
                 .toList();
-        assertThat(this.lastAskMoves, is(sortedInput));
+
+        List<Board.Square> lastAskMovesDestinatinons = this.lastAskMoves
+                    .values()
+                    .stream()
+                    .sorted()
+                .toList();
+
+        assertThat(lastAskMovesDestinatinons, is(sortedInput));
     }
 
     // TODO: add to all test failings

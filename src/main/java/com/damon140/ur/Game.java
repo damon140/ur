@@ -2,6 +2,7 @@ package com.damon140.ur;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -39,10 +40,10 @@ public class Game {
             System.out.println("Roll is: " + roll);
 
             AtomicInteger index = new AtomicInteger(1);
-            List<Board.Square> moves = ur.askMoves(board.currentTeam(), roll);
-            String moveDesc = moves
+            Map<Board.Square, Board.Square> moves = ur.askMoves(board.currentTeam(), roll);
+            String moveDesc = moves.entrySet()
                     .stream()
-                    .map(square -> index.getAndIncrement() + " " + square)
+                    .map(entry -> index.getAndIncrement() + " " + entry.getKey() + " -> " + entry.getValue())
                     .collect(Collectors.joining("\r\n"));
             System.out.println(moveDesc);
             System.out.println("x - quit ");
@@ -58,9 +59,9 @@ public class Game {
             }
 
             int moveIndex = Integer.parseInt(input.trim());
-            // FIXME: moves are not working properly???
-            Board.Square square = moves.get(moveIndex - 1);
-            ur.moveCounter(square, roll);
+            Board.Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
+
+            ur.moveCounter(fromSquare, roll);
         }
     }
 
