@@ -9,22 +9,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Game {
+public class ConsoleGame {
+
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         System.out.println("Command line Ur");
         System.out.println();
-        new Game().run();
+        new ConsoleGame().run();
     }
 
-    private final Board board;
+    private final CounterPositions counterPositions;
     private final Ur ur;
     private final Dice dice;
+    private final DrawnBoard drawnBoard;
     //private final UrTextPrinter printer;
 
-    public Game() throws NoSuchAlgorithmException {
-        this.board = new Board();
-        this.ur = new Ur(board);
+    public ConsoleGame() throws NoSuchAlgorithmException {
+        this.counterPositions = new CounterPositions();
+        this.drawnBoard = new DrawnBoard(counterPositions);
+        this.ur = new Ur(counterPositions);
         this.dice = new Dice();
     }
 
@@ -34,13 +37,13 @@ public class Game {
         while (true) {
             int roll = dice.roll();
 
-            List<String> gameLines = board.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
+            List<String> gameLines = drawnBoard.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
 
             AtomicInteger index = new AtomicInteger(1);
-            Map<Board.Square, Board.Square> moves = ur.askMoves(board.currentTeam(), roll);
+            Map<CounterPositions.Square, CounterPositions.Square> moves = ur.askMoves(counterPositions.currentTeam(), roll);
 
             List<String> instructionLines = new ArrayList<>();
-            instructionLines.add(board.currentTeam() + "'s turn roll is: " + roll);
+            instructionLines.add(counterPositions.currentTeam() + "'s turn roll is: " + roll);
             moves.entrySet()
                     .stream()
                     .map(entry -> index.getAndIncrement() + " " + entry.getKey() + " -> " + entry.getValue())
@@ -75,7 +78,7 @@ public class Game {
             }
 
             int moveIndex = Integer.parseInt(input);
-            Board.Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
+            CounterPositions.Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
 
             ur.moveCounter(fromSquare, roll);
         }

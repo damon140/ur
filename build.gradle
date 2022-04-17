@@ -19,7 +19,7 @@ test {
 
 apply plugin : "java"
 ext {
-    javaMainClass = "com.damon140.ur.Game"
+    javaMainClass = "com.damon140.ur.ConsoleGame"
 }
 
 application {

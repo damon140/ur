@@ -1,92 +1,73 @@
 package com.damon140.ur;
 
-import com.damon140.ur.Board.Square;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.damon140.ur.CounterPositions.Square;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static com.damon140.ur.Board.Square.off_board_unstarted;
-import static com.damon140.ur.Board.Team;
-import static com.damon140.ur.Board.calculateNewSquare;
+import static com.damon140.ur.CounterPositions.Square.off_board_unstarted;
+
+import static com.damon140.ur.CounterPositions.calculateNewSquare;
 
 // FIXME: Rename to UrEngine??
 public class Ur {
 
-    private final Board board;
+    private final CounterPositions counterPositions;
 
-    public Ur(Board board) throws NoSuchAlgorithmException {
+    public Ur(CounterPositions counterPositions) throws NoSuchAlgorithmException {
         // FIXME: switch to pass in && remove accessor
-        this.board = board;
+        this.counterPositions = counterPositions;
     }
 
+    // FIXME: use drawn baord instead
+    @Deprecated
     public Set<String> state() {
-        return this.board.state();
+        return this.counterPositions.state();
     }
 
     public Map<Square, Team> getCounters() {
-        return this.board.getCounters();
+        return this.counterPositions.getCounters();
     }
 
     public Team currentTeam() {
-        return this.board.currentTeam();
+        return this.counterPositions.currentTeam();
     }
 
-    @AllArgsConstructor
-    @Data
-    public static class Move {
-        private final Team team;
-        private Square square;
-        private int count;
-    }
-
-
-    // FIXME: upgrade to an enum of results, ok, underrun, counter not at start, collision with own counter
-
-    public boolean skipTurn(Move move) {
-        if (0 != move.count) {
+    // FIXME: call here
+    public boolean skipTurn(int count) {
+        if (0 != count) {
             return false;
         }
 
-        this.board.swapTeam();
+        this.counterPositions.swapTeam();
 
         return true;
     }
 
-    /*
-    success, success_takes_other, over_run, collision_self, collision_other, illegal
-     */
-
-    public boolean moveCounter(Move move) {
-        return moveCounter(move.team, move.square, move.count);
-    }
-
     public boolean moveCounter(Square square, int count) {
-        return moveCounter(board.currentTeam(), square, count);
+        return moveCounter(counterPositions.currentTeam(), square, count);
     }
 
-    private boolean moveCounter(Team team, Square fromSquare, int count) {
+    // FIXME: upgrade to an enum of results, ok, underrun, counter not at start, collision with own counter
+    // success, success_takes_other, over_run, collision_self, collision_other, illegal
+
+    public boolean moveCounter(Team team, Square fromSquare, int count) {
 
         // FIXMME: check correct team,
         // FIXME: + and x on board
 
         // FIXME: move condition to Board method allOut
-        if (board.allCountersStarted(team)) {
+        if (counterPositions.allCountersStarted(team)) {
             return false; // can't add any more counters
         }
 
         if (fromSquare != off_board_unstarted
-                && board.getCounters().containsKey(fromSquare)
-                && board.getCounters().get(fromSquare) != team) {
+                && counterPositions.getCounters().containsKey(fromSquare)
+                && counterPositions.getCounters().get(fromSquare) != team) {
             return false; // teams counter not on square to move from
         }
 
@@ -100,7 +81,7 @@ public class Ur {
             return false; // illegal move of zero
         }
 
-        Team occupant = board.getCounters().get(newSquare);
+        Team occupant = counterPositions.getCounters().get(newSquare);
 
         // FIXME: Damon safe square logic needed here
         if (null != occupant) {
@@ -112,31 +93,30 @@ public class Ur {
         }
 
         // move counter
-        board.getCounters().remove(fromSquare);
+        counterPositions.getCounters().remove(fromSquare);
         if (newSquare != Square.off_board_finished) {
-            board.getCounters().put(newSquare, team);
+            counterPositions.getCounters().put(newSquare, team);
         } else {
-            board.getCompletedCounters().put(team, 1 + board.getCompletedCounters().get(team));
+            counterPositions.getCompletedCounters().put(team, 1 + counterPositions.getCompletedCounters().get(team));
         }
 
         if (newSquare.dontRollAgain()) {
-            board.swapTeam();
+            counterPositions.swapTeam();
         }
 
         return true;
     }
 
-    // FIXME: switch to to from map
     public Map<Square, Square> askMoves(Team team, int roll) {
         Map<Square, Square> moves = new HashMap<>();
 
-        if (!this.board.allStartedOrComplete(team)) {
+        if (!this.counterPositions.allStartedOrComplete(team)) {
             // start a new counter
             moves.put(off_board_unstarted, canUseOrNull(team, calculateNewSquare(team, off_board_unstarted, roll)));
         }
 
         // current counters
-        this.board.getCounters().entrySet()
+        this.counterPositions.getCounters().entrySet()
                 .stream()
                 .filter(entry -> team == entry.getValue())
                 .map(Map.Entry::getKey)
@@ -157,11 +137,11 @@ public class Ur {
 
         Square square = squareOpt.get();
         // if empty
-        if (!this.board.getCounters().containsKey(square)) {
+        if (!this.counterPositions.getCounters().containsKey(square)) {
             return square;
         }
         // or other counter and not a safe square
-        Team occupantTeam = this.board.getCounters().get(square);
+        Team occupantTeam = this.counterPositions.getCounters().get(square);
         if (occupantTeam != team && square.isSafeSquare()) {
             return square;
         }

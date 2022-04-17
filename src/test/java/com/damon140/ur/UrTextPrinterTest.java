@@ -2,8 +2,8 @@ package com.damon140.ur;
 
 import org.junit.jupiter.api.Test;
 
-import static com.damon140.ur.Board.Team.black;
-import static com.damon140.ur.Board.Team.white;
+import static com.damon140.ur.Team.black;
+import static com.damon140.ur.Team.white;
 import static com.damon140.ur.UrTextPrinter.blank;
 import static com.damon140.ur.UrTextPrinter.square;
 import static org.hamcrest.MatcherAssert.assertThat;

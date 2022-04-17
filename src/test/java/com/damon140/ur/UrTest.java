@@ -6,17 +6,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.damon140.ur.Board.Square.*;
-import static com.damon140.ur.Board.Team.black;
-import static com.damon140.ur.Board.Team.white;
+import static com.damon140.ur.CounterPositions.Square.*;
+import static com.damon140.ur.Team.black;
+import static com.damon140.ur.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
-    private Map<Board.Square, Board.Square> lastAskMoves = Map.of();
-    private Board board;
+    private Map<CounterPositions.Square, CounterPositions.Square> lastAskMoves = Map.of();
+    private CounterPositions counterPositions;
+    private DrawnBoard drawnBoard;
     private Ur ur;
 
     @Test
@@ -149,7 +150,7 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(board.countersHorizontal(white), is("wwwwww|w"));
+        assertThat(counterPositions.countersHorizontal(white), is("wwwwww|w"));
 
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
@@ -235,8 +236,9 @@ public class UrTest {
 
     public void givenNewGame()  {
         try {
-            board = new Board();
-            ur = new Ur(board);
+            counterPositions = new CounterPositions();
+            drawnBoard = new DrawnBoard(counterPositions);
+            ur = new Ur(counterPositions);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -244,8 +246,9 @@ public class UrTest {
 
     public void givenGame(String game) {
         try {
-            board = new Board(game);
-            ur = new Ur(board);
+            counterPositions = new CounterPositions(game);
+            drawnBoard = new DrawnBoard(counterPositions);
+            ur = new Ur(counterPositions);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -255,12 +258,12 @@ public class UrTest {
     // When section
     // --------------------------------------
 
-    private void whenMove(Board.Team team, Board.Square square, int i) {
-        boolean result = ur.moveCounter(new Ur.Move(team, square, i));
+    private void whenMove(Team team, CounterPositions.Square square, int i) {
+        boolean result = ur.moveCounter(team, square, i);
         moveResult.add(result);
     }
 
-    private void whenAskMoves(Board.Team team, int roll) {
+    private void whenAskMoves(Team team, int roll) {
         this.lastAskMoves = ur.askMoves(team, roll);
     }
 
@@ -284,11 +287,11 @@ public class UrTest {
         assertThat(state.contains("completedCounters: {white=0, black=0}"), is(true));
     }
 
-    private void thenWhiteHasCounterAt(Board.Square square) {
+    private void thenWhiteHasCounterAt(CounterPositions.Square square) {
         assertThat(ur.getCounters().get(square), is(white));
     }
 
-    private void thenBlackHasCounterAt(Board.Square square) {
+    private void thenBlackHasCounterAt(CounterPositions.Square square) {
         assertThat(ur.getCounters().get(square), is(black));
     }
 
@@ -297,7 +300,7 @@ public class UrTest {
     }
 
     private void thenSmallBoardIs(String s) {
-        String smallBoard = this.board.horizontalSmallBoardStrings()
+        String smallBoard = this.drawnBoard.horizontalSmallBoardStrings()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
@@ -308,7 +311,7 @@ public class UrTest {
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
-        String board = this.board.horizontalFullBoardStrings()
+        String board = this.drawnBoard.horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .collect(Collectors.joining("\n"));
@@ -333,16 +336,16 @@ public class UrTest {
     }
 
     private void thenWhiteCompletedCountIs(int count) {
-        assertThat(this.board.completedCount(white), is(count));
+        assertThat(this.counterPositions.completedCount(white), is(count));
     }
 
-    private void thenMovesAre(Board.Square... destinationSquares) {
-        List<Board.Square> sortedInput = Arrays.asList(destinationSquares)
+    private void thenMovesAre(CounterPositions.Square... destinationSquares) {
+        List<CounterPositions.Square> sortedInput = Arrays.asList(destinationSquares)
                 .stream()
                 .sorted()
                 .toList();
 
-        List<Board.Square> lastAskMovesDestinatinons = this.lastAskMoves
+        List<CounterPositions.Square> lastAskMovesDestinatinons = this.lastAskMoves
                     .values()
                     .stream()
                     .sorted()
@@ -353,7 +356,7 @@ public class UrTest {
 
     // TODO: add to all test failings
     public void printBoard() {
-        this.board.horizontalFullBoardStrings()
+        this.drawnBoard.horizontalFullBoardStrings()
                 .stream()
                 .map(l -> l.trim())
                 .forEach(l -> System.out.println(l));

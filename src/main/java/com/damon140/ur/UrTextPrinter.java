@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static com.damon140.ur.Board.Team.white;
+import static com.damon140.ur.Team.white;
 
 @AllArgsConstructor
 public class UrTextPrinter {
@@ -19,8 +19,8 @@ public class UrTextPrinter {
 //
 //    }
 
-    public static String drawVerticle(Board board) {
-        List<List<Board.BoardPart>> parts = board.verticalBoard();
+    public static String drawVerticle(DrawnBoard board) {
+        List<List<DrawnBoard.BoardPart>> parts = board.verticalBoard();
         return "";
     }
 
@@ -44,7 +44,7 @@ public class UrTextPrinter {
         return joiner.toString();
     }
 
-    public static String square(Board.Team team) {
+    public static String square(Team team) {
         String variable = team == white ? "w" : "b";
         return square(variable);
     }
