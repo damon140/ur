@@ -10,16 +10,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Counters {
 
-    private static final int COUNTERS_PER_PLAYER = 7;
-    private static final String COUNTER_START_SEPARATOR = "|";
-    private static final String COUNTER_START_SEPARATOR_PATTERN = Pattern.quote(COUNTER_START_SEPARATOR);
+    public static final int COUNTERS_PER_PLAYER = 7;
 
     private final Map<Square, Team> counters;
 
@@ -34,78 +30,24 @@ public class Counters {
         completedCounters.put(Team.white, 0);
     }
 
-    // FIXME: Damon needs to be split
-    public Counters(String game) {
-        // parse board
-        Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
-        String whiteLine = deque.removeFirst();
-        String blackLine = deque.removeLast();
-        completedCounters = new TreeMap<>();
-        completedCounters.put(Team.black, completedCountersFromString(blackLine));
-        completedCounters.put(Team.white, completedCountersFromString(whiteLine));
-
-        // TODO: tidy & shrink
-        List<Square> topBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[0]).toList();
-        String topHozRow = deque.removeFirst();
-        List<Square> midBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[1]).toList();
-        String midHozRow = deque.removeFirst();
-        List<Square> botBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[2]).toList();
-        String botHozRow = deque.removeFirst();
-
-        counters = new HashMap<>();
-        extracted(topBoard, topHozRow, counters);
-        extracted(midBoard, midHozRow, counters);
-        extracted(botBoard, botHozRow, counters);
-    }
-
-    private void extracted(List<Square> maybeSparseBoard, String row, Map<Square, Team> target) {
-        List<Square> boardRow = maybeSparseBoard.stream().filter(Objects::nonNull).toList();
-        List<String> chars = row.chars().mapToObj(c -> Character.toString(c))
-                .filter(c -> {
-                    boolean equals = DrawnBoard.BoardPart.space.ch.equals(c);
-                    return !equals;
-                })
-                .toList();
-        Map<Square, String> topRow = zipToMap(boardRow, chars);
-        topRow.entrySet().stream()
-                .filter(e -> Team.isTeamChar(e.getValue()))
-                .forEach(e -> {
-                    target.put(e.getKey(), Team.fromCh(e.getValue()));
-                });
-    }
-
-    public static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
-        return IntStream.range(0, keys.size()).boxed()
-                .collect(Collectors.toMap(keys::get, values::get));
-    }
-
-    private int completedCountersFromString(String countersString) {
-        ArrayDeque<String> deque = Arrays.stream(countersString.replaceAll(" ", "").split(COUNTER_START_SEPARATOR_PATTERN))
-                .collect(Collectors.toCollection(ArrayDeque::new));
-
-        if (1 == deque.size()) {
-            // no completed counters as only unstarted counters
-            return 0;
-        }
-
-        return deque.getLast().length();
-
-    }
-
-    public String countersHorizontal(Team team) {
-        int completed = completedCounters.get(team);
-        int unstarted = COUNTERS_PER_PLAYER - (int) counters.values().stream().filter(t -> team == t).count() - completed;
-        int padding = 1 + COUNTERS_PER_PLAYER - completed - unstarted;
-
-        String teamCh = team.ch;
-        return teamCh.repeat(unstarted) + " ".repeat(padding-1) + COUNTER_START_SEPARATOR + teamCh.repeat(completed);
-    }
-
     public int completedCount(Team team) {
         return completedCounters.get(team);
     }
-    public Map<Square, Team> getCounters() {
-        return this.counters;
+
+    public Set<Square> countersForTeam(Team team) {
+        return this.counters.entrySet()
+                .stream()
+                .filter(entry -> team == entry.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
+    public Team get(Square square) {
+        return this.counters.get(square);
+    }
+
+    public boolean occupied(Square square) {
+        return this.counters.containsKey(square);
     }
 
     public Team currentTeam() {
@@ -120,11 +62,6 @@ public class Counters {
         return COUNTERS_PER_PLAYER == completedCounters.get(team);
     }
 
-    public Map<Team, Integer> getCompletedCounters() {
-        return completedCounters;
-    }
-
-    // FIXME: Damon, this is counting wrong
     public int unstartedCount(Team team) {
         long inProgressCounters = this.counters.entrySet()
                 .stream()
@@ -141,4 +78,24 @@ public class Counters {
         return COUNTERS_PER_PLAYER == completed + inProgress;
     }
 
+    public int inPlayCount(Team team) {
+        return (int) counters.values().stream().filter(t -> team == t).count();
+    }
+
+    /** All counters currently on the board from both teams. */
+    public int inPlayCount() {
+        return this.counters.size();
+    }
+
+    public void move(Square fromSquare, Square newSquare, Team team) {
+        // FIXME: Damon add a bit here about collisions, that is known only
+        // to the counters
+
+        counters.remove(fromSquare);
+        if (newSquare != Square.off_board_finished) {
+            counters.put(newSquare, team);
+        } else {
+            completedCounters.put(team, 1 + completedCounters.get(team));
+        }
+    }
 }

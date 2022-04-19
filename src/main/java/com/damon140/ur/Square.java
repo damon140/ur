@@ -46,7 +46,6 @@ public enum Square {
 
     // TODO: switch to new illegal_sqaure square instead of opt
     public Optional<Square> calculateNewSquare(Team team, int count) {
-        // TODO: simplify
         if (this == Square.off_board_finished) {
             return Optional.of(Square.off_board_finished);
         }

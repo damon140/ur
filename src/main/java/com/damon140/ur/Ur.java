@@ -14,26 +14,19 @@ public class Ur {
     private final Counters counters;
 
     public Ur(Counters counters) throws NoSuchAlgorithmException {
-        // FIXME: switch to pass in && remove accessor
         this.counters = counters;
-    }
-
-    public Map<Square, Team> getCounters() {
-        return this.counters.getCounters();
     }
 
     public Team currentTeam() {
         return this.counters.currentTeam();
     }
 
-    // FIXME: call here
     public boolean skipTurn(int count) {
         if (0 != count) {
             return false;
         }
 
         this.counters.swapTeam();
-
         return true;
     }
 
@@ -53,8 +46,8 @@ public class Ur {
         }
 
         if (fromSquare != off_board_unstarted
-                && counters.getCounters().containsKey(fromSquare)
-                && counters.getCounters().get(fromSquare) != team) {
+                && counters.occupied(fromSquare)
+                && counters.get(fromSquare) != team) {
             return false; // teams counter not on square to move from
         }
 
@@ -68,7 +61,7 @@ public class Ur {
             return false; // illegal move of zero
         }
 
-        Team occupant = counters.getCounters().get(newSquare);
+        Team occupant = counters.get(newSquare);
 
         // FIXME: Damon safe square logic needed here
         if (null != occupant) {
@@ -80,12 +73,7 @@ public class Ur {
         }
 
         // move counter
-        counters.getCounters().remove(fromSquare);
-        if (newSquare != Square.off_board_finished) {
-            counters.getCounters().put(newSquare, team);
-        } else {
-            counters.getCompletedCounters().put(team, 1 + counters.getCompletedCounters().get(team));
-        }
+        counters.move(fromSquare, newSquare, team);
 
         if (newSquare.dontRollAgain()) {
             counters.swapTeam();
@@ -103,10 +91,7 @@ public class Ur {
         }
 
         // current counters
-        this.counters.getCounters().entrySet()
-                .stream()
-                .filter(entry -> team == entry.getValue())
-                .map(Map.Entry::getKey)
+        this.counters.countersForTeam(team)
                 .forEach(startSquare -> {
                     Square endSquare = canUseOrNull(team, startSquare.calculateNewSquare(team, roll));
                     moves.put(startSquare, endSquare);
@@ -124,11 +109,11 @@ public class Ur {
 
         Square square = squareOpt.get();
         // if empty
-        if (!this.counters.getCounters().containsKey(square)) {
+        if (!this.counters.occupied(square)) {
             return square;
         }
         // or other counter and not a safe square
-        Team occupantTeam = this.counters.getCounters().get(square);
+        Team occupantTeam = this.counters.get(square);
         if (occupantTeam != team && square.isSafeSquare()) {
             return square;
         }

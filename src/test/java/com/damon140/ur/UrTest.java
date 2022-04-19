@@ -150,8 +150,6 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(counters.countersHorizontal(white), is("wwwwww|w"));
-
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
               wwwwww|w
@@ -236,6 +234,7 @@ public class UrTest {
 
     public void givenNewGame()  {
         try {
+            moveResult = new ArrayDeque<>();
             counters = new Counters();
             drawnBoard = new DrawnBoard(counters);
             ur = new Ur(counters);
@@ -246,7 +245,8 @@ public class UrTest {
 
     public void givenGame(String game) {
         try {
-            counters = new Counters(game);
+            moveResult = new ArrayDeque<>();
+            counters = DrawnBoard.parseCounters(game);
             drawnBoard = new DrawnBoard(counters);
             ur = new Ur(counters);
         } catch (NoSuchAlgorithmException e) {
@@ -278,17 +278,17 @@ public class UrTest {
 
     public void thenStateIsInitial() {
         assertThat(counters.currentTeam(), is(white));
-        assertThat(counters.getCounters(), is(Map.of()));
+        assertThat(counters.inPlayCount(), is(0));
         assertThat(counters.completedCount(white), is(0));
         assertThat(counters.completedCount(black), is(0));
     }
 
     private void thenWhiteHasCounterAt(Square square) {
-        assertThat(ur.getCounters().get(square), is(white));
+        assertThat(counters.get(square), is(white));
     }
 
     private void thenBlackHasCounterAt(Square square) {
-        assertThat(ur.getCounters().get(square), is(black));
+        assertThat(counters.get(square), is(black));
     }
 
     private void thenMoveWasIllegal() {
@@ -309,7 +309,7 @@ public class UrTest {
     private void thenHorizontalFullBoardIs(String wantedBoard) {
         String board = this.drawnBoard.horizontalFullBoardStrings()
                 .stream()
-                .map(l -> l.trim())
+                .map(String::trim)
                 .collect(Collectors.joining("\n"));
         assertThat(board, is(wantedBoard));
     }
@@ -336,8 +336,7 @@ public class UrTest {
     }
 
     private void thenMovesAre(Square... destinationSquares) {
-        List<Square> sortedInput = Arrays.asList(destinationSquares)
-                .stream()
+        List<Square> sortedInput = Arrays.stream(destinationSquares)
                 .sorted()
                 .toList();
 
@@ -354,8 +353,8 @@ public class UrTest {
     public void printBoard() {
         this.drawnBoard.horizontalFullBoardStrings()
                 .stream()
-                .map(l -> l.trim())
-                .forEach(l -> System.out.println(l));
+                .map(String::trim)
+                .forEach(System.out::println);
     }
 
 }

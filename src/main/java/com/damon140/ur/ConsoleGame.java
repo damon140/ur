@@ -14,7 +14,6 @@ public class ConsoleGame {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         System.out.println("Command line Ur");
-        System.out.println();
         new ConsoleGame().run();
     }
 
@@ -35,6 +34,8 @@ public class ConsoleGame {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
+            System.out.println();
+
             int roll = dice.roll();
 
             List<String> gameLines = drawnBoard.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
@@ -65,6 +66,7 @@ public class ConsoleGame {
             System.out.println(gameTurn);
 
             if (0 == roll) {
+                ur.skipTurn(roll);
                 continue; // skip turn
             }
 

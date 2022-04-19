@@ -1,6 +1,5 @@
 package com.damon140.ur;
 
-// TODO: light & dark as less racist names??
 public enum Team {
     white, black;
 
