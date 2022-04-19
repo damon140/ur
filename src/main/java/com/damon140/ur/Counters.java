@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CounterPositions {
+public class Counters {
 
     private static final int COUNTERS_PER_PLAYER = 7;
     private static final String COUNTER_START_SEPARATOR = "|";
@@ -28,7 +27,7 @@ public class CounterPositions {
 
     private Team currentTeam = Team.white; // white starts
 
-    public CounterPositions() throws NoSuchAlgorithmException {
+    public Counters() throws NoSuchAlgorithmException {
         counters = new HashMap<>();
         completedCounters = new TreeMap<>();
         completedCounters.put(Team.black, 0);
@@ -36,7 +35,7 @@ public class CounterPositions {
     }
 
     // FIXME: Damon needs to be split
-    public CounterPositions(String game) {
+    public Counters(String game) {
         // parse board
         Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
         String whiteLine = deque.removeFirst();
@@ -102,35 +101,9 @@ public class CounterPositions {
         return teamCh.repeat(unstarted) + " ".repeat(padding-1) + COUNTER_START_SEPARATOR + teamCh.repeat(completed);
     }
 
-    public Set<String> state() {
-        return new TreeSet<>(List.of(
-                "counters: " + counters.toString(),
-                "completedCounters: " + completedCounters.toString(),
-                "currentTeam: " + currentTeam.toString()
-        ));
-    }
-
     public int completedCount(Team team) {
         return completedCounters.get(team);
     }
-
-    // FIXME: push parts of this into Square class
-    // TODO: switch to new illegal_sqaure square instead of opt
-    public static Optional<Square> calculateNewSquare(Team team, Square square, int count) {
-        // TODO: simplify
-        if (square == Square.off_board_finished) {
-            return Optional.of(Square.off_board_finished);
-        }
-        Square newSquare = square;
-        for (int looper = 0; looper < count; looper++) {
-            if (Square.off_board_finished == newSquare) {
-                return Optional.empty();
-            }
-            newSquare = calculateNewSquare(team, newSquare);
-        }
-        return Optional.of(newSquare);
-    }
-
     public Map<Square, Team> getCounters() {
         return this.counters;
     }
@@ -166,61 +139,6 @@ public class CounterPositions {
         int completed = this.completedCount(team);
         int inProgress = this.counters.size();
         return COUNTERS_PER_PLAYER == completed + inProgress;
-    }
-
-    public enum Square {
-        off_board_unstarted,
-
-        black_run_on_1,
-        black_run_on_2,
-        black_run_on_3,
-        black_run_on_4,
-
-        black_run_off_1,
-        black_run_off_2,
-
-        shared_1,
-        shared_2,
-        shared_3,
-        shared_4,
-        shared_5,
-        shared_6,
-        shared_7,
-        shared_8,
-
-        white_run_on_1,
-        white_run_on_2,
-        white_run_on_3,
-        white_run_on_4,
-
-        white_run_off_1,
-        white_run_off_2,
-
-        off_board_finished,
-        ;
-
-        // FIXME: make non static
-        public static Square calculateNewSquare(Team team, Square square) {
-            return switch (square) {
-                case black_run_on_4, white_run_on_4 -> Square.shared_1;
-                case shared_8 -> team == Team.black ? Square.black_run_off_1 : Square.white_run_off_1;
-                case black_run_off_2, white_run_off_2 -> Square.off_board_finished;
-                case off_board_unstarted -> team == Team.black ? Square.black_run_on_1 : Square.white_run_on_1;
-                default -> Square.values()[1 + square.ordinal()];
-            };
-        }
-
-        public boolean dontRollAgain() {
-            return !rollAgain();
-        }
-
-        public boolean isSafeSquare() {
-            return shared_4 == this;
-        }
-
-        public boolean rollAgain() {
-            return Set.of(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2).contains(this);
-        }
     }
 
 }

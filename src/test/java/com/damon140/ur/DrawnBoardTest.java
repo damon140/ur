@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 
-import static com.damon140.ur.CounterPositions.Square.black_run_on_1;
-import static com.damon140.ur.CounterPositions.Square.white_run_on_1;
+import static com.damon140.ur.Square.black_run_on_1;
+import static com.damon140.ur.Square.white_run_on_1;
 import static com.damon140.ur.Team.black;
 import static com.damon140.ur.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,7 +17,7 @@ class DrawnBoardTest {
 
     @Test
     public void horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() throws NoSuchAlgorithmException {
-        CounterPositions b = new CounterPositions();
+        Counters b = new Counters();
         b.getCounters().put(white_run_on_1, white);
         b.getCounters().put(black_run_on_1, black);
         b.getCompletedCounters().put(white, 1);

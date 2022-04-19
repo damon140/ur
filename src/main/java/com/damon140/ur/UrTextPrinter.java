@@ -12,13 +12,6 @@ import static com.damon140.ur.Team.white;
 @AllArgsConstructor
 public class UrTextPrinter {
 
-
-    // FIXME: want the game to have an abstract board that knows its own
-    // layout
-//    public static String join(Ur ur) {
-//
-//    }
-
     public static String drawVerticle(DrawnBoard board) {
         List<List<DrawnBoard.BoardPart>> parts = board.verticalBoard();
         return "";

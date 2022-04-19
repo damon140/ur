@@ -18,16 +18,16 @@ public class ConsoleGame {
         new ConsoleGame().run();
     }
 
-    private final CounterPositions counterPositions;
+    private final Counters counters;
     private final Ur ur;
     private final Dice dice;
     private final DrawnBoard drawnBoard;
     //private final UrTextPrinter printer;
 
     public ConsoleGame() throws NoSuchAlgorithmException {
-        this.counterPositions = new CounterPositions();
-        this.drawnBoard = new DrawnBoard(counterPositions);
-        this.ur = new Ur(counterPositions);
+        this.counters = new Counters();
+        this.drawnBoard = new DrawnBoard(counters);
+        this.ur = new Ur(counters);
         this.dice = new Dice();
     }
 
@@ -40,10 +40,10 @@ public class ConsoleGame {
             List<String> gameLines = drawnBoard.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
 
             AtomicInteger index = new AtomicInteger(1);
-            Map<CounterPositions.Square, CounterPositions.Square> moves = ur.askMoves(counterPositions.currentTeam(), roll);
+            Map<Square, Square> moves = ur.askMoves(counters.currentTeam(), roll);
 
             List<String> instructionLines = new ArrayList<>();
-            instructionLines.add(counterPositions.currentTeam() + "'s turn roll is: " + roll);
+            instructionLines.add(counters.currentTeam() + "'s turn roll is: " + roll);
             moves.entrySet()
                     .stream()
                     .map(entry -> index.getAndIncrement() + " " + entry.getKey() + " -> " + entry.getValue())
@@ -78,7 +78,7 @@ public class ConsoleGame {
             }
 
             int moveIndex = Integer.parseInt(input);
-            CounterPositions.Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
+            Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
 
             ur.moveCounter(fromSquare, roll);
         }

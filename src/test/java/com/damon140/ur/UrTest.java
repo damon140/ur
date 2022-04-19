@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.damon140.ur.CounterPositions.Square.*;
+import static com.damon140.ur.Square.*;
 import static com.damon140.ur.Team.black;
 import static com.damon140.ur.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,8 +15,8 @@ import static org.hamcrest.Matchers.is;
 public class UrTest {
 
     private Deque<Boolean> moveResult = new ArrayDeque<>();
-    private Map<CounterPositions.Square, CounterPositions.Square> lastAskMoves = Map.of();
-    private CounterPositions counterPositions;
+    private Map<Square, Square> lastAskMoves = Map.of();
+    private Counters counters;
     private DrawnBoard drawnBoard;
     private Ur ur;
 
@@ -150,7 +150,7 @@ public class UrTest {
         whenMove(white, shared_8, 3);
         thenWhiteCompletedCountIs(1);
 
-        assertThat(counterPositions.countersHorizontal(white), is("wwwwww|w"));
+        assertThat(counters.countersHorizontal(white), is("wwwwww|w"));
 
         thenItsBlacksMove();
         thenHorizontalFullBoardIs("""
@@ -236,9 +236,9 @@ public class UrTest {
 
     public void givenNewGame()  {
         try {
-            counterPositions = new CounterPositions();
-            drawnBoard = new DrawnBoard(counterPositions);
-            ur = new Ur(counterPositions);
+            counters = new Counters();
+            drawnBoard = new DrawnBoard(counters);
+            ur = new Ur(counters);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -246,9 +246,9 @@ public class UrTest {
 
     public void givenGame(String game) {
         try {
-            counterPositions = new CounterPositions(game);
-            drawnBoard = new DrawnBoard(counterPositions);
-            ur = new Ur(counterPositions);
+            counters = new Counters(game);
+            drawnBoard = new DrawnBoard(counters);
+            ur = new Ur(counters);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -258,7 +258,7 @@ public class UrTest {
     // When section
     // --------------------------------------
 
-    private void whenMove(Team team, CounterPositions.Square square, int i) {
+    private void whenMove(Team team, Square square, int i) {
         boolean result = ur.moveCounter(team, square, i);
         moveResult.add(result);
     }
@@ -277,21 +277,17 @@ public class UrTest {
     }
 
     public void thenStateIsInitial() {
-        // FIXME: need a state function, use multi line strings
-        Set<String> state = ur.state();
-        System.out.println(state);
-
-        // TODO: switch to contains helper & yaml??
-        assertThat(state.contains("currentTeam: white"), is(true));
-        assertThat(state.contains("counters: {}"), is(true));
-        assertThat(state.contains("completedCounters: {white=0, black=0}"), is(true));
+        assertThat(counters.currentTeam(), is(white));
+        assertThat(counters.getCounters(), is(Map.of()));
+        assertThat(counters.completedCount(white), is(0));
+        assertThat(counters.completedCount(black), is(0));
     }
 
-    private void thenWhiteHasCounterAt(CounterPositions.Square square) {
+    private void thenWhiteHasCounterAt(Square square) {
         assertThat(ur.getCounters().get(square), is(white));
     }
 
-    private void thenBlackHasCounterAt(CounterPositions.Square square) {
+    private void thenBlackHasCounterAt(Square square) {
         assertThat(ur.getCounters().get(square), is(black));
     }
 
@@ -336,16 +332,16 @@ public class UrTest {
     }
 
     private void thenWhiteCompletedCountIs(int count) {
-        assertThat(this.counterPositions.completedCount(white), is(count));
+        assertThat(this.counters.completedCount(white), is(count));
     }
 
-    private void thenMovesAre(CounterPositions.Square... destinationSquares) {
-        List<CounterPositions.Square> sortedInput = Arrays.asList(destinationSquares)
+    private void thenMovesAre(Square... destinationSquares) {
+        List<Square> sortedInput = Arrays.asList(destinationSquares)
                 .stream()
                 .sorted()
                 .toList();
 
-        List<CounterPositions.Square> lastAskMovesDestinatinons = this.lastAskMoves
+        List<Square> lastAskMovesDestinatinons = this.lastAskMoves
                     .values()
                     .stream()
                     .sorted()
