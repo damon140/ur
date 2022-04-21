@@ -1,19 +1,13 @@
 package com.damon140.ur;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class Counters {
+public class PlayArea {
 
     public static final int COUNTERS_PER_PLAYER = 7;
 
@@ -23,7 +17,7 @@ public class Counters {
 
     private Team currentTeam = Team.white; // white starts
 
-    public Counters() throws NoSuchAlgorithmException {
+    public PlayArea() throws NoSuchAlgorithmException {
         counters = new HashMap<>();
         completedCounters = new TreeMap<>();
         completedCounters.put(Team.black, 0);
@@ -98,4 +92,9 @@ public class Counters {
             completedCounters.put(team, 1 + completedCounters.get(team));
         }
     }
+
+    public boolean allCompleted(Team team) {
+        return PlayArea.COUNTERS_PER_PLAYER == this.completedCounters.get(team);
+    }
+
 }

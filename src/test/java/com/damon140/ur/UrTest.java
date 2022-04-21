@@ -1,5 +1,6 @@
 package com.damon140.ur;
 
+import com.damon140.ur.Ur.MoveResult;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
@@ -9,14 +10,15 @@ import java.util.stream.Collectors;
 import static com.damon140.ur.Square.*;
 import static com.damon140.ur.Team.black;
 import static com.damon140.ur.Team.white;
+import static com.damon140.ur.Ur.MoveResult.illegal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class UrTest {
 
-    private Deque<Boolean> moveResult = new ArrayDeque<>();
+    private Deque<MoveResult> moveResult = new ArrayDeque<>();
     private Map<Square, Square> lastAskMoves = Map.of();
-    private Counters counters;
+    private PlayArea playArea;
     private DrawnBoard drawnBoard;
     private Ur ur;
 
@@ -226,7 +228,18 @@ public class UrTest {
         thenMovesAre(white_run_on_2, white_run_on_4, shared_2, shared_4, shared_6, shared_8, off_board_finished);
     }
 
+    @Test
+    public void whiteWon() {
+        givenGame("""
+              |wwwwww
+              *...  w.
+              ...*....
+              *...  *.
+               bbbbbbb""");
 
+        whenMove(white, white_run_off_2, 1);
+        thenWhiteWon();
+    }
 
     // --------------------------------------
     // Given section
@@ -235,9 +248,9 @@ public class UrTest {
     public void givenNewGame()  {
         try {
             moveResult = new ArrayDeque<>();
-            counters = new Counters();
-            drawnBoard = new DrawnBoard(counters);
-            ur = new Ur(counters);
+            playArea = new PlayArea();
+            drawnBoard = new DrawnBoard(playArea);
+            ur = new Ur(playArea);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -246,9 +259,9 @@ public class UrTest {
     public void givenGame(String game) {
         try {
             moveResult = new ArrayDeque<>();
-            counters = DrawnBoard.parseCounters(game);
-            drawnBoard = new DrawnBoard(counters);
-            ur = new Ur(counters);
+            playArea = DrawnBoard.parseCounters(game);
+            drawnBoard = new DrawnBoard(playArea);
+            ur = new Ur(playArea);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -259,7 +272,7 @@ public class UrTest {
     // --------------------------------------
 
     private void whenMove(Team team, Square square, int i) {
-        boolean result = ur.moveCounter(team, square, i);
+        var result = ur.moveCounter(team, square, i);
         moveResult.add(result);
     }
 
@@ -275,35 +288,35 @@ public class UrTest {
     private void thenNoMovesAreLegal() {
         assertThat(this.lastAskMoves, is(Map.of()));
     }
+    private void thenMoveWasIllegal() {
+        assertThat(moveResult.peekLast(), is(illegal));
+    }
+
+    private void thenMoveWasLegal() {
+        assertThat(this.moveResult.peekLast(), is(MoveResult.valid));
+    }
 
     public void thenStateIsInitial() {
-        assertThat(counters.currentTeam(), is(white));
-        assertThat(counters.inPlayCount(), is(0));
-        assertThat(counters.completedCount(white), is(0));
-        assertThat(counters.completedCount(black), is(0));
+        assertThat(playArea.currentTeam(), is(white));
+        assertThat(playArea.inPlayCount(), is(0));
+        assertThat(playArea.completedCount(white), is(0));
+        assertThat(playArea.completedCount(black), is(0));
     }
 
     private void thenWhiteHasCounterAt(Square square) {
-        assertThat(counters.get(square), is(white));
+        assertThat(playArea.get(square), is(white));
     }
 
     private void thenBlackHasCounterAt(Square square) {
-        assertThat(counters.get(square), is(black));
+        assertThat(playArea.get(square), is(black));
     }
 
-    private void thenMoveWasIllegal() {
-        assertThat(moveResult.peekLast(), is(false));
-    }
 
     private void thenSmallBoardIs(String s) {
         String smallBoard = this.drawnBoard.horizontalSmallBoardStrings()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
-    }
-
-    private void thenMoveWasLegal() {
-        assertThat(this.moveResult.peekLast(), is(true));
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
@@ -325,14 +338,14 @@ public class UrTest {
     private void thenAllMovesWereLegal() {
         for (int i = 0; i < this.moveResult.size(); i++) {
           var r = this.moveResult.getFirst();
-          if (!r) {
+          if (r == illegal) {
               assertThat("Move [" + (i + 1) + "] was illegal", false, is(true));
           }
         }
     }
 
     private void thenWhiteCompletedCountIs(int count) {
-        assertThat(this.counters.completedCount(white), is(count));
+        assertThat(this.playArea.completedCount(white), is(count));
     }
 
     private void thenMovesAre(Square... destinationSquares) {
@@ -347,6 +360,10 @@ public class UrTest {
                 .toList();
 
         assertThat(lastAskMovesDestinatinons, is(sortedInput));
+    }
+
+    private void thenWhiteWon() {
+        assertThat(this.moveResult.peekLast(), is(MoveResult.gameWon));
     }
 
     // TODO: add to all test failings

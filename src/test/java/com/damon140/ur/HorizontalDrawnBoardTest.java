@@ -15,7 +15,7 @@ class DrawnBoardTest {
 
     @Test
     public void horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() throws NoSuchAlgorithmException {
-        Counters b = new Counters();
+        PlayArea b = new PlayArea();
         b.move(off_board_unstarted, white_run_on_1, white);
         b.move(off_board_unstarted, black_run_on_1, black);
         b.move(off_board_unstarted, off_board_finished, white);

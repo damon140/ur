@@ -17,16 +17,16 @@ public class ConsoleGame {
         new ConsoleGame().run();
     }
 
-    private final Counters counters;
+    private final PlayArea playArea;
     private final Ur ur;
     private final Dice dice;
     private final DrawnBoard drawnBoard;
     //private final UrTextPrinter printer;
 
     public ConsoleGame() throws NoSuchAlgorithmException {
-        this.counters = new Counters();
-        this.drawnBoard = new DrawnBoard(counters);
-        this.ur = new Ur(counters);
+        this.playArea = new PlayArea();
+        this.drawnBoard = new DrawnBoard(playArea);
+        this.ur = new Ur(playArea);
         this.dice = new Dice();
     }
 
@@ -41,10 +41,10 @@ public class ConsoleGame {
             List<String> gameLines = drawnBoard.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
 
             AtomicInteger index = new AtomicInteger(1);
-            Map<Square, Square> moves = ur.askMoves(counters.currentTeam(), roll);
+            Map<Square, Square> moves = ur.askMoves(playArea.currentTeam(), roll);
 
             List<String> instructionLines = new ArrayList<>();
-            instructionLines.add(counters.currentTeam() + "'s turn roll is: " + roll);
+            instructionLines.add(playArea.currentTeam() + "'s turn roll is: " + roll);
             moves.entrySet()
                     .stream()
                     .map(entry -> index.getAndIncrement() + " " + entry.getKey() + " -> " + entry.getValue())
