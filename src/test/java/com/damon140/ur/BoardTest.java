@@ -17,7 +17,7 @@ public class BoardTest {
     @Test
     public void constructor_givenString_thenBoard() throws NoSuchAlgorithmException {
 
-        PlayArea playArea = DrawnBoard.parseCounters("""
+        PlayArea playArea = DrawnBoard.parsePlayAreaFromHorizontal("""
                 wwww |ww
                 ...w  ..
                 ........

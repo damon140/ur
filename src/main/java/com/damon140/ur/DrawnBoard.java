@@ -13,15 +13,12 @@ public class DrawnBoard {
     public static final String COUNTER_START_SEPARATOR = "|";
     public static final String COUNTER_START_SEPARATOR_PATTERN = Pattern.quote(COUNTER_START_SEPARATOR);
 
-    public static PlayArea parseCounters(String game) throws NoSuchAlgorithmException {
-        // parse board
+    public static PlayArea parsePlayAreaFromHorizontal(String game) throws NoSuchAlgorithmException {
         Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
-        String whiteLine = deque.removeFirst();
-        String blackLine = deque.removeLast();
 
         PlayArea c = new PlayArea();
-        parseAndBuildCompletedCounters(blackLine, c, Team.black);
-        parseAndBuildCompletedCounters(whiteLine, c, Team.white);
+        parseAndBuildCompletedCounters(deque.removeFirst(), c, Team.white);
+        parseAndBuildCompletedCounters(deque.removeLast(), c, Team.black);
         addRowToCounters(0, deque.removeFirst(), c);
         addRowToCounters(1, deque.removeFirst(), c);
         addRowToCounters(2, deque.removeFirst(), c);

@@ -21,7 +21,6 @@ public class ConsoleGame {
     private final Ur ur;
     private final Dice dice;
     private final DrawnBoard drawnBoard;
-    //private final UrTextPrinter printer;
 
     public ConsoleGame() throws NoSuchAlgorithmException {
         this.playArea = new PlayArea();
@@ -44,7 +43,7 @@ public class ConsoleGame {
             Map<Square, Square> moves = ur.askMoves(playArea.currentTeam(), roll);
 
             List<String> instructionLines = new ArrayList<>();
-            instructionLines.add(playArea.currentTeam() + "'s turn roll is: " + roll);
+            instructionLines.add(playArea.currentTeam() + " rolls " + roll);
             moves.entrySet()
                     .stream()
                     .map(entry -> index.getAndIncrement() + " " + entry.getKey() + " -> " + entry.getValue())
@@ -71,8 +70,9 @@ public class ConsoleGame {
             }
 
             System.out.print("input: ");
+
+            // FIXME: add conosle and compter suppliers here
             String input = scanner.next();
-            //System.out.println("got " + input);
 
             if ("x".equals(input)) {
                 System.out.println("Done!!");

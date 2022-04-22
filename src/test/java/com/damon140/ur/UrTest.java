@@ -259,7 +259,7 @@ public class UrTest {
     public void givenGame(String game) {
         try {
             moveResult = new ArrayDeque<>();
-            playArea = DrawnBoard.parseCounters(game);
+            playArea = DrawnBoard.parsePlayAreaFromHorizontal(game);
             drawnBoard = new DrawnBoard(playArea);
             ur = new Ur(playArea);
         } catch (NoSuchAlgorithmException e) {
