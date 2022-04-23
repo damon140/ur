@@ -17,27 +17,35 @@ public class ConsoleGame {
         new ConsoleGame().run();
     }
 
-    private final PlayArea playArea;
+    private final Counters counters;
     private final Ur ur;
     private final Dice dice;
-    private final DrawnBoard drawnBoard;
+    private final HorizontalDrawnBoard horizontalDrawnBoard;
+    private final PlayerSetup playerSetup;
 
     public ConsoleGame() throws NoSuchAlgorithmException {
-        this.playArea = new PlayArea();
-        this.drawnBoard = new DrawnBoard(playArea);
-        this.ur = new Ur(playArea);
+        this.counters = new Counters();
+        this.horizontalDrawnBoard = new HorizontalDrawnBoard(counters);
+        this.ur = new Ur(counters);
         this.dice = new Dice();
+
+        this.scanner = new Scanner(System.in);
+        this.playerSetup = new PlayerSetup(scanner);
     }
 
     public void run() {
-        Scanner scanner = new Scanner(System.in);
+        Map<Team, MoveSupplier> moveSuppliers = Map.of(
+                white, playerSetup.getPlayer(white),
+                black, playerSetup.getPlayer(black));
+
+        // need a play method
 
         while (true) {
             System.out.println();
 
             int roll = dice.roll();
 
-            List<String> gameLines = drawnBoard.horizontalFullBoardStrings().stream().collect(Collectors.toCollection(ArrayList::new));
+            List<String> gameLines = horizontalDrawnBoard.fullBoard().stream().collect(Collectors.toCollection(ArrayList::new));
 
             AtomicInteger index = new AtomicInteger(1);
             Map<Square, Square> moves = ur.askMoves(playArea.currentTeam(), roll);
@@ -69,10 +77,8 @@ public class ConsoleGame {
                 continue; // skip turn
             }
 
-            System.out.print("input: ");
-
-            // FIXME: add conosle and compter suppliers here
-            String input = scanner.next();
+            // some player moves a counter
+            String input = moveSuppliers.get(ur.currentTeam()).choose(moves);
 
             if ("x".equals(input)) {
                 System.out.println("Done!!");
@@ -82,7 +88,8 @@ public class ConsoleGame {
             int moveIndex = Integer.parseInt(input);
             Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
 
-            ur.moveCounter(fromSquare, roll);
+            // FIXME: Damon need game won detection here
+            boolean result = ur.moveCounter(fromSquare, roll);
         }
     }
 

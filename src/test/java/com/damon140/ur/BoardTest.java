@@ -3,6 +3,7 @@ package com.damon140.ur;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import static com.damon140.ur.Square.*;
 import static com.damon140.ur.Team.black;

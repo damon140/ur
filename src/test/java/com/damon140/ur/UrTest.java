@@ -19,7 +19,7 @@ public class UrTest {
     private Deque<MoveResult> moveResult = new ArrayDeque<>();
     private Map<Square, Square> lastAskMoves = Map.of();
     private PlayArea playArea;
-    private DrawnBoard drawnBoard;
+    private HorizontalDrawnBoard horizontalDrawnBoard;
     private Ur ur;
 
     @Test
@@ -249,7 +249,7 @@ public class UrTest {
         try {
             moveResult = new ArrayDeque<>();
             playArea = new PlayArea();
-            drawnBoard = new DrawnBoard(playArea);
+            horizontalDrawnBoard = new HorizontalDrawnBoard(playArea);
             ur = new Ur(playArea);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
@@ -259,9 +259,9 @@ public class UrTest {
     public void givenGame(String game) {
         try {
             moveResult = new ArrayDeque<>();
-            playArea = DrawnBoard.parsePlayAreaFromHorizontal(game);
-            drawnBoard = new DrawnBoard(playArea);
-            ur = new Ur(playArea);
+            playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game);
+            horizontalDrawnBoard = new HorizontalDrawnBoard(playArea);
+            playArea = new PlayArea();
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -311,16 +311,23 @@ public class UrTest {
         assertThat(playArea.get(square), is(black));
     }
 
+    private void thenMoveWasIllegal() {
+        assertThat(moveResult.peekLast(), is(false));
+    }
 
     private void thenSmallBoardIs(String s) {
-        String smallBoard = this.drawnBoard.horizontalSmallBoardStrings()
+        String smallBoard = this.horizontalDrawnBoard.smallBoard()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
     }
 
+    private void thenMoveWasLegal() {
+        assertThat(this.moveResult.peekLast(), is(true));
+    }
+
     private void thenHorizontalFullBoardIs(String wantedBoard) {
-        String board = this.drawnBoard.horizontalFullBoardStrings()
+        String board = this.horizontalDrawnBoard.fullBoard()
                 .stream()
                 .map(String::trim)
                 .collect(Collectors.joining("\n"));
@@ -368,7 +375,7 @@ public class UrTest {
 
     // TODO: add to all test failings
     public void printBoard() {
-        this.drawnBoard.horizontalFullBoardStrings()
+        this.horizontalDrawnBoard.fullBoard()
                 .stream()
                 .map(String::trim)
                 .forEach(System.out::println);

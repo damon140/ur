@@ -11,7 +11,7 @@ import static com.damon140.ur.Team.white;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class DrawnBoardTest {
+class HorizontalDrawnBoardTest {
 
     @Test
     public void horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() throws NoSuchAlgorithmException {
@@ -21,8 +21,8 @@ class DrawnBoardTest {
         b.move(off_board_unstarted, off_board_finished, white);
         b.move(off_board_unstarted, off_board_finished, black);
 
-        DrawnBoard d = new DrawnBoard(b);
-        String string = d.horizontalFullBoardStrings().stream().collect(Collectors.joining("\n"));
+        HorizontalDrawnBoard d = new HorizontalDrawnBoard(b);
+        String string = d.fullBoard().stream().collect(Collectors.joining("\n"));
         assertThat(string, is("""
                                 wwwww |w
                                 *..w  *.

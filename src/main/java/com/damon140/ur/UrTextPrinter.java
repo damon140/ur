@@ -12,8 +12,8 @@ import static com.damon140.ur.Team.white;
 @AllArgsConstructor
 public class UrTextPrinter {
 
-    public static String drawVerticle(DrawnBoard board) {
-        List<List<DrawnBoard.BoardPart>> parts = board.verticalBoard();
+    public static String drawVerticle(HorizontalDrawnBoard board) {
+        List<List<HorizontalDrawnBoard.BoardPart>> parts = board.verticalBoard();
         return "";
     }
 
