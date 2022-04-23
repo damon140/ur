@@ -80,9 +80,6 @@ public class PlayArea {
     }
 
     public void move(Square fromSquare, Square newSquare, Team team) {
-        // FIXME: Damon add a bit here about collisions, that is known only
-        // to the counters, move boolean from above class
-
         counters.remove(fromSquare);
         if (newSquare != Square.off_board_finished) {
             counters.put(newSquare, team);

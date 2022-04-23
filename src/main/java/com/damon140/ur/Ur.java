@@ -31,9 +31,6 @@ public class Ur {
         return true;
     }
 
-    // FIXME: upgrade to an enum of results, ok, underrun, counter not at start, collision with own counter
-    // success, success_takes_other, over_run, collision_self, collision_other, illegal, game_won
-
     public enum MoveResult{ illegal, legal, gameOver };
 
     public MoveResult moveCounter(Square square, int count) {
@@ -88,6 +85,9 @@ public class Ur {
 
         return legal;
     }
+
+    // TODO: upgrade to object with properties for use by "AI"
+    // takes_other, rolls_again, safe
 
     public Map<Square, Square> askMoves(Team team, int roll) {
         Map<Square, Square> moves = new HashMap<>();
