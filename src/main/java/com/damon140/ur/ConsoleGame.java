@@ -79,7 +79,11 @@ public class ConsoleGame {
 
             if (0 == roll) {
                 ur.skipTurn(roll);
-                continue; // skip turn
+                continue; // skip turn due to zero
+            }
+
+            if (moves.isEmpty()) {
+                continue; // all moves blocked
             }
 
             // some player moves a counter
@@ -93,11 +97,10 @@ public class ConsoleGame {
             int moveIndex = Integer.parseInt(input);
             Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
 
-            // FIXME: Damon need game won detection here
             var result = ur.moveCounter(fromSquare, roll);
             if (result == Ur.MoveResult.gameOver) {
                 System.out.println("Game won by " + playArea.currentTeam());
-                continue;
+                break;
             }
         }
     }

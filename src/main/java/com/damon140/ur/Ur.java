@@ -41,7 +41,9 @@ public class Ur {
     }
 
     public MoveResult moveCounter(Team team, Square fromSquare, int count) {
-        // FIXMME: check correct team,
+        // FIXMME: check correct team
+
+
         if (playArea.allCountersStarted(team)) {
             return illegal; // can't add any more counters
         }

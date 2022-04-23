@@ -63,13 +63,11 @@ public class PlayArea {
                 .count();
         int finishedCounters = this.completedCounters.get(team);
 
-        return COUNTERS_PER_PLAYER - finishedCounters - (int) inProgressCounters;
+        return COUNTERS_PER_PLAYER - (finishedCounters + (int) inProgressCounters);
     }
 
     public boolean allStartedOrComplete(Team team) {
-        int completed = this.completedCount(team);
-        int inProgress = this.counters.size();
-        return COUNTERS_PER_PLAYER == completed + inProgress;
+        return 0 == this.unstartedCount(team);
     }
 
     public int inPlayCount(Team team) {
@@ -83,7 +81,7 @@ public class PlayArea {
 
     public void move(Square fromSquare, Square newSquare, Team team) {
         // FIXME: Damon add a bit here about collisions, that is known only
-        // to the counters
+        // to the counters, move boolean from above class
 
         counters.remove(fromSquare);
         if (newSquare != Square.off_board_finished) {

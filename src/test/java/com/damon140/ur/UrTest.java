@@ -204,6 +204,19 @@ public class UrTest {
     }
 
     @Test
+    public void askMoves_givenNoMoreCountes_thenNoOffboardSuggested() {
+        givenGame("""
+                    |w
+              ww.w  *.
+              wwb*wb..
+              b..b  *.
+              b    |bb
+              """);
+        whenAskMoves(white, 2);
+        thenMovesAre(shared_4, shared_7);
+    }
+
+    @Test
     public void noMovesForRoll() {
         // FIXME: Damon fix parsing, is not recognising as white all finished
         givenGame("""

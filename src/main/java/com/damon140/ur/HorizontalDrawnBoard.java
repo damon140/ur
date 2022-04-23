@@ -123,11 +123,14 @@ public class HorizontalDrawnBoard {
 
     public String countersLine(Team team) {
         int completed = playArea.completedCount(team);
-        int unstarted = PlayArea.COUNTERS_PER_PLAYER - playArea.inPlayCount(team) - completed;
+        int unstarted = (PlayArea.COUNTERS_PER_PLAYER - playArea.inPlayCount(team)) - completed;
         int padding = 1 + PlayArea.COUNTERS_PER_PLAYER - completed - unstarted;
 
         String teamCh = team.ch;
-        return teamCh.repeat(unstarted) + " ".repeat(padding-1) + HorizontalDrawnBoard.COUNTER_START_SEPARATOR + teamCh.repeat(completed);
+        return teamCh.repeat(unstarted)
+                + " ".repeat(padding-1)
+                + HorizontalDrawnBoard.COUNTER_START_SEPARATOR
+                + teamCh.repeat(completed);
     }
 
     public List<String> smallBoard() {
