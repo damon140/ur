@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static com.damon140.ur.Square.off_board_unstarted;
 import static com.damon140.ur.Ur.MoveResult.illegal;
-import static com.damon140.ur.Ur.MoveResult.valid;
+import static com.damon140.ur.Ur.MoveResult.legal;
 
 public class Ur {
 
@@ -35,10 +35,6 @@ public class Ur {
     // success, success_takes_other, over_run, collision_self, collision_other, illegal, game_won
 
     public enum MoveResult{ illegal, legal, gameOver };
-
-    public boolean moveCounter(Square square, int count) {
-        return moveCounter(counters.currentTeam(), square, count);
-    }
 
     public MoveResult moveCounter(Square square, int count) {
         return moveCounter(playArea.currentTeam(), square, count);
@@ -78,25 +74,29 @@ public class Ur {
         }
 
         // move counter
-        counters.move(fromSquare, newSquare, team);
+        playArea.move(fromSquare, newSquare, team);
 
-        if (newSquare.dontRollAgain()) {
-            counters.swapTeam();
+        if (playArea.allCompleted(team)) {
+            return MoveResult.gameOver;
         }
 
-        return true;
+        if (newSquare.dontRollAgain()) {
+            playArea.swapTeam();
+        }
+
+        return legal;
     }
 
     public Map<Square, Square> askMoves(Team team, int roll) {
         Map<Square, Square> moves = new HashMap<>();
 
-        if (!this.counters.allStartedOrComplete(team)) {
+        if (!this.playArea.allStartedOrComplete(team)) {
             // start a new counter
             moves.put(off_board_unstarted, canUseOrNull(team, off_board_unstarted.calculateNewSquare(team, roll)));
         }
 
         // current counters
-        this.counters.countersForTeam(team)
+        this.playArea.countersForTeam(team)
                 .forEach(startSquare -> {
                     Square endSquare = canUseOrNull(team, startSquare.calculateNewSquare(team, roll));
                     moves.put(startSquare, endSquare);
@@ -114,11 +114,11 @@ public class Ur {
 
         Square square = squareOpt.get();
         // if empty
-        if (!this.counters.occupied(square)) {
+        if (!this.playArea.occupied(square)) {
             return square;
         }
         // or other counter and not a safe square
-        Team occupantTeam = this.counters.get(square);
+        Team occupantTeam = this.playArea.get(square);
         if (occupantTeam != team && square.isSafeSquare()) {
             return square;
         }

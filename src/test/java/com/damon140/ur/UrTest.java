@@ -261,7 +261,7 @@ public class UrTest {
             moveResult = new ArrayDeque<>();
             playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game);
             horizontalDrawnBoard = new HorizontalDrawnBoard(playArea);
-            playArea = new PlayArea();
+            ur = new Ur(playArea);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -293,7 +293,7 @@ public class UrTest {
     }
 
     private void thenMoveWasLegal() {
-        assertThat(this.moveResult.peekLast(), is(MoveResult.valid));
+        assertThat(this.moveResult.peekLast(), is(MoveResult.legal));
     }
 
     public void thenStateIsInitial() {
@@ -311,19 +311,11 @@ public class UrTest {
         assertThat(playArea.get(square), is(black));
     }
 
-    private void thenMoveWasIllegal() {
-        assertThat(moveResult.peekLast(), is(false));
-    }
-
     private void thenSmallBoardIs(String s) {
         String smallBoard = this.horizontalDrawnBoard.smallBoard()
                 .stream()
                 .collect(Collectors.joining("\n"));
         assertThat(s, is(smallBoard));
-    }
-
-    private void thenMoveWasLegal() {
-        assertThat(this.moveResult.peekLast(), is(true));
     }
 
     private void thenHorizontalFullBoardIs(String wantedBoard) {
@@ -370,7 +362,7 @@ public class UrTest {
     }
 
     private void thenWhiteWon() {
-        assertThat(this.moveResult.peekLast(), is(MoveResult.gameWon));
+        assertThat(this.moveResult.peekLast(), is(MoveResult.gameOver));
     }
 
     // TODO: add to all test failings

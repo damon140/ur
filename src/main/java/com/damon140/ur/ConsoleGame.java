@@ -1,5 +1,7 @@
 package com.damon140.ur;
 
+import com.damon140.ur.PlayerSetup.MoveSupplier;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +11,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ConsoleGame {
+import static com.damon140.ur.Team.black;
+import static com.damon140.ur.Team.white;
 
+public class ConsoleGame {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         System.out.println("Command line Ur");
         new ConsoleGame().run();
     }
 
-    private final Counters counters;
+    private final Scanner scanner;
+    private final PlayArea playArea;
     private final Ur ur;
     private final Dice dice;
     private final HorizontalDrawnBoard horizontalDrawnBoard;
     private final PlayerSetup playerSetup;
 
     public ConsoleGame() throws NoSuchAlgorithmException {
-        this.counters = new Counters();
-        this.horizontalDrawnBoard = new HorizontalDrawnBoard(counters);
-        this.ur = new Ur(counters);
+        this.playArea = new PlayArea();
+        this.horizontalDrawnBoard = new HorizontalDrawnBoard(playArea);
+        this.ur = new Ur(playArea);
         this.dice = new Dice();
 
         this.scanner = new Scanner(System.in);
@@ -89,7 +94,11 @@ public class ConsoleGame {
             Square fromSquare = moves.keySet().stream().toList().get(moveIndex - 1);
 
             // FIXME: Damon need game won detection here
-            boolean result = ur.moveCounter(fromSquare, roll);
+            var result = ur.moveCounter(fromSquare, roll);
+            if (result == Ur.MoveResult.gameOver) {
+                System.out.println("Game won by " + playArea.currentTeam());
+                continue;
+            }
         }
     }
 

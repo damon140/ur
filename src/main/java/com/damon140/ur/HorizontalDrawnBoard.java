@@ -23,19 +23,19 @@ public class HorizontalDrawnBoard {
         String whiteLine = deque.removeFirst();
         String blackLine = deque.removeLast();
 
-        Counters c = new Counters();
+        PlayArea c = new PlayArea();
 
         parseAndBuildCompletedCounteres(blackLine, c, Team.black);
         parseAndBuildCompletedCounteres(whiteLine, c, Team.white);
 
         // TODO: tidy & shrink
-        List<Square> topBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[0]).toList();
+        List<Square> topBoard = Arrays.stream(HORIZONTAL_BOARD[0]).toList();
         String topHozRow = deque.removeFirst();
 
-        List<Square> midBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[1]).toList();
+        List<Square> midBoard = Arrays.stream(HORIZONTAL_BOARD[1]).toList();
         String midHozRow = deque.removeFirst();
 
-        List<Square> botBoard = Arrays.stream(DrawnBoard.HORIZONTAL_BOARD[2]).toList();
+        List<Square> botBoard = Arrays.stream(HORIZONTAL_BOARD[2]).toList();
         String botHozRow = deque.removeFirst();
 
         extracted(topBoard, topHozRow, c);
@@ -45,11 +45,11 @@ public class HorizontalDrawnBoard {
         return c;
     }
 
-    private static void extracted(List<Square> maybeSparseBoard, String row, Counters counters) {
+    private static void extracted(List<Square> maybeSparseBoard, String row, PlayArea playArea) {
         List<Square> boardRow = maybeSparseBoard.stream().filter(Objects::nonNull).toList();
         List<String> chars = row.chars().mapToObj(Character::toString)
                 .filter(c -> {
-                    boolean equals = DrawnBoard.BoardPart.space.isChar(c);
+                    boolean equals = HorizontalDrawnBoard.BoardPart.space.isChar(c);
                     return !equals;
                 })
                 .toList();
@@ -59,7 +59,7 @@ public class HorizontalDrawnBoard {
                 .forEach(e -> {
                     Square square = e.getKey();
                     Team team = Team.fromCh(e.getValue());
-                    counters.move(off_board_unstarted, square, team);
+                    playArea.move(off_board_unstarted, square, team);
                 });
     }
 
@@ -69,7 +69,7 @@ public class HorizontalDrawnBoard {
     }
 
 
-    private static void parseAndBuildCompletedCounteres(String blackLine, Counters c, Team white) {
+    private static void parseAndBuildCompletedCounteres(String blackLine, PlayArea c, Team white) {
         int result = 0;
         ArrayDeque<String> deque = Arrays.stream(blackLine.replaceAll(" ", "").split(COUNTER_START_SEPARATOR_PATTERN))
                 .collect(Collectors.toCollection(ArrayDeque::new));
@@ -110,11 +110,8 @@ public class HorizontalDrawnBoard {
 
     final PlayArea playArea;
 
-    public DrawnBoard(PlayArea playArea) {
+    public HorizontalDrawnBoard(PlayArea playArea) {
         this.playArea = playArea;
-    public HorizontalDrawnBoard(Counters counters) {
-        this.counters = counters;
-
     }
 
     public List<String> fullBoard() {

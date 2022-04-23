@@ -14,6 +14,26 @@ import static org.hamcrest.Matchers.is;
 class HorizontalDrawnBoardTest {
 
     @Test
+    public void constructor_givenString_thenBoard() throws NoSuchAlgorithmException {
+
+        PlayArea playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal("""
+                wwww |ww
+                ...w  ..
+                ........
+                ..b.  ..
+                bbbbb|b""");
+
+        assertThat(playArea.completedCount(white), is(2));
+        assertThat(playArea.completedCount(black), is(1));
+
+        assertThat(playArea.get(white_run_on_1), is(white));
+        assertThat(playArea.get(black_run_on_2), is(black));
+
+        assertThat(playArea.unstartedCount(white), is(4));
+        assertThat(playArea.unstartedCount(black), is(5));
+    }
+
+    @Test
     public void horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() throws NoSuchAlgorithmException {
         PlayArea b = new PlayArea();
         b.move(off_board_unstarted, white_run_on_1, white);
