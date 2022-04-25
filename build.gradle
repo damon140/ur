@@ -1,3 +1,8 @@
+
+
+// Javascript transpile w/ jsweet
+// https://github.com/lgrignon/jsweet-gradle-plugin
+
 plugins {
     id 'java'
     id "application"

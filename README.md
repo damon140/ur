@@ -1,16 +1,17 @@
 # ur
 
 This is a simple implementation of the Royal Game of Ur, which is an ancient game that was
-played about 5,000 years ago in the Sumerian/ Arkadian empire. 
+played about 5,000 years ago in the Sumerian/ Arkadian empire
+[see history on youtube.](https://www.youtube.com/watch?v=d2lJUOv0hLA)
 
-I made it to explore the game, use Java 17 and write a tiny game from scratch
-which I haven't done in 30 years, probably.
+I made it to explore the game, use Java 17 and code a tiny game from scratch
+which I haven't done in 30 years, since 8 bit days.
 
 See this
 [web site](https://royalur.net/)
 and
 [git repository](https://github.com/Sothatsit/RoyalUrClient)
-for a fancy implementation.
+for fancier work than here.
 
 ## TODO List
 
@@ -21,7 +22,7 @@ for a fancy implementation.
 
 ## Done List
 
-* README blubs
+* ~~README blubs~~
 * ~~computer can play itself~~
 * ~~Console game~~
 * ~~game engine implemented~~
