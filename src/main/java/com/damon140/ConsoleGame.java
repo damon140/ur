@@ -1,5 +1,6 @@
-package com.damon140.ur;
+package com.damon140;
 
+import com.damon140.ur.*;
 import com.damon140.ur.PlayerSetup.MoveSupplier;
 
 import java.security.NoSuchAlgorithmException;
@@ -42,8 +43,6 @@ public class ConsoleGame {
         Map<Team, MoveSupplier> moveSuppliers = Map.of(
                 white, playerSetup.getPlayer(white),
                 black, playerSetup.getPlayer(black));
-
-        // need a play method
 
         while (true) {
             System.out.println();

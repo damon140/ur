@@ -1,0 +1,25 @@
+plugins {
+    id 'org.jetbrains.kotlin.js' version '1.5.32'
+}
+
+group = 'com.damon140.web'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+kotlin {
+    js(IR) {
+        binaries.executable()
+        browser {
+            commonWebpackConfig {
+                cssSupport.enabled = true
+            }
+        }
+    }
+}
