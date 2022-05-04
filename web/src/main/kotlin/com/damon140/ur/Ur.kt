@@ -64,7 +64,7 @@ class Ur(private val playArea: PlayArea) {
     // TODO: upgrade to object with properties for use by "AI"
     // takes_other, rolls_again, safe
     fun askMoves(team: Team, roll: Int): Map<Square, Square?> {
-        val moves: MutableMap<Square, Square?> = HashMap()
+        val moves: MutableMap<Square, Square> = HashMap()
         if (!playArea.allStartedOrComplete(team)) {
             // start a new counter
             moves[Square.off_board_unstarted] =
