@@ -11,6 +11,10 @@ repositories {
 
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+
+//    implementation(kotlin("stdlib-js"))
+//    implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.5")
+
 }
 
 kotlin {

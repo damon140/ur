@@ -1,31 +1,33 @@
 import com.damon140.ur.Dice
+import kotlinx.browser.document
+import org.w3c.dom.HTMLInputElement
 
 fun main() {
     console.log("Hello, ${greet()} from the console!!")
 
     val dice = Dice()
 
-    console.log("rolled " + dice.roll())
+    //val e = HTMLParagraphElement()
+    //val d = document.body!!.get
 
-    console.log("rolled " + dice.roll())
+    val email = document.getElementById("email") as HTMLInputElement
+    email.value = "hadi@jetbrains.com"
 
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
-
-    console.log("rolled " + dice.roll())
+    // TODO: makes weird import error
+//    import kotlinx.html.*
+//    import kotlinx.html.dom.*
+//    document.body!!.append.div {
+//        h1 {
+//            +"Welcome to Kotlin/JS!"
+//        }
+//        p {
+//            +"Fancy joining this year's "
+//            a("https://kotlinconf.com/") {
+//                +"KotlinConf"
+//            }
+//            +"?"
+//        }
+//    }
 }
-
-// https://kotlinlang.org/docs/browser-api-dom.html#interaction-with-the-dom
 
 fun greet() = "world"
