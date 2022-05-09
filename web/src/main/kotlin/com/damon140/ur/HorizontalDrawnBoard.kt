@@ -47,8 +47,9 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             l.map { square ->
                 if (null == square) {
                     return@map BoardPart.space
+                } else {
+                    return@map BoardPart.from(square, playArea.get(square))
                 }
-                BoardPart.from(square, playArea.get(square)!!)
             }.toList()
         }.toList()
     }
@@ -61,7 +62,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         }
 
         companion object {
-            fun from(square: Square, team: Team): BoardPart {
+            fun from(square: Square, team: Team?): BoardPart {
                 // need teams first so that we draw a w in precedence to a * or .
                 if (Team.white === team) {
                     return white
