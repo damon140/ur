@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.damon140.ur.Square.*;
+import static com.damon140.ur.Team.*;
 
 public class HorizontalDrawnBoard {
 
@@ -20,13 +21,16 @@ public class HorizontalDrawnBoard {
 
     public static PlayArea parsePlayAreaFromHorizontal(String game) throws NoSuchAlgorithmException {
         Deque<String> deque = Arrays.stream(game.split("\n")).collect(Collectors.toCollection(ArrayDeque::new));
+        assertLineCount(white, deque);
+        assertLineCount(black, deque);
+
         String whiteLine = deque.removeFirst();
         String blackLine = deque.removeLast();
 
         PlayArea c = new PlayArea();
 
-        parseAndBuildCompletedCounteres(blackLine, c, Team.black);
-        parseAndBuildCompletedCounteres(whiteLine, c, Team.white);
+        parseAndBuildCompletedCounteres(blackLine, c, black);
+        parseAndBuildCompletedCounteres(whiteLine, c, white);
 
         // TODO: tidy & shrink
         List<Square> topBoard = Arrays.stream(HORIZONTAL_BOARD[0]).toList();
@@ -45,6 +49,15 @@ public class HorizontalDrawnBoard {
         return c;
     }
 
+    private static void assertLineCount(Team team, Deque<String> deque) {
+        var matchChar = team.ch.codePointAt(0);
+        if (PlayArea.COUNTERS_PER_PLAYER != deque.stream()
+                .mapToLong(l -> l.codePoints().filter(c -> c == matchChar).count())
+                .sum()) {
+            throw new IllegalArgumentException("Wrong number of counters for " + team.name());
+        }
+    }
+
     private static void extracted(List<Square> maybeSparseBoard, String row, PlayArea playArea) {
         List<Square> boardRow = maybeSparseBoard.stream().filter(Objects::nonNull).toList();
         List<String> chars = row.chars().mapToObj(Character::toString)
@@ -55,10 +68,10 @@ public class HorizontalDrawnBoard {
                 .toList();
         Map<Square, String> topRow = zipToMap(boardRow, chars);
         topRow.entrySet().stream()
-                .filter(e -> Team.isTeamChar(e.getValue()))
+                .filter(e -> isTeamChar(e.getValue()))
                 .forEach(e -> {
                     Square square = e.getKey();
-                    Team team = Team.fromCh(e.getValue());
+                    Team team = fromCh(e.getValue());
                     playArea.move(off_board_unstarted, square, team);
                 });
     }
@@ -69,12 +82,21 @@ public class HorizontalDrawnBoard {
     }
 
 
-    private static void parseAndBuildCompletedCounteres(String blackLine, PlayArea c, Team white) {
-        int result = 0;
-        ArrayDeque<String> deque = Arrays.stream(blackLine.replaceAll(" ", "").split(COUNTER_START_SEPARATOR_PATTERN))
-                .collect(Collectors.toCollection(ArrayDeque::new));
+    private static void parseAndBuildCompletedCounteres(String counterLine, PlayArea c, Team white) {
 
-        // no completed counters are not started
+        if (!counterLine.contains(COUNTER_START_SEPARATOR)) {
+            throw new IllegalArgumentException("Missing counter separator " + COUNTER_START_SEPARATOR);
+        }
+
+        int result = 0;
+        ArrayDeque<String> deque = Arrays.stream(counterLine.replaceAll(" ", "").split(COUNTER_START_SEPARATOR_PATTERN))
+                .collect(Collectors.toCollection(ArrayDeque::new));
+        if (deque.isEmpty()) {
+            // no counters are off-board, all on board
+            return;
+        }
+
+        // none completed, counters are not started
         if (1 != deque.size()) {
             result = deque.getLast().length();
         }
@@ -116,8 +138,8 @@ public class HorizontalDrawnBoard {
 
     public List<String> fullBoard() {
         Deque<String> lines = new ArrayDeque<>(smallBoard());
-        lines.addFirst(countersLine(Team.white));
-        lines.addLast(countersLine(Team.black));
+        lines.addFirst(countersLine(white));
+        lines.addLast(countersLine(black));
         return lines.stream().toList();
     }
 

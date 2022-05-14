@@ -1,6 +1,7 @@
 package com.damon140.ur
 
 import com.damon140.ur.Square.*
+import com.damon140.ur.Team.*
 
 class HorizontalDrawnBoard(playArea: PlayArea) {
     val playArea: PlayArea
@@ -9,10 +10,13 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         this.playArea = playArea
     }
 
+
+
+
     fun fullBoard(): List<String> {
         val lines: ArrayDeque<String> = ArrayDeque(smallBoard())
-        lines.addFirst(countersLine(Team.white))
-        lines.addLast(countersLine(Team.black))
+        lines.addFirst(countersLine(white))
+        lines.addLast(countersLine(black))
         return lines.toList()
     }
 
@@ -81,13 +85,17 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         const val COUNTER_START_SEPARATOR = "|"
 
         fun parsePlayAreaFromHorizontal(game: String): PlayArea {
-            val deque: ArrayDeque<String> = ArrayDeque(game.split("\n").toList())
+            val lines = game.split("\n").toList()
+            assertLineCount(white, lines)
+            assertLineCount(black, lines)
+
+            val deque: ArrayDeque<String> = ArrayDeque(lines)
 
             val whiteLine: String = deque.removeFirst()
             val blackLine: String = deque.removeLast()
             val c = PlayArea()
-            parseAndBuildCompletedCounteres(blackLine, c, Team.black)
-            parseAndBuildCompletedCounteres(whiteLine, c, Team.white)
+            parseAndBuildCompletedCounters(blackLine, c, black)
+            parseAndBuildCompletedCounters(whiteLine, c, white)
 
             // TODO: tidy & shrink
             val topBoard: List<Square?> = HORIZONTAL_BOARD[0].toList()
@@ -99,7 +107,18 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             extracted(topBoard, topHozRow, c)
             extracted(midBoard, midHozRow, c)
             extracted(botBoard, botHozRow, c)
+
             return c
+        }
+
+        private fun assertLineCount(team: Team, deque: List<String>) {
+            val matchChar = team.ch.first();
+            require(PlayArea.COUNTERS_PER_PLAYER == deque
+                .map { l: String ->
+                    l.toList().filter { c -> c.equals(matchChar) }.size
+                }
+                .sum()
+            ) { "Wrong number of counters for " + team.name }
         }
 
         private fun extracted(maybeSparseBoard: List<Square?>, row: String, playArea: PlayArea) {
@@ -119,15 +138,32 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         }
 
         fun <K, V> zipToMap(keys: List<K>, values: List<V>): Map<K, V> {
-            return (0..keys.size)
+            if (keys.size < values.size) {
+                throw Exception("keys list too small");
+            }
+            if (keys.size > values.size) {
+                throw Exception("values list too small");
+            }
+
+            if (keys.size != values.size) {
+                throw Exception("size mismach");
+            }
+
+            return (0..(keys.size - 1))
                 .map {keys.get(it) to values.get(it)}
                 .toMap()
         }
 
-        private fun parseAndBuildCompletedCounteres(blackLine: String, c: PlayArea, white: Team) {
+        private fun parseAndBuildCompletedCounters(line: String, c: PlayArea, white: Team) {
+            require(line.contains(COUNTER_START_SEPARATOR)) { "Missing counter separator $COUNTER_START_SEPARATOR" }
+
             var result = 0
+            if (!line.contains(COUNTER_START_SEPARATOR)) {
+                throw Exception("No separator " + COUNTER_START_SEPARATOR);
+            }
+
             val deque: ArrayDeque<String> = ArrayDeque(
-                blackLine.replace(" ", "").split(
+                line.replace(" ", "").split(
                     COUNTER_START_SEPARATOR
                 ))
 
@@ -135,8 +171,8 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             if (1 != deque.size) {
                 result = deque.last().length
             }
-            (0..result)
-                .forEach { x -> c.move(off_board_unstarted, off_board_finished, white) }
+            (0..(result- 1))
+                .forEach { _ -> c.move(off_board_unstarted, off_board_finished, white) }
         }
 
         protected val VERTICAL_BOARD: Array<Array<Square?>> = arrayOf(

@@ -60,12 +60,14 @@ class Ur(private val playArea: PlayArea) {
         if (newSquare.dontRollAgain()) {
             playArea.swapTeam()
         }
+        console.log("after move current team is " + playArea.currentTeam().name)
+
         return MoveResult.legal
     }
 
     // TODO: upgrade to object with properties for use by "AI"
     // takes_other, rolls_again, safe
-    fun askMoves(team: Team, roll: Int): Map<Square, Square?> {
+    fun askMoves(team: Team, roll: Int): Map<Square, Square> {
         val moves: MutableMap<Square, Square> = HashMap()
         if (!playArea.allStartedOrComplete(team)) {
             // start a new counter

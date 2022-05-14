@@ -194,13 +194,13 @@ public class UrTest {
     @Test
     public void offBoardMove() {
         givenGame("""
-                wwwww
+              |wwwwww
               *...  w.
               ...*....
-              *...  *.
-               bbbbbbb""");
+              *...  b.
+              |bbbbbb""");
         whenAskMoves(white, 1);
-        thenMovesAre(white_run_on_1, off_board_finished);
+        thenMovesAre(off_board_finished);
     }
 
     @Test
@@ -218,7 +218,6 @@ public class UrTest {
 
     @Test
     public void noMovesForRoll() {
-        // FIXME: Damon fix parsing, is not recognising as white all finished
         givenGame("""
               |wwwwww
               *...  w.
@@ -232,11 +231,11 @@ public class UrTest {
     @Test
     public void manyMovesForWhite() {
         givenGame("""
-              
+              |
               .w.w  w.
               w.w.w.w.
               *...  *.
-               bbbbbbb""");
+              bbbbbbb|""");
         whenAskMoves(white, 1);
         thenMovesAre(white_run_on_2, white_run_on_4, shared_2, shared_4, shared_6, shared_8, off_board_finished);
     }
@@ -248,7 +247,7 @@ public class UrTest {
               *...  w.
               ...*....
               *...  *.
-               bbbbbbb""");
+              bbbbbbb|""");
 
         whenMove(white, white_run_off_2, 1);
         thenWhiteWon();
