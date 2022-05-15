@@ -66,13 +66,15 @@ public class WebGame() {
             if (isCallBack) {
                 roll = humansRoll;
             } else {
-                roll = dice.roll();
+                // FIXME: human rolls zero bug, hack and try
+                //roll = dice.roll();
+                // calculates a move for zero roll, a bug
+                roll = 0;
+
                 urView.clearLastChosen()
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
-
-            // human rolled zero bug
 
             val smallBoard: List<String> = horizontalDrawnBoard.smallBoard()
             urView.updateWhiteCounters(horizontalDrawnBoard.countersLine(Team.white))
