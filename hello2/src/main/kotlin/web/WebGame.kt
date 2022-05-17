@@ -14,8 +14,6 @@ public class WebGame() {
     private var playerSetup: PlayerSetup
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier>
 
-
-
     init {
         this.dice = Dice()
         console.log("rolled " + dice.roll())
@@ -66,22 +64,27 @@ public class WebGame() {
             if (isCallBack) {
                 roll = humansRoll;
             } else {
-                // FIXME: human rolls zero bug, hack and try
-                //roll = dice.roll();
-                // calculates a move for zero roll, a bug
-                roll = 0;
-
+                roll = dice.roll();
                 urView.clearLastChosen()
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
             val smallBoard: List<String> = horizontalDrawnBoard.smallBoard()
-            urView.updateWhiteCounters(horizontalDrawnBoard.countersLine(Team.white))
-            urView.updateBlackCounters(horizontalDrawnBoard.countersLine(Team.black))
-            urView.updateBoard(smallBoard.get(0), smallBoard.get(1), smallBoard.get(2))
+
+            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
+
+            urView.updateWhiteCounters(horizontalDrawnBoard.countersLine(Team.white), playArea.completedCount(Team.white), playArea.unstartedCount(Team.white))
+            urView.updateBlackCounters(horizontalDrawnBoard.countersLine(Team.black), playArea.completedCount(Team.black), playArea.unstartedCount(Team.black))
+            urView.updateBoard(smallBoard.get(0), smallBoard.get(1), smallBoard.get(2), vertBoard)
             urView.updateInstructions(currentTeam, roll, moves) {
-                playUr(roll, true)
+                if (0 == roll || moves.isEmpty()) {
+                    // skip processing of human roll, nothing to do
+                    playUr(roll, false)
+                } else {
+                    // regular turn
+                    playUr(roll, true)
+                }
             }
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!;
@@ -104,9 +107,7 @@ public class WebGame() {
             }
 
             if (moves.isEmpty()) {
-                // FIXME: need to change turn owner
-                // FIXME: bug with taking in list of moves is present
-                // FIXME: double white move bug is present
+                ur.skipTurn(roll);
                 continue;
             }
 
@@ -118,6 +119,8 @@ public class WebGame() {
             val fromSquare: Square = moves.keys.toList()[moveIndex - 1];
 
             var result = ur.moveCounter(fromSquare, roll);
+
+            // FIXME: game over bug here for black
             if (result == Ur.MoveResult.gameOver) {
                 //System.out.println("Game won by " + playArea.currentTeam());
                 // TODO: add game alert here

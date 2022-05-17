@@ -41,6 +41,16 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             .toList()
     }
 
+    fun verticleBoard2(): List<String> {
+        return board(VERTICAL_BOARD)
+            .map { l ->
+                l.toList()
+                    .map { b -> b.ch }
+                    .joinToString("")
+            }
+            .toList()
+    }
+
     // FIXME: Damon move to new class
     fun verticalBoard(): List<List<BoardPart>> {
         return board(VERTICAL_BOARD)

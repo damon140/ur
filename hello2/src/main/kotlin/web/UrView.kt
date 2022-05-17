@@ -11,6 +11,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLLIElement
 import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.HTMLUListElement
+import org.w3c.dom.events.Event
 
 public class UrView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
@@ -20,19 +21,40 @@ public class UrView(pageObject: UrPageObject) {
         this.pageObject = pageObject
     }
 
-    fun updateWhiteCounters(line: String) {
+    /*
+
+    white counters div     board di      black counters div
+      top div               8 divs
+        ol started          of spans
+      bot div
+        ol fin
+     */
+
+
+    fun updateWhiteCounters(line: String, unstarted: Int, completed: Int) {
+        // iteration 1
         pageObject.findWhiteCountersDiv().innerHTML = createHTML().p {
             +line
         }
+
+        // iteration 2
+        pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
+        pageObject.findWhiteFinished().innerHTML = "<li>w</li>".repeat(completed)
     }
 
-    fun updateBlackCounters(line: String) {
+    fun updateBlackCounters(line: String, unstarted: Int, completed: Int) {
+        // iteration 1
         pageObject.findBlackCountersDiv().innerHTML = createHTML().p {
             +line
         }
+
+        // iteration 2
+        pageObject.findBlackUnstarted().innerHTML = "<li>b</li>".repeat(unstarted)
+        pageObject.findBlackFinished().innerHTML = "<li>b</li>".repeat(completed)
     }
 
-    fun updateBoard(line1: String, line2: String, line3: String) {
+    fun updateBoard(line1: String, line2: String, line3: String, vertBoard: List<String>) {
+        // iteration 1
         pageObject.findBoardDiv().innerHTML = createHTML().div {
             p {
                 +line1
@@ -44,6 +66,13 @@ public class UrView(pageObject: UrPageObject) {
                 +line3
             }
         }
+
+        // iteration 2
+        console.log("Vert board:")
+        console.log(vertBoard.joinToString("\n"))
+
+        // FIXME: Damon drawn in new div here
+        // "<span>X</span"
     }
 
     fun clearLastChosen() {
@@ -81,25 +110,50 @@ public class UrView(pageObject: UrPageObject) {
         val ul = document.createElement("ul") as HTMLUListElement
         instructionsDiv.appendChild(ul);
 
-        for ((index, entry) in moves.entries.withIndex()) {
-            val li = document.createElement("li") as HTMLLIElement
-
-            li.innerHTML = createHTML().span {
-                +("" + (1 + index) + " - " + entry.key + " to " + entry.value)
-            }
-            ul.appendChild(li)
-
-            val button = document.createElement("button") as HTMLButtonElement
-            button.innerHTML = "Go"
-            button.addEventListener("click", {
-                console.log("Clicked on button!")
-                setLastChosen((index + 1).toString())
-
-                // run continue function here
+        if (0 == roll) {
+            makeButton("You rolled zero, can't move, bummer!!", ul, "Go") {
                 continueFunction();
-            })
+            }
+        } else if (moves.isEmpty()) {
+            makeButton("No legal moves, bummer!!", ul, "Go") {
+                continueFunction();
+            }
+        } else {
+            for ((index, entry) in moves.entries.withIndex()) {
+                val message = "" + (1 + index) + " - " + entry.key + " to " + entry.value
 
-            li.prepend(button)
+                val callback: (Event) -> Unit = {
+                    console.log("Clicked on button!")
+                    setLastChosen((index + 1).toString())
+
+                    // run continue function here
+                    continueFunction();
+                }
+                val buttonText = "Go";
+
+                makeButton(message, ul, buttonText, callback)
+            }
         }
+    }
+
+    private fun makeButton(
+        message: String,
+        ul: HTMLUListElement,
+        buttonText: String,
+        callback: (Event) -> Unit
+    ) {
+        val li = document.createElement("li") as HTMLLIElement
+
+        li.innerHTML = createHTML().span {
+
+            +message
+        }
+        ul.appendChild(li)
+
+        val button = document.createElement("button") as HTMLButtonElement
+
+        button.innerHTML = buttonText
+        button.addEventListener("click", callback)
+        li.prepend(button)
     }
 }

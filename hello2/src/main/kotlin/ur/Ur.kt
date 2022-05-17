@@ -69,6 +69,10 @@ class Ur(private val playArea: PlayArea) {
     // takes_other, rolls_again, safe
     fun askMoves(team: Team, roll: Int): Map<Square, Square> {
         val moves: MutableMap<Square, Square> = HashMap()
+        if (0 == roll) {
+            return moves
+        }
+
         if (!playArea.allStartedOrComplete(team)) {
             // start a new counter
 

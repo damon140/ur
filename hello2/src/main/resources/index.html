@@ -9,5 +9,60 @@
 <div id="root"></div>
 <div id="damon1"></div>
 <div id="damon2"></div>
+
+<style>
+    div#white-counters2 {
+        display: inline-block;
+        background-color: lightblue;
+    }
+    div#board-spans {
+        display: inline-block;
+        background-color: lightyellow;
+    }
+    div#black-counters2 {
+        display: inline-block;
+        background-color: lightgreen;
+    }
+</style>
+<!--
+    white counters div     board di      black counters div
+      top div               8 divs
+        ol started          of spans
+      bot div
+        ol fin
+-->
+<!-- TODO: draw w/ Kotlin HTML DSL -->
+<div id="play-area-wrapper">
+    <div id="white-counters2">
+        <ul id="white-unstarted">
+            <li>w</li>
+            <li>w</li>
+        </ul>
+        <ul id="white-finished">
+            <li>w</li>
+        </ul>
+    </div>
+    <div id="board-spans">
+        <div id="board-spans1"></div>
+        <div id="board-spans2"></div>
+        <div id="board-spans3"></div>
+        <div id="board-spans4"></div>
+        <div id="board-spans5"></div>
+        <div id="board-spans6"></div>
+        <div id="board-spans7"></div>
+        <div id="board-spans8"></div>
+    </div>
+    <div id="black-counters2">
+        <ul id="black-unstarted">
+            <li>w</li>
+            <li>w</li>
+        </ul>
+        <ul id="black-finished">
+            <li>w</li>
+        </ul>
+    </div>
+
+</div>
+
 </body>
 </html>

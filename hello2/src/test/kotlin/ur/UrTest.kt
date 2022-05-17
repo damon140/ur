@@ -29,6 +29,14 @@ class UrTest {
         thenMovesAre(Square.white_run_on_1)
     }
 
+    // FIXME: Damon copy to java
+    @Test
+    fun whiteFirstMoveWhenRolledZero() {
+        givenNewGame()
+        whenAskMoves(white, 0)
+        thenThereArentAnyMoves()
+    }
+
     @Test
     fun whiteRolls1() {
         givenNewGame()
@@ -364,6 +372,10 @@ class UrTest {
             .sorted()
             .toList()
         assertEquals(sortedInput, lastAskMovesDestinatinons)
+    }
+
+    private fun thenThereArentAnyMoves() {
+        assertEquals(0, lastAskMoves.size)
     }
 
     private fun thenWhiteWon() {
