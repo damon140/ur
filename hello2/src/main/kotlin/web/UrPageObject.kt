@@ -114,5 +114,8 @@ public class UrPageObject(document: Document) {
         return this.blackFinished
     }
 
+    fun findBoardSpan(index: Int): HTMLDivElement {
+        return document.getElementById("board-spans" + index)!! as HTMLDivElement
+    }
 
 }

@@ -71,6 +71,10 @@ public class UrView(pageObject: UrPageObject) {
         console.log("Vert board:")
         console.log(vertBoard.joinToString("\n"))
 
+        vertBoard.forEachIndexed{index, element ->
+            pageObject.findBoardSpan(1 + index).innerHTML = "<pre>" + element  + "</pre>"
+        }
+
         // FIXME: Damon drawn in new div here
         // "<span>X</span"
     }
