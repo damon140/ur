@@ -69,14 +69,11 @@ public class WebGame() {
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
-
-            val smallBoard: List<String> = horizontalDrawnBoard.smallBoard()
-
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-            urView.updateWhiteCounters(horizontalDrawnBoard.countersLine(Team.white), playArea.completedCount(Team.white), playArea.unstartedCount(Team.white))
-            urView.updateBlackCounters(horizontalDrawnBoard.countersLine(Team.black), playArea.completedCount(Team.black), playArea.unstartedCount(Team.black))
-            urView.updateBoard(smallBoard.get(0), smallBoard.get(1), smallBoard.get(2), vertBoard)
+            urView.updateWhiteCounters(playArea.completedCount(Team.white), playArea.unstartedCount(Team.white))
+            urView.updateBlackCounters(playArea.completedCount(Team.black), playArea.unstartedCount(Team.black))
+            urView.updateBoard(vertBoard)
             urView.updateInstructions(currentTeam, roll, moves) {
                 if (0 == roll || moves.isEmpty()) {
                     // skip processing of human roll, nothing to do

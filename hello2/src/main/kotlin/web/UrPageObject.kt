@@ -12,7 +12,6 @@ public class UrPageObject(document: Document) {
     object PageConstants {
         // ITERATION 1
         const val ROOT = "root";
-        const val BOARD_ID = "board";
         const val INSTRUCTIONS_ID = "instructions";
 
         // ITERATION 2
@@ -26,7 +25,6 @@ public class UrPageObject(document: Document) {
     }
 
     private val document: Document
-    private var boardDiv: HTMLDivElement
     private var instructionsDiv: HTMLDivElement
 
     private val whiteCounters2: HTMLDivElement
@@ -43,15 +41,11 @@ public class UrPageObject(document: Document) {
         val root = document.getElementById(PageConstants.ROOT)!! as HTMLDivElement
         root.innerHTML = createHTML().div {
             div {
-                id = PageConstants.BOARD_ID
-            }
-            div {
                 id = PageConstants.INSTRUCTIONS_ID
             }
         }
 
         // iteration 1
-        this.boardDiv = document.getElementById(PageConstants.BOARD_ID)!! as HTMLDivElement
         this.instructionsDiv = document.getElementById(PageConstants.INSTRUCTIONS_ID)!! as HTMLDivElement
 
         // iteration 2
@@ -66,10 +60,6 @@ public class UrPageObject(document: Document) {
 
     //  -----------------
     // iteration 1
-
-    fun findBoardDiv(): HTMLDivElement {
-        return boardDiv
-    }
 
     fun findInstructionsDiv(): HTMLDivElement {
         return instructionsDiv

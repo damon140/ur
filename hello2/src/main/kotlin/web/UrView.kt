@@ -22,7 +22,6 @@ public class UrView(pageObject: UrPageObject) {
     }
 
     /*
-
     white counters div     board di      black counters div
       top div               8 divs
         ol started          of spans
@@ -30,32 +29,19 @@ public class UrView(pageObject: UrPageObject) {
         ol fin
      */
 
-    fun updateWhiteCounters(line: String, unstarted: Int, completed: Int) {
+    fun updateWhiteCounters(unstarted: Int, completed: Int) {
         // iteration 2
         pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
         pageObject.findWhiteFinished().innerHTML = "<li>w</li>".repeat(completed)
     }
 
-    fun updateBlackCounters(line: String, unstarted: Int, completed: Int) {
+    fun updateBlackCounters(unstarted: Int, completed: Int) {
         // iteration 2
         pageObject.findBlackUnstarted().innerHTML = "<li>b</li>".repeat(unstarted)
         pageObject.findBlackFinished().innerHTML = "<li>b</li>".repeat(completed)
     }
 
-    fun updateBoard(line1: String, line2: String, line3: String, vertBoard: List<String>) {
-        // iteration 1
-        pageObject.findBoardDiv().innerHTML = createHTML().div {
-            p {
-                +line1
-            }
-            p {
-                +line2
-            }
-            p {
-                +line3
-            }
-        }
-
+    fun updateBoard(vertBoard: List<String>) {
         // iteration 2
         console.log("Vert board:")
         console.log(vertBoard.joinToString("\n"))
