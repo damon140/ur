@@ -32,22 +32,12 @@ public class UrView(pageObject: UrPageObject) {
 
 
     fun updateWhiteCounters(line: String, unstarted: Int, completed: Int) {
-        // iteration 1
-        pageObject.findWhiteCountersDiv().innerHTML = createHTML().p {
-            +line
-        }
-
         // iteration 2
         pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
         pageObject.findWhiteFinished().innerHTML = "<li>w</li>".repeat(completed)
     }
 
     fun updateBlackCounters(line: String, unstarted: Int, completed: Int) {
-        // iteration 1
-        pageObject.findBlackCountersDiv().innerHTML = createHTML().p {
-            +line
-        }
-
         // iteration 2
         pageObject.findBlackUnstarted().innerHTML = "<li>b</li>".repeat(unstarted)
         pageObject.findBlackFinished().innerHTML = "<li>b</li>".repeat(completed)
