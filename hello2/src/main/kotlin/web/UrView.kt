@@ -30,7 +30,6 @@ public class UrView(pageObject: UrPageObject) {
         ol fin
      */
 
-
     fun updateWhiteCounters(line: String, unstarted: Int, completed: Int) {
         // iteration 2
         pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
