@@ -71,8 +71,8 @@ public class WebGame() {
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-            urView.updateWhiteCounters(playArea.completedCount(Team.white), playArea.unstartedCount(Team.white))
-            urView.updateBlackCounters(playArea.completedCount(Team.black), playArea.unstartedCount(Team.black))
+            urView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
+            urView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urView.updateBoard(vertBoard)
             urView.updateInstructions(currentTeam, roll, moves) {
                 if (0 == roll || moves.isEmpty()) {

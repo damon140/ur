@@ -47,7 +47,9 @@ public class UrView(pageObject: UrPageObject) {
         console.log(vertBoard.joinToString("\n"))
 
         vertBoard.forEachIndexed{index, element ->
-            pageObject.findBoardSpan(1 + index).innerHTML = "<pre>" + element  + "</pre>"
+            // use mid dot for empty square
+            pageObject.findBoardSpan(1 + index).innerHTML =
+                "<pre>" + element.replace(".", "&#183;")  + "</pre>"
         }
 
         // FIXME: Damon drawn in new div here
