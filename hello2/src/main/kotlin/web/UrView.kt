@@ -49,11 +49,16 @@ public class UrView(pageObject: UrPageObject) {
         vertBoard.forEachIndexed{index, element ->
             // use mid dot for empty square
             pageObject.findBoardSpan(1 + index).innerHTML =
-                "<pre>" + element.replace(".", "&#183;")  + "</pre>"
+                "<pre>" + makeHtml(element) + "</pre>"
         }
 
         // FIXME: Damon drawn in new div here
         // "<span>X</span"
+    }
+
+    private fun makeHtml(element: String):String {
+        element.replace(".", "&#183;")
+        return element.map { e -> "<span class=\"squary\">" + e + "</span>" }.joinToString("");
     }
 
     fun clearLastChosen() {
