@@ -3,8 +3,6 @@ package web
 import com.damon140.ur.Square
 import com.damon140.ur.Team
 import kotlinx.browser.document
-import kotlinx.html.div
-import kotlinx.html.p
 import kotlinx.html.span
 import kotlinx.html.stream.createHTML
 import org.w3c.dom.HTMLButtonElement
@@ -21,24 +19,25 @@ public class UrView(pageObject: UrPageObject) {
         this.pageObject = pageObject
     }
 
-    /*
-    white counters div     board di      black counters div
-      top div               8 divs
-        ol started          of spans
-      bot div
-        ol fin
-     */
-
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
-        // iteration 2
-        pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
-        pageObject.findWhiteFinished().innerHTML = "<li>w</li>".repeat(completed)
+        pageObject.findWhiteUnstarted().innerHTML = offboardCounters(unstarted, "w")
+        pageObject.findWhiteFinished().innerHTML = offboardCounters(completed, "w")
+    }
+
+    private fun offboardCounters(count: Int, charsy: String): String {
+        val twosCount = count / 2
+        val onesCount = count % 2
+        console.log("twosCount " + twosCount)
+        console.log("onesCount " + onesCount)
+
+        val s:String = "<pre>$charsy$charsy</pre>".repeat(twosCount) + "<pre>$charsy</pre>".repeat(onesCount)
+
+        return s
     }
 
     fun updateBlackCounters(unstarted: Int, completed: Int) {
-        // iteration 2
-        pageObject.findBlackUnstarted().innerHTML = "<li>b</li>".repeat(unstarted)
-        pageObject.findBlackFinished().innerHTML = "<li>b</li>".repeat(completed)
+        pageObject.findBlackUnstarted().innerHTML = offboardCounters(unstarted, "b")
+        pageObject.findBlackFinished().innerHTML = offboardCounters(completed, "b")
     }
 
     fun updateBoard(vertBoard: List<String>) {
@@ -46,7 +45,7 @@ public class UrView(pageObject: UrPageObject) {
         console.log("Vert board:")
         console.log(vertBoard.joinToString("\n"))
 
-        vertBoard.forEachIndexed{index, element ->
+        vertBoard.forEachIndexed { index, element ->
             // use mid dot for empty square
             pageObject.findBoardSpan(1 + index).innerHTML =
                 "<pre>" + makeHtml(element) + "</pre>"
@@ -56,7 +55,7 @@ public class UrView(pageObject: UrPageObject) {
         // "<span>X</span"
     }
 
-    private fun makeHtml(element: String):String {
+    private fun makeHtml(element: String): String {
         element.replace(".", "&#183;")
         return element.map { e -> "<span class=\"squary\">" + e + "</span>" }.joinToString("");
     }
@@ -65,7 +64,7 @@ public class UrView(pageObject: UrPageObject) {
         this.lastChosen = "";
     }
 
-    fun hasLastChosen():Boolean {
+    fun hasLastChosen(): Boolean {
         console.log("lastChosen is [" + this.lastChosen + "]")
         console.log("lastChosen length is " + this.lastChosen.length)
         return 0 < this.lastChosen.length;
