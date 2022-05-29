@@ -21,15 +21,13 @@ public class UrView(pageObject: UrPageObject) {
     }
 
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
-        pageObject.findWhiteUnstarted().innerHTML = offboardCounters(unstarted, "w")
+        pageObject.findWhiteUnstarted().innerHTML = offboardCounters(unstarted, "w") + "<pre>--</pre>"
         pageObject.findWhiteFinished().innerHTML = offboardCounters(completed, "w")
     }
 
     private fun offboardCounters(count: Int, charsy: String): String {
         val twosCount = count / 2
         val onesCount = count % 2
-        console.log("twosCount " + twosCount)
-        console.log("onesCount " + onesCount)
 
         val s:String = "<pre>$charsy$charsy</pre>".repeat(twosCount) + "<pre>$charsy</pre>".repeat(onesCount)
 
@@ -37,7 +35,7 @@ public class UrView(pageObject: UrPageObject) {
     }
 
     fun updateBlackCounters(unstarted: Int, completed: Int) {
-        pageObject.findBlackUnstarted().innerHTML = offboardCounters(unstarted, "b")
+        pageObject.findBlackUnstarted().innerHTML = offboardCounters(unstarted, "b") + "<pre>--</pre>"
         pageObject.findBlackFinished().innerHTML = offboardCounters(completed, "b")
     }
 
@@ -51,9 +49,6 @@ public class UrView(pageObject: UrPageObject) {
             pageObject.findBoardSpan(1 + index).innerHTML =
                 "<pre>" + makeHtml(element) + "</pre>"
         }
-
-        // FIXME: Damon drawn in new div here
-        // "<span>X</span"
     }
 
     private fun makeHtml(element: String): String {
@@ -115,7 +110,7 @@ public class UrView(pageObject: UrPageObject) {
                     // run continue function here
                     continueFunction();
                 }
-                val buttonText = "Go";
+                val buttonText = "Go  ";
 
                 makeButton(message, ul, buttonText, callback)
             }
