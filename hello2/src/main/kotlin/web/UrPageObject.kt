@@ -28,12 +28,12 @@ public class UrPageObject(document: Document) {
     private var instructionsDiv: HTMLDivElement
 
     private val whiteCounters2: HTMLDivElement
-    private val whiteUnstarted: HTMLUListElement
-    private val whiteFinished: HTMLUListElement
+    private val whiteUnstarted: HTMLDivElement
+    private val whiteFinished: HTMLDivElement
     private val boardSpans: HTMLDivElement
     private val blackCounterss2: HTMLDivElement
-    private val blackUnstarted: HTMLUListElement
-    private val blackFinished: HTMLUListElement
+    private val blackUnstarted: HTMLDivElement
+    private val blackFinished: HTMLDivElement
 
     init {
         this.document = document
@@ -50,12 +50,12 @@ public class UrPageObject(document: Document) {
 
         // iteration 2
         this.whiteCounters2 = document.getElementById(PageConstants.WHITE_COUNTERS2_ID)!! as HTMLDivElement
-        this.whiteUnstarted = document.getElementById(PageConstants.WHITE_UNSTARTED_ID)!! as HTMLUListElement
-        this.whiteFinished = document.getElementById(PageConstants.WHITE_FINISHED_ID)!! as HTMLUListElement
+        this.whiteUnstarted = document.getElementById(PageConstants.WHITE_UNSTARTED_ID)!! as HTMLDivElement
+        this.whiteFinished = document.getElementById(PageConstants.WHITE_FINISHED_ID)!! as HTMLDivElement
         this.boardSpans = document.getElementById(PageConstants.BOARD_SPANS_ID)!! as HTMLDivElement
         this.blackCounterss2 = document.getElementById(PageConstants.BLACK_COUNTERSS2_ID)!! as HTMLDivElement
-        this.blackUnstarted = document.getElementById(PageConstants.BLACK_UNSTARTED_ID)!! as HTMLUListElement
-        this.blackFinished = document.getElementById(PageConstants.BLACK_FINISHED_ID)!! as HTMLUListElement
+        this.blackUnstarted = document.getElementById(PageConstants.BLACK_UNSTARTED_ID)!! as HTMLDivElement
+        this.blackFinished = document.getElementById(PageConstants.BLACK_FINISHED_ID)!! as HTMLDivElement
     }
 
     //  -----------------
@@ -68,19 +68,19 @@ public class UrPageObject(document: Document) {
     // ----------------------------
     // iteration 2
 
-    fun findWhiteUnstarted(): HTMLUListElement {
+    fun findWhiteUnstarted(): HTMLDivElement {
         return this.whiteUnstarted
     }
 
-    fun findWhiteFinished(): HTMLUListElement {
+    fun findWhiteFinished(): HTMLDivElement {
         return this.whiteFinished
     }
 
-    fun findBlackUnstarted(): HTMLUListElement {
+    fun findBlackUnstarted(): HTMLDivElement {
         return this.blackUnstarted
     }
 
-    fun findBlackFinished(): HTMLUListElement {
+    fun findBlackFinished(): HTMLDivElement {
         return this.blackFinished
     }
 
