@@ -5,19 +5,29 @@ import com.damon140.ur.Team
 import kotlinx.browser.document
 import kotlinx.html.span
 import kotlinx.html.stream.createHTML
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLLIElement
-import org.w3c.dom.HTMLParagraphElement
-import org.w3c.dom.HTMLUListElement
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
-import kotlin.math.floor
 
-public class UrView(pageObject: UrPageObject) {
+class UrView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
     private var lastChosen: String = ""
 
     init {
         this.pageObject = pageObject
+    }
+
+    // TODO: move to new class
+    fun drawSquare() {
+        var c = pageObject.findCanvasBoard()
+
+        // Super mega overworked example here, is not very easy to follow, too OO, shapes encapsulate canvas
+        // https://play.kotlinlang.org/byExample/09_Kotlin_JS/05_Canvas
+
+        var ctx: CanvasRenderingContext2D = c.getContext("2d") as CanvasRenderingContext2D
+
+        ctx.beginPath();
+        ctx.rect(20.0, 20.0, 150.0, 100.0);
+        ctx.stroke();
     }
 
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
@@ -29,9 +39,7 @@ public class UrView(pageObject: UrPageObject) {
         val twosCount = count / 2
         val onesCount = count % 2
 
-        val s:String = "<pre>$charsy$charsy</pre>".repeat(twosCount) + "<pre>$charsy</pre>".repeat(onesCount)
-
-        return s
+        return "<pre>$charsy$charsy</pre>".repeat(twosCount) + "<pre>$charsy</pre>".repeat(onesCount)
     }
 
     fun updateBlackCounters(unstarted: Int, completed: Int) {
@@ -45,7 +53,7 @@ public class UrView(pageObject: UrPageObject) {
         console.log(vertBoard.joinToString("\n"))
 
         vertBoard.forEachIndexed { index, element ->
-            // use mid dot for empty square
+            // use mid-dot for empty square
             pageObject.findBoardSpan(1 + index).innerHTML =
                 "<pre>" + makeHtml(element) + "</pre>"
         }
@@ -53,17 +61,17 @@ public class UrView(pageObject: UrPageObject) {
 
     private fun makeHtml(element: String): String {
         element.replace(".", "&#183;")
-        return element.map { e -> "<span class=\"squary\">" + e + "</span>" }.joinToString("");
+        return element.map { e -> "<span class=\"squary\">$e</span>" }.joinToString("")
     }
 
     fun clearLastChosen() {
-        this.lastChosen = "";
+        this.lastChosen = ""
     }
 
     fun hasLastChosen(): Boolean {
         console.log("lastChosen is [" + this.lastChosen + "]")
         console.log("lastChosen length is " + this.lastChosen.length)
-        return 0 < this.lastChosen.length;
+        return this.lastChosen.isNotEmpty()
     }
 
     fun getLastChosen(): String {
@@ -72,7 +80,7 @@ public class UrView(pageObject: UrPageObject) {
 
     private fun setLastChosen(newValue: String) {
         this.lastChosen = newValue
-        console.log("Last chosen is now " + this.lastChosen);
+        console.log("Last chosen is now " + this.lastChosen)
     }
 
     fun updateInstructions(team: Team, roll: Int, moves: Map<Square, Square?>, continueFunction: () -> Unit) {
@@ -86,18 +94,18 @@ public class UrView(pageObject: UrPageObject) {
 
         val p = document.createElement("p") as HTMLParagraphElement
         p.innerText = team.name + " (you) rolled " + roll
-        instructionsDiv.appendChild(p);
+        instructionsDiv.appendChild(p)
 
         val ul = document.createElement("ul") as HTMLUListElement
-        instructionsDiv.appendChild(ul);
+        instructionsDiv.appendChild(ul)
 
         if (0 == roll) {
             makeButton("You rolled zero, can't move, bummer!!", ul, "Go") {
-                continueFunction();
+                continueFunction()
             }
         } else if (moves.isEmpty()) {
             makeButton("No legal moves, bummer!!", ul, "Go") {
-                continueFunction();
+                continueFunction()
             }
         } else {
             for ((index, entry) in moves.entries.withIndex()) {
@@ -108,9 +116,9 @@ public class UrView(pageObject: UrPageObject) {
                     setLastChosen((index + 1).toString())
 
                     // run continue function here
-                    continueFunction();
+                    continueFunction()
                 }
-                val buttonText = "Go  ";
+                val buttonText = "Go  "
 
                 makeButton(message, ul, buttonText, callback)
             }

@@ -3,9 +3,9 @@ package web
 import com.damon140.ur.*
 import kotlinx.browser.document
 
-public class WebGame() {
+class WebGame {
 
-    private var dice: Dice
+    private var dice: Dice = Dice()
     private var playArea: PlayArea
     private var ur: Ur
     private var horizontalDrawnBoard: HorizontalDrawnBoard
@@ -15,7 +15,6 @@ public class WebGame() {
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier>
 
     init {
-        this.dice = Dice()
         console.log("rolled " + dice.roll())
 
         this.playArea = PlayArea()
@@ -29,8 +28,8 @@ public class WebGame() {
 
         console.log("made a board")
 
-        var f = horizontalDrawnBoard.fullBoard()
-        console.log("Full board: " + f)
+        val f = horizontalDrawnBoard.fullBoard()
+        console.log("Full board: $f")
 
         this.pageObject = UrPageObject(document)
         this.urView = UrView(pageObject)
@@ -39,14 +38,14 @@ public class WebGame() {
         this.playerSetup = PlayerSetup(this.urView)
 
         // TODO: maybe not a member??
-        this.moveSuppliers = HashMap<Team, PlayerSetup.InputSupplier>()
+        this.moveSuppliers = HashMap()
         moveSuppliers.put(Team.white, playerSetup.getPlayer(Team.white))
         moveSuppliers.put(Team.black, playerSetup.getPlayer(Team.black))
 
         setupAndPlayUr()
     }
 
-    fun setupAndPlayUr() {
+    private fun setupAndPlayUr() {
         // player setup
 
 
@@ -55,16 +54,16 @@ public class WebGame() {
     }
 
 
-    fun playUr(humansRoll:Int, isCallBackIn:Boolean) {
-        var isCallBack = isCallBackIn;
+    private fun playUr(humansRoll:Int, isCallBackIn:Boolean) {
+        var isCallBack = isCallBackIn
         while(true) {
             val currentTeam = ur.currentTeam()
             var roll: Int
 
             if (isCallBack) {
-                roll = humansRoll;
+                roll = humansRoll
             } else {
-                roll = dice.roll();
+                roll = dice.roll()
                 urView.clearLastChosen()
             }
 
@@ -73,6 +72,8 @@ public class WebGame() {
 
             // FIXME: want a new 3 layer canvas based web view
             // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
+
+            urView.drawSquare()
 
             urView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
@@ -87,28 +88,31 @@ public class WebGame() {
                 }
             }
 
-            val moveSupplier = moveSuppliers.get(currentTeam)!!;
+            val moveSupplier = moveSuppliers.get(currentTeam)!!
 
             if (moveSupplier.waitForPlayer()) {
-                console.log("Waiting for input of player " + currentTeam);
-                return;
+                console.log("Waiting for input of player $currentTeam")
+                return
             }
 
-            val input = moveSupplier.choose(moves);
+            val input = moveSupplier.choose(moves)
 
-            console.log("Making turn of " + currentTeam);
-            console.log("Moves are: ");
+            console.run {
+
+                log("Making turn of $currentTeam")
+                log("Moves are: ")
+            }
             moves.entries.forEach { e -> console.log(e.key.name + " -> " + e.value.name) }
-            console.log("player input was " + input);
+            console.log("player input was $input")
 
             if (0 == roll) {
-                ur.skipTurn(roll);
-                continue;
+                ur.skipTurn(roll)
+                continue
             }
 
             if (moves.isEmpty()) {
-                ur.skipTurn(roll);
-                continue;
+                ur.skipTurn(roll)
+                continue
             }
 
             if ("x".equals(input)) {
@@ -116,9 +120,9 @@ public class WebGame() {
             }
 
             val moveIndex: Int = input.toInt()
-            val fromSquare: Square = moves.keys.toList()[moveIndex - 1];
+            val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
 
-            var result = ur.moveCounter(fromSquare, roll);
+            val result = ur.moveCounter(fromSquare, roll)
 
             // FIXME: game over bug here for black
             if (result == Ur.MoveResult.gameOver) {
@@ -126,7 +130,7 @@ public class WebGame() {
                 // TODO: add game alert here
                 return
             }
-            isCallBack = false;
+            isCallBack = false
         }
     }
 }
