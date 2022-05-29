@@ -12,6 +12,7 @@ import org.w3c.dom.HTMLLIElement
 import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.HTMLUListElement
 import org.w3c.dom.events.Event
+import kotlin.math.floor
 
 public class UrView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
@@ -21,17 +22,23 @@ public class UrView(pageObject: UrPageObject) {
         this.pageObject = pageObject
     }
 
-    /*
-    white counters div     board di      black counters div
-      top div               8 divs
-        ol started          of spans
-      bot div
-        ol fin
-     */
-
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
-        // iteration 2
-        pageObject.findWhiteUnstarted().innerHTML = "<li>w</li>".repeat(unstarted)
+
+        // FIXME: extract function
+        pageObject.findWhiteUnstarted().innerHTML = "";
+
+        pageObject.findWhiteUnstarted().innerHTML +=
+            "ww".repeat(unstarted / 2)
+            .map { chs -> "<pre>" + chs + "</pre>" }
+            .joinToString("")
+
+        pageObject.findWhiteUnstarted().innerHTML +=
+            "w".repeat(unstarted % 2 )
+            .map { chs -> "<pre>" + chs + "</pre>" }
+            .joinToString("")
+
+        //pageObject.findWhiteUnstarted().innerHTML = "<pre>w</pre>".repeat(unstarted)
+
         pageObject.findWhiteFinished().innerHTML = "<li>w</li>".repeat(completed)
     }
 

@@ -71,6 +71,9 @@ public class WebGame() {
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
+            // FIXME: want a new 3 layer canvas based web view
+            // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
+
             urView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urView.updateBoard(vertBoard)
