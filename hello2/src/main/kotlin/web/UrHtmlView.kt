@@ -11,7 +11,7 @@ import kotlinx.html.stream.createHTML
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 
-class UrView(pageObject: UrPageObject) {
+class UrHtmlView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
     private var lastChosen: String = ""
 

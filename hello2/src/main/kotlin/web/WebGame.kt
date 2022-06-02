@@ -10,7 +10,8 @@ class WebGame {
     private var ur: Ur
     private var horizontalDrawnBoard: HorizontalDrawnBoard
     private var pageObject: UrPageObject
-    private var urView: UrView
+    private var urHtmlView: UrHtmlView
+    private var urCanvasView: UrCanvasView
     private var playerSetup: PlayerSetup
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier>
 
@@ -32,10 +33,11 @@ class WebGame {
         console.log("Full board: $f")
 
         this.pageObject = UrPageObject(document)
-        this.urView = UrView(pageObject)
+        this.urHtmlView = UrHtmlView(pageObject)
+        this.urCanvasView = UrCanvasView(pageObject)
 
         // TODO: add UI bobs to constructor
-        this.playerSetup = PlayerSetup(this.urView)
+        this.playerSetup = PlayerSetup(this.urHtmlView)
 
         // TODO: maybe not a member??
         this.moveSuppliers = HashMap()
@@ -64,21 +66,22 @@ class WebGame {
                 roll = humansRoll
             } else {
                 roll = dice.roll()
-                urView.clearLastChosen()
+                urHtmlView.clearLastChosen()
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-            // FIXME: want a new 3 layer canvas based web view
+
+            // UI iteration 3!
+            // FIXME: want a new 3 layer canvas based web view??
             // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
+            urCanvasView.drawSquare()
 
-            urView.drawSquare()
-
-            urView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
-            urView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
-            urView.updateBoard(vertBoard)
-            urView.updateInstructions(currentTeam, roll, moves) {
+            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
+            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
+            urHtmlView.updateBoard(vertBoard)
+            urHtmlView.updateInstructions(currentTeam, roll, moves) {
                 if (0 == roll || moves.isEmpty()) {
                     // skip processing of human roll, nothing to do
                     playUr(roll, false)

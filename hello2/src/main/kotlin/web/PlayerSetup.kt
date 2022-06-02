@@ -3,9 +3,9 @@ package web
 import com.damon140.ur.Square
 import com.damon140.ur.Team
 
-class PlayerSetup(urView: UrView) {
+class PlayerSetup(urView: UrHtmlView) {
 
-    private val urView: UrView
+    private val urView: UrHtmlView
 
     init {
         this.urView = urView
