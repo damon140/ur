@@ -72,7 +72,6 @@ class WebGame {
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-
             // UI iteration 3!
             // FIXME: want a new 3 layer canvas based web view??
             // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
