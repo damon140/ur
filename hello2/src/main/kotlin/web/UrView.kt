@@ -1,6 +1,9 @@
 package web
 
+import com.damon140.ur.HorizontalDrawnBoard
+import com.damon140.ur.HorizontalDrawnBoard.*
 import com.damon140.ur.Square
+import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import kotlinx.browser.document
 import kotlinx.html.span
@@ -19,15 +22,73 @@ class UrView(pageObject: UrPageObject) {
     // TODO: move to new class
     fun drawSquare() {
         var c = pageObject.findCanvasBoard()
-
-        // Super mega overworked example here, is not very easy to follow, too OO, shapes encapsulate canvas
-        // https://play.kotlinlang.org/byExample/09_Kotlin_JS/05_Canvas
-
         var ctx: CanvasRenderingContext2D = c.getContext("2d") as CanvasRenderingContext2D
 
-        ctx.beginPath();
-        ctx.rect(20.0, 20.0, 150.0, 100.0);
-        ctx.stroke();
+        // FIXME: board part to xy pair function via map
+
+        val squares: List<Pair<Int, Int>> = listOf(
+            black_run_on_1,
+            black_run_on_2,
+            black_run_on_3,
+            black_run_on_4,
+            black_run_off_1,
+            black_run_off_2,
+            shared_1,
+            shared_2,
+            shared_3,
+            shared_4,
+            shared_5,
+            shared_6,
+            shared_7,
+            shared_8,
+            white_run_on_1,
+            white_run_on_2,
+            white_run_on_3,
+            white_run_on_4,
+            white_run_off_1,
+            white_run_off_2
+        ).map { s -> squareToCoordinates(s) }
+
+        drawSquares(ctx, squares)
+    }
+
+    private fun squareToCoordinates(square: Square): Pair<Int, Int> {
+        return when(square) {
+            white_run_on_1 -> Pair(2, 3)
+            white_run_on_2 -> Pair(2, 2)
+            white_run_on_3 -> Pair(2, 1)
+            white_run_on_4 -> Pair(2, 0)
+            white_run_off_1 ->Pair(2, 7)
+            white_run_off_2 -> Pair(2, 8)
+
+            black_run_on_1 -> Pair(4, 3)
+            black_run_on_2 -> Pair(4, 2)
+            black_run_on_3 -> Pair(4, 1)
+            black_run_on_4 -> Pair(4, 0)
+            black_run_off_1 -> Pair(4, 7)
+            black_run_off_2 -> Pair(4, 8)
+
+            shared_1 -> Pair(3, 0)
+            shared_2 -> Pair(3, 1)
+            shared_3 -> Pair(3, 2)
+            shared_4 -> Pair(3, 3)
+            shared_5 -> Pair(3, 4)
+            shared_6 -> Pair(3, 5)
+            shared_7 -> Pair(3, 6)
+            shared_8 -> Pair(3, 7)
+
+            off_board_unstarted -> Pair(0, 0)
+            off_board_finished -> Pair(0, 0)
+        }
+    }
+
+    private fun drawSquares(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
+        squares.forEach {
+            e ->
+            ctx.beginPath();
+            ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0);
+            ctx.stroke();
+        }
     }
 
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
