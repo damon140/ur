@@ -5,6 +5,7 @@ import com.damon140.ur.Square
 import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import com.damon140.ur.Team.*
+import org.w3c.dom.CanvasFillRule
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
@@ -27,17 +28,15 @@ class UrCanvasView(pageObject: UrPageObject) {
             white_run_on_2 to Pair(2, 2),
             white_run_on_3 to Pair(2, 1),
             white_run_on_4 to Pair(2, 0),
-            // FIXME: too deep
-            white_run_off_1  to Pair(2, 7),
-            white_run_off_2 to Pair(2, 8),
+            white_run_off_1  to Pair(2, 6),
+            white_run_off_2 to Pair(2, 7),
 
             black_run_on_1 to Pair(4, 3),
             black_run_on_2 to Pair(4, 2),
             black_run_on_3 to Pair(4, 1),
             black_run_on_4 to Pair(4, 0),
-            // FIXME: too deep
-            black_run_off_1 to Pair(4, 7),
-            black_run_off_2 to Pair(4, 8),
+            black_run_off_1 to Pair(4, 6),
+            black_run_off_2 to Pair(4, 7),
 
             shared_1 to Pair(3, 0),
             shared_2 to Pair(3, 1),
@@ -54,26 +53,28 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
-
+        // TODO, copy maths from HTML draw class
+        // TODO make fn
+        // TODO
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
 
     }
 
-    // TODO: switch to other input type
     fun updateBoard(playArea: PlayArea) {
-        drawCounter(black_run_on_1, black)
-        drawCounter(white_run_on_1, white)
+        val squares: List<Pair<Int, Int>> = Square.drawableSquares()
+            .map { s -> squarePairMap.get(s)!! }
+        drawBlanks(canvas, squares)
+
+        playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white) }
+        playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black) }
     }
 
-    private fun drawCounter(square: Square, team: Team) {
-        val filled: Boolean = team == black;
+    private fun drawOnBoardCounter(square: Square, team: Team) {
         val s1 = squarePairMap.get(square)!!
 
-        // TODO: push to fn
-
-        // TODO: need grid thingy class
+        // TODO: need grid thingy class w/ offsets around border
         val x = s1.first * 50.0 + 25;
         val y = s1.second * 50.0 + 25;
 
@@ -82,7 +83,7 @@ class UrCanvasView(pageObject: UrPageObject) {
         canvas.arc(x, y, 20.0, 0.0, 2 * PI);
         canvas.lineWidth = 3.0
 
-        if (filled) {
+        if (team == black) {
             canvas.fill();
         }
 
@@ -96,7 +97,7 @@ class UrCanvasView(pageObject: UrPageObject) {
 
     }
 
-    fun drawCounter() {
+    fun drawGrid() {
 
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
@@ -128,6 +129,12 @@ class UrCanvasView(pageObject: UrPageObject) {
             ctx.beginPath();
             ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0);
             ctx.stroke();
+        }
+    }
+
+    private fun drawBlanks(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
+        squares.forEach {
+                e -> ctx.clearRect(50.0 * e.first + 1, 50.0 * e.second + 1, 48.0, 48.0)
         }
     }
 
