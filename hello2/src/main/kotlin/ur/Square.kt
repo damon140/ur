@@ -15,6 +15,14 @@ enum class Square {
         }
     }
 
+    companion object {
+        fun drawableSquares(): List<Square> {
+            return Square.values().toList().filter { v -> v != off_board_finished && v!= off_board_unstarted }
+        }
+    }
+
+
+
     // TODO: switch to new illegal_sqaure square instead of opt??
     fun calculateNewSquare(team: Team, count: Int): Square? {
         if (this == off_board_finished) {

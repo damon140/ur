@@ -55,7 +55,6 @@ class WebGame {
         playUr(0, false)
     }
 
-
     private fun playUr(humansRoll:Int, isCallBackIn:Boolean) {
         var isCallBack = isCallBackIn
         while(true) {
@@ -72,11 +71,7 @@ class WebGame {
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
             val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-            // UI iteration 3!
-            // FIXME: want a new 3 layer canvas based web view??
-            // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
-            urCanvasView.drawSquare()
-
+            // UI iteration 2
             urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urHtmlView.updateBoard(vertBoard)
@@ -89,6 +84,15 @@ class WebGame {
                     playUr(roll, true)
                 }
             }
+
+            // UI iteration 3!
+            // FIXME: want a new 3 layer canvas based web view??
+            // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
+            urCanvasView.drawSquare()
+            urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
+            urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
+            urCanvasView.updateBoard(playArea)
+            // urHtmlView.updateInstructions
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
 
