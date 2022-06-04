@@ -5,7 +5,6 @@ import com.damon140.ur.Square
 import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import com.damon140.ur.Team.*
-import org.w3c.dom.CanvasFillRule
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
@@ -56,6 +55,12 @@ class UrCanvasView(pageObject: UrPageObject) {
         // TODO, copy maths from HTML draw class
         // TODO make fn
         // TODO
+
+        // TODO: need grid thingy class w/ offsets around border
+        val x = 0 * 50.0 + 25;
+        val y = 0 * 50.0 + 25;
+
+        drawCounterByCoordinates(x, y, white)
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
@@ -78,17 +83,19 @@ class UrCanvasView(pageObject: UrPageObject) {
         val x = s1.first * 50.0 + 25;
         val y = s1.second * 50.0 + 25;
 
-        // filled circle
+        drawCounterByCoordinates(x, y, team)
+    }
+
+    private fun drawCounterByCoordinates(x: Double, y: Double, team: Team) {
         canvas.beginPath();
-        canvas.arc(x, y, 20.0, 0.0, 2 * PI);
+        canvas.arc(x, y, 38.0, 0.0, 2 * PI);
         canvas.lineWidth = 3.0
 
         if (team == black) {
             canvas.fill();
         }
 
-        // how in Kotlin?
-        //canvas.fillStyle = 'green';
+        canvas.fillStyle = "green"
         canvas.stroke();
     }
 
