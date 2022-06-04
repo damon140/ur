@@ -88,7 +88,7 @@ class WebGame {
             // UI iteration 3!
             // FIXME: want a new 3 layer canvas based web view??
             // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
-            urCanvasView.drawSquare()
+            urCanvasView.drawCounter()
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
