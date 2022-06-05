@@ -9,7 +9,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
-import kotlin.math.floor
 
 class UrCanvasView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
@@ -53,42 +52,40 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
-        // TODO, copy maths from HTML draw class
-        // TODO make fn
-
-        val count = unstartedCount
-
-        val twosCount = count / 2
-
-        // FIXME: math going bad here
-        console.log("count is $count")
-        console.log("twosCount is $twosCount")
-
-        var coordinates: List<Pair<Int, Int>> = mutableListOf()
-
-        (0..twosCount - 1).forEach { i ->
-            console.log("Adding pair")
-            val y = i * 50 + 25
-            coordinates += Pair(25, y)
-            coordinates += Pair(75, y)
-        }
-
-        if (1 == count % 2) {
-            coordinates += Pair(75, (twosCount * 50) + 25)
-        }
-
-//        // TODO: need grid thingy class w/ offsets around border
-//        val x = 0 * 50.0 + 25;
-//        val y = 0 * 50.0 + 25;
-//
-//        drawCounterByCoordinates(x, y, white)
-        coordinates.forEach { p ->
-            console.log("Drawing pair $p.first, $p.second")
-            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, white) }
+        drawUnstarted(unstartedCount, white)
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
+        drawUnstarted(unstartedCount, black)
+    }
 
+    // TODO: make equiv to draw bottom up
+    private fun drawUnstarted(count: Int, team: Team) {
+        // TODO: need area blanking
+
+        val baseX = if (white == team) 0 else 250
+
+        val twosCount = count / 2
+
+        var counterLines: List<Pair<Int, Int>> = mutableListOf()
+
+        // TODO: need grid thingy class w/ offsets around border
+
+        (0..twosCount - 1).forEach { i ->
+            val y = i * 50 + 25
+            counterLines += Pair(25 + baseX, y)
+            counterLines += Pair(75 + baseX, y)
+        }
+
+        if (1 == count % 2) {
+            val x = if (black == team) 25 else 75
+            counterLines += Pair(x + baseX, (twosCount * 50) + 25)
+        }
+
+        counterLines.forEach { p ->
+            console.log("Drawing pair $p.first, $p.second")
+            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team)
+        }
     }
 
     fun updateBoard(playArea: PlayArea) {
