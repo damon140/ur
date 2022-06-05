@@ -89,6 +89,7 @@ class UrCanvasView(pageObject: UrPageObject) {
         }
     }
 
+    // TODO: use lambda for y fiddles and combine with above (350 - y)
     private fun drawFinished(count: Int, team: Team) {
         // TODO: need area blanking
 
@@ -122,6 +123,9 @@ class UrCanvasView(pageObject: UrPageObject) {
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
         drawBlanks(canvas, squares)
+
+        // TODO: add doubles and safe square
+
 
         playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white) }
         playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black) }
