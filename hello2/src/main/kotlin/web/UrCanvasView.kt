@@ -27,15 +27,15 @@ class UrCanvasView(pageObject: UrPageObject) {
             white_run_on_2 to Pair(2, 2),
             white_run_on_3 to Pair(2, 1),
             white_run_on_4 to Pair(2, 0),
-            white_run_off_1 to Pair(2, 6),
-            white_run_off_2 to Pair(2, 7),
+            white_run_off_2 to Pair(2, 6),
+            white_run_off_1 to Pair(2, 7),
 
             black_run_on_1 to Pair(4, 3),
             black_run_on_2 to Pair(4, 2),
             black_run_on_3 to Pair(4, 1),
             black_run_on_4 to Pair(4, 0),
-            black_run_off_1 to Pair(4, 6),
-            black_run_off_2 to Pair(4, 7),
+            black_run_off_2 to Pair(4, 6),
+            black_run_off_1 to Pair(4, 7),
 
             shared_1 to Pair(3, 0),
             shared_2 to Pair(3, 1),
@@ -53,13 +53,14 @@ class UrCanvasView(pageObject: UrPageObject) {
 
     fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
         drawUnstarted(unstartedCount, white)
+        drawFinished(completedCount, white)
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
         drawUnstarted(unstartedCount, black)
+        drawFinished(completedCount, black)
     }
 
-    // TODO: make equiv to draw bottom up
     private fun drawUnstarted(count: Int, team: Team) {
         // TODO: need area blanking
 
@@ -80,6 +81,35 @@ class UrCanvasView(pageObject: UrPageObject) {
         if (1 == count % 2) {
             val x = if (black == team) 25 else 75
             counterLines += Pair(x + baseX, (twosCount * 50) + 25)
+        }
+
+        counterLines.forEach { p ->
+            console.log("Drawing pair $p.first, $p.second")
+            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team)
+        }
+    }
+
+    private fun drawFinished(count: Int, team: Team) {
+        // TODO: need area blanking
+
+        val baseX = if (white == team) 0 else 250
+
+        val twosCount = count / 2
+
+        var counterLines: List<Pair<Int, Int>> = mutableListOf()
+
+        // TODO: need grid thingy class w/ offsets around border
+
+        val bottomOffset = 350
+        (0..twosCount - 1).forEach { i ->
+            val y = i * 50 + 25
+            counterLines += Pair(25 + baseX, bottomOffset - y)
+            counterLines += Pair(75 + baseX, bottomOffset - y)
+        }
+
+        if (1 == count % 2) {
+            val x = if (black == team) 25 else 75
+            counterLines += Pair(x + baseX, bottomOffset - (twosCount * 50) + 25)
         }
 
         counterLines.forEach { p ->
