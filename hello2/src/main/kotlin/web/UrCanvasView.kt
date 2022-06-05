@@ -9,6 +9,7 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
+import kotlin.math.floor
 
 class UrCanvasView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
@@ -27,7 +28,7 @@ class UrCanvasView(pageObject: UrPageObject) {
             white_run_on_2 to Pair(2, 2),
             white_run_on_3 to Pair(2, 1),
             white_run_on_4 to Pair(2, 0),
-            white_run_off_1  to Pair(2, 6),
+            white_run_off_1 to Pair(2, 6),
             white_run_off_2 to Pair(2, 7),
 
             black_run_on_1 to Pair(4, 3),
@@ -54,13 +55,36 @@ class UrCanvasView(pageObject: UrPageObject) {
     fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
         // TODO, copy maths from HTML draw class
         // TODO make fn
-        // TODO
 
-        // TODO: need grid thingy class w/ offsets around border
-        val x = 0 * 50.0 + 25;
-        val y = 0 * 50.0 + 25;
+        val count = unstartedCount
 
-        drawCounterByCoordinates(x, y, white)
+        val twosCount = count / 2
+
+        // FIXME: math going bad here
+        console.log("count is $count")
+        console.log("twosCount is $twosCount")
+
+        var coordinates: List<Pair<Int, Int>> = mutableListOf()
+
+        (0..twosCount - 1).forEach { i ->
+            console.log("Adding pair")
+            val y = i * 50 + 25
+            coordinates += Pair(25, y)
+            coordinates += Pair(75, y)
+        }
+
+        if (1 == count % 2) {
+            coordinates += Pair(75, (twosCount * 50) + 25)
+        }
+
+//        // TODO: need grid thingy class w/ offsets around border
+//        val x = 0 * 50.0 + 25;
+//        val y = 0 * 50.0 + 25;
+//
+//        drawCounterByCoordinates(x, y, white)
+        coordinates.forEach { p ->
+            console.log("Drawing pair $p.first, $p.second")
+            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, white) }
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
@@ -88,7 +112,7 @@ class UrCanvasView(pageObject: UrPageObject) {
 
     private fun drawCounterByCoordinates(x: Double, y: Double, team: Team) {
         canvas.beginPath();
-        canvas.arc(x, y, 38.0, 0.0, 2 * PI);
+        canvas.arc(x, y, 19.0, 0.0, 2 * PI);
         canvas.lineWidth = 3.0
 
         if (team == black) {
@@ -131,8 +155,7 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     private fun drawSquares(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
-        squares.forEach {
-                e ->
+        squares.forEach { e ->
             ctx.beginPath();
             ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0);
             ctx.stroke();
@@ -140,8 +163,8 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     private fun drawBlanks(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
-        squares.forEach {
-                e -> ctx.clearRect(50.0 * e.first + 1, 50.0 * e.second + 1, 48.0, 48.0)
+        squares.forEach { e ->
+            ctx.clearRect(50.0 * e.first + 1, 50.0 * e.second + 1, 48.0, 48.0)
         }
     }
 
