@@ -62,37 +62,16 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     private fun drawUnstarted(count: Int, team: Team) {
-        // TODO: need area blanking
-
-        val baseX = if (white == team) 0 else 250
-
-        val twosCount = count / 2
-
-        var counterLines: List<Pair<Int, Int>> = mutableListOf()
-
-        // TODO: need grid thingy class w/ offsets around border
-
-        (0..twosCount - 1).forEach { i ->
-            val y = i * 50 + 25
-            counterLines += Pair(25 + baseX, y)
-            counterLines += Pair(75 + baseX, y)
-        }
-
-        if (1 == count % 2) {
-            val x = if (black == team) 25 else 75
-            counterLines += Pair(x + baseX, (twosCount * 50) + 25)
-        }
-
-        counterLines.forEach { p ->
-            console.log("Drawing pair $p.first, $p.second")
-            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team)
-        }
+        val lambda: (Int) -> Int = { y: Int -> y }
+        drawOffboardCounters(team, count, lambda)
     }
 
-    // TODO: use lambda for y fiddles and combine with above (350 - y)
     private fun drawFinished(count: Int, team: Team) {
-        // TODO: need area blanking
+        val lambda: (Int) -> Int = { y: Int -> 400 - y }
+        drawOffboardCounters(team, count, lambda)
+    }
 
+    private fun drawOffboardCounters(team: Team, count: Int, lambda: (Int) -> Int) {
         val baseX = if (white == team) 0 else 250
 
         val twosCount = count / 2
@@ -100,17 +79,15 @@ class UrCanvasView(pageObject: UrPageObject) {
         var counterLines: List<Pair<Int, Int>> = mutableListOf()
 
         // TODO: need grid thingy class w/ offsets around border
-
-        val bottomOffset = 350
         (0..twosCount - 1).forEach { i ->
             val y = i * 50 + 25
-            counterLines += Pair(25 + baseX, bottomOffset - y)
-            counterLines += Pair(75 + baseX, bottomOffset - y)
+            counterLines += Pair(25 + baseX, lambda(y))
+            counterLines += Pair(75 + baseX, lambda(y))
         }
 
         if (1 == count % 2) {
             val x = if (black == team) 25 else 75
-            counterLines += Pair(x + baseX, bottomOffset - (twosCount * 50) + 25)
+            counterLines += Pair(x + baseX, lambda((twosCount * 50) + 25))
         }
 
         counterLines.forEach { p ->
@@ -154,7 +131,6 @@ class UrCanvasView(pageObject: UrPageObject) {
         canvas.stroke();
     }
 
-
     fun updateInstructions() {
 
     }
@@ -191,6 +167,10 @@ class UrCanvasView(pageObject: UrPageObject) {
             ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0);
             ctx.stroke();
         }
+    }
+
+    fun blank() {
+        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0 );
     }
 
     private fun drawBlanks(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
