@@ -3,10 +3,7 @@ package web
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.stream.createHTML
-import org.w3c.dom.Document
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLUListElement
+import org.w3c.dom.*
 
 class UrPageObject(document: Document) {
 
@@ -26,6 +23,9 @@ class UrPageObject(document: Document) {
 
         // ITERATION 3
         const val CANVAS_BOARD_ID = "canvas-board"
+
+        // ITERATION 4
+        const val DICE_ID = "dice-audio";
     }
 
     // iteration 1
@@ -43,6 +43,10 @@ class UrPageObject(document: Document) {
 
     // iteration 3
     private var canvasBoard: HTMLCanvasElement
+
+    // iteration 4
+    private var dice: HTMLAudioElement;
+
 
     init {
         this.document = document
@@ -68,6 +72,11 @@ class UrPageObject(document: Document) {
 
         // iteration 3
         this.canvasBoard = document.getElementById(PageConstants.CANVAS_BOARD_ID)!! as HTMLCanvasElement
+
+        // iteration 4
+        this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
+
+
     }
 
     //  -----------------
@@ -101,6 +110,10 @@ class UrPageObject(document: Document) {
     }
 
     fun findCanvasBoard(): HTMLCanvasElement {
-        return this.canvasBoard;
+        return this.canvasBoard
+    }
+
+    fun findDice(): HTMLAudioElement {
+        return this.dice
     }
 }

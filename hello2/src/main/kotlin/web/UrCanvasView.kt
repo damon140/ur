@@ -93,15 +93,16 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     fun updateBoard(playArea: PlayArea) {
-        val squares: List<Pair<Int, Int>> = Square.drawableSquares()
-            .map { s -> squarePairMap.get(s)!! }
-        drawBlanks(canvas, squares)
+        drawBlanks()
 
         // TODO: add doubles and safe square
 
-
         playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white) }
         playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black) }
+
+        // TODO: move to better place?
+        pageObject.findDice().play()
+        console.log("played sound")
     }
 
     private fun drawOnBoardCounter(square: Square, team: Team) {
@@ -142,7 +143,6 @@ class UrCanvasView(pageObject: UrPageObject) {
 
             //squarePairMap.values.filter {  }
 
-
             val clientX = e.clientX
             val clientY = e.clientY
             console.log("x: $clientX")
@@ -169,10 +169,20 @@ class UrCanvasView(pageObject: UrPageObject) {
         this.canvas.clearRect(0.0, 0.0, 350.0, 400.0 );
     }
 
-    private fun drawBlanks(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
-        squares.forEach { e ->
-            ctx.clearRect(50.0 * e.first + 1, 50.0 * e.second + 1, 48.0, 48.0)
-        }
+    private fun drawBlanks() {
+        Square.drawableSquares()
+            .map { s ->
+                val square = squarePairMap.get(s)!!
+
+                // TODO: find correct colour via new fn
+                if (s.rollAgain()) {
+                    canvas.fillStyle = if (s.isSafeSquare) "green" else "yellow"
+                } else {
+                    canvas.fillStyle = "white"
+                }
+
+                canvas.fillRect(50.0 * square.first + 1, 50.0 * square.second + 1, 48.0, 48.0)
+            }
     }
 
 }
