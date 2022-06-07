@@ -52,23 +52,19 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
-        drawUnstarted(unstartedCount, white)
-        drawFinished(completedCount, white)
+        drawOffboardCounters(unstartedCount, completedCount, white)
     }
 
     fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
-        drawUnstarted(unstartedCount, black)
-        drawFinished(completedCount, black)
+        drawOffboardCounters(unstartedCount, completedCount, black)
     }
 
-    private fun drawUnstarted(count: Int, team: Team) {
-        val lambda: (Int) -> Int = { y: Int -> y }
-        drawOffboardCounters(team, count, lambda)
-    }
+    private fun drawOffboardCounters(unstarted: Int, finished: Int, team: Team) {
+        var lambda: (Int) -> Int = { y: Int -> y }
+        drawOffboardCounters(team, unstarted, lambda)
 
-    private fun drawFinished(count: Int, team: Team) {
-        val lambda: (Int) -> Int = { y: Int -> 400 - y }
-        drawOffboardCounters(team, count, lambda)
+        lambda = { y: Int -> 400 - y }
+        drawOffboardCounters(team, finished, lambda)
     }
 
     private fun drawOffboardCounters(team: Team, count: Int, lambda: (Int) -> Int) {
