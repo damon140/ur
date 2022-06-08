@@ -9,6 +9,7 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
+import kotlin.math.floor
 
 class UrCanvasView(pageObject: UrPageObject) {
     private val pageObject: UrPageObject
@@ -20,6 +21,7 @@ class UrCanvasView(pageObject: UrPageObject) {
     init {
         this.pageObject = pageObject
         this.htmlCanvasElement = pageObject.findCanvasBoard()
+
         this.canvas = htmlCanvasElement.getContext("2d") as CanvasRenderingContext2D
 
         this.squarePairMap = mapOf(
@@ -132,26 +134,28 @@ class UrCanvasView(pageObject: UrPageObject) {
 
     }
 
-    fun drawGrid() {
+    // TODO: add moves
+    fun drawGrid(continueFunction: () -> Unit) {
 
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
 
         drawSquares(canvas, squares)
 
-        htmlCanvasElement.onclick = { e: MouseEvent ->
+        htmlCanvasElement.onclick = { event: MouseEvent ->
+            val clientX = event.clientX
+            val clientY = event.clientY
 
-            //squarePairMap.values.filter {  }
+            var rect = this.htmlCanvasElement.getBoundingClientRect()
+            val xIndex = floor((clientX  - rect.left)/ 50).toInt()
+            val yIndex = floor((clientY -  rect.top)/ 50).toInt()
+            console.log("x ind: $xIndex, y ind: $yIndex")
 
-            val clientX = e.clientX
-            val clientY = e.clientY
-            console.log("x: $clientX")
-            console.log("y: $clientY")
+            val clickedSquare = squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
+                .map { entry -> entry.key }
+                .first()
+            console.log("clicked square is $clickedSquare")
 
-            val xIndex = clientX / 50
-            val yIndex = clientY / 50
-            console.log("x ind: $xIndex")
-            console.log("y ind: $yIndex")
 
             this
         }

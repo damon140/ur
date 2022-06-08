@@ -75,7 +75,7 @@ class WebGame {
             urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urHtmlView.updateBoard(vertBoard)
-            urHtmlView.updateInstructions(currentTeam, roll, moves) {
+            val continueFunction = {
                 if (0 == roll || moves.isEmpty()) {
                     // skip processing of human roll, nothing to do
                     playUr(roll, false)
@@ -84,12 +84,13 @@ class WebGame {
                     playUr(roll, true)
                 }
             }
+            urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
 
             // UI iteration 3!
-            // FIXME: want a new 3 layer canvas based web view??
-            // https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers
             urCanvasView.blank();
-            urCanvasView.drawGrid()
+
+            urCanvasView.drawGrid(continueFunction)
+
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
