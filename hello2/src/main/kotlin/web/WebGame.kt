@@ -70,12 +70,12 @@ class WebGame {
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
-            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
 
-            // UI iteration 2
-            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
-            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
-            urHtmlView.updateBoard(vertBoard)
+//            // UI iteration 2
+//            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
+//            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
+//            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
+//            urHtmlView.updateBoard(vertBoard)
             val continueFunction = {
                 if (0 == roll || moves.isEmpty()) {
                     // skip processing of human roll, nothing to do
@@ -85,6 +85,8 @@ class WebGame {
                     playUr(roll, true)
                 }
             }
+
+            // TODO: split to new shared view object
             urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
 
             // UI iteration 3!
