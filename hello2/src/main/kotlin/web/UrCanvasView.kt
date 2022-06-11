@@ -154,18 +154,31 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val yIndex = floor((clientY -  rect.top)/ 50).toInt()
             console.log("x ind: $xIndex, y ind: $yIndex")
 
-            // FIXME: is not null safe & crashes??
-            val clickedSquare = squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
-                .map { entry -> entry.key }
-                .first()
+            val matchingSquairPairsList = squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
+            val size = matchingSquairPairsList.size
+            console.log("matching list size " + size);
+
+            var clickedSquare:Square? = null;
+            if (0 != size) {
+                clickedSquare = matchingSquairPairsList
+                    .map { entry -> entry.key }
+                    .first()
+            } else if (yIndex < 4) {
+                // off board unstarted
+                clickedSquare = off_board_unstarted
+            }
+
             console.log("clicked square is $clickedSquare")
             console.log("move for clicked square: " + moves.containsKey(clickedSquare))
 
-            for ((index, entry) in moves.entries.withIndex()) {
-                if (entry.key == clickedSquare) {
-                    lastMove.setLastChosen((index + 1).toString())
-                    // run continue function here
-                    continueFunction()
+            if (null != clickedSquare) {
+                console.log("trying to match move")
+                for ((index, entry) in moves.entries.withIndex()) {
+                    if (entry.key == clickedSquare) {
+                        lastMove.setLastChosen((index + 1).toString())
+                        // run continue function here
+                        continueFunction()
+                    }
                 }
             }
 
