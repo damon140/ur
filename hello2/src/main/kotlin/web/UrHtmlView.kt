@@ -1,22 +1,23 @@
 package web
 
-import com.damon140.ur.HorizontalDrawnBoard
-import com.damon140.ur.HorizontalDrawnBoard.*
 import com.damon140.ur.Square
-import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import kotlinx.browser.document
 import kotlinx.html.span
 import kotlinx.html.stream.createHTML
-import org.w3c.dom.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLLIElement
+import org.w3c.dom.HTMLParagraphElement
+import org.w3c.dom.HTMLUListElement
 import org.w3c.dom.events.Event
 
-class UrHtmlView(pageObject: UrPageObject) {
+class UrHtmlView(lastMove: LastMove, pageObject: UrPageObject) {
     private val pageObject: UrPageObject
-    private var lastChosen: String = ""
+    private var lastMove: LastMove
 
     init {
         this.pageObject = pageObject
+        this.lastMove = lastMove
     }
 
     fun updateWhiteCounters(unstarted: Int, completed: Int) {
@@ -53,24 +54,6 @@ class UrHtmlView(pageObject: UrPageObject) {
         return element.map { e -> "<span class=\"squary\">$e</span>" }.joinToString("")
     }
 
-    fun clearLastChosen() {
-        this.lastChosen = ""
-    }
-
-    fun hasLastChosen(): Boolean {
-        console.log("lastChosen is [" + this.lastChosen + "]")
-        console.log("lastChosen length is " + this.lastChosen.length)
-        return this.lastChosen.isNotEmpty()
-    }
-
-    fun getLastChosen(): String {
-        return lastChosen
-    }
-
-    private fun setLastChosen(newValue: String) {
-        this.lastChosen = newValue
-        console.log("Last chosen is now " + this.lastChosen)
-    }
 
     fun updateInstructions(team: Team, roll: Int, moves: Map<Square, Square?>, continueFunction: () -> Unit) {
         val instructionsDiv = pageObject.findInstructionsDiv()
@@ -102,7 +85,7 @@ class UrHtmlView(pageObject: UrPageObject) {
 
                 val callback: (Event) -> Unit = {
                     console.log("Clicked on button!")
-                    setLastChosen((index + 1).toString())
+                    lastMove.setLastChosen((index + 1).toString())
 
                     // run continue function here
                     continueFunction()

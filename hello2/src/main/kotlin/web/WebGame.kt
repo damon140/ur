@@ -13,6 +13,7 @@ class WebGame {
     private var urHtmlView: UrHtmlView
     private var urCanvasView: UrCanvasView
     private var playerSetup: PlayerSetup
+    private var lastMove: LastMove = LastMove()
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier>
 
     init {
@@ -33,11 +34,11 @@ class WebGame {
         console.log("Full board: $f")
 
         this.pageObject = UrPageObject(document)
-        this.urHtmlView = UrHtmlView(pageObject)
-        this.urCanvasView = UrCanvasView(pageObject)
+        this.urHtmlView = UrHtmlView(lastMove, pageObject)
+        this.urCanvasView = UrCanvasView(lastMove, pageObject)
 
         // TODO: add UI bobs to constructor
-        this.playerSetup = PlayerSetup(this.urHtmlView)
+        this.playerSetup = PlayerSetup(lastMove, this.urHtmlView)
 
         // TODO: maybe not a member??
         this.moveSuppliers = HashMap()
@@ -65,7 +66,7 @@ class WebGame {
                 roll = humansRoll
             } else {
                 roll = dice.roll()
-                urHtmlView.clearLastChosen()
+                lastMove.clearLastChosen()
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
@@ -89,7 +90,7 @@ class WebGame {
             // UI iteration 3!
             urCanvasView.blank();
 
-            urCanvasView.drawGrid(continueFunction)
+            urCanvasView.drawGrid(moves, continueFunction)
 
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))

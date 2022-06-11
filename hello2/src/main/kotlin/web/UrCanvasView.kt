@@ -7,11 +7,13 @@ import com.damon140.ur.Team
 import com.damon140.ur.Team.*
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
 import kotlin.math.floor
 
-class UrCanvasView(pageObject: UrPageObject) {
+class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
+    private val lastMove: LastMove
     private val pageObject: UrPageObject
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
@@ -19,6 +21,7 @@ class UrCanvasView(pageObject: UrPageObject) {
     private val squarePairMap: Map<Square, Pair<Int, Int>>
 
     init {
+        this.lastMove = lastMove
         this.pageObject = pageObject
         this.htmlCanvasElement = pageObject.findCanvasBoard()
 
@@ -135,7 +138,7 @@ class UrCanvasView(pageObject: UrPageObject) {
     }
 
     // TODO: add moves
-    fun drawGrid(continueFunction: () -> Unit) {
+    fun drawGrid(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
@@ -151,11 +154,20 @@ class UrCanvasView(pageObject: UrPageObject) {
             val yIndex = floor((clientY -  rect.top)/ 50).toInt()
             console.log("x ind: $xIndex, y ind: $yIndex")
 
+            // FIXME: is not null safe & crashes??
             val clickedSquare = squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
                 .map { entry -> entry.key }
                 .first()
             console.log("clicked square is $clickedSquare")
+            console.log("move for clicked square: " + moves.containsKey(clickedSquare))
 
+            for ((index, entry) in moves.entries.withIndex()) {
+                if (entry.key == clickedSquare) {
+                    lastMove.setLastChosen((index + 1).toString())
+                    // run continue function here
+                    continueFunction()
+                }
+            }
 
             this
         }

@@ -3,11 +3,13 @@ package web
 import com.damon140.ur.Square
 import com.damon140.ur.Team
 
-class PlayerSetup(urView: UrHtmlView) {
+class PlayerSetup(lastMove: LastMove, urView: UrHtmlView) {
 
+    private val lastMove: LastMove
     private val urView: UrHtmlView
 
     init {
+        this.lastMove = lastMove
         this.urView = urView
     }
 
@@ -37,11 +39,11 @@ class PlayerSetup(urView: UrHtmlView) {
 
     private inner class HtmlSupplier : InputSupplier {
         override fun waitForPlayer(): Boolean {
-            return !urView.hasLastChosen()
+            return !lastMove.hasLastChosen()
         }
 
         override fun choose(moves: Map<Square, Square>): String {
-            return urView.getLastChosen()
+            return lastMove.getLastChosen()
         }
     }
 
