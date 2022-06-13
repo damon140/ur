@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>JS Client</title>
-</head>
-<body>
-<script src="hello2.js"></script>
 
-<style>
+    <style>
     div#white-counters2 {
         display: inline-block;
         background-color: lightblue;
@@ -32,12 +29,36 @@
         padding: 0; /* Remove padding */
         margin: 0; /* Remove margins */
     }
+
+    span#roll-white, span#roll-black {
+        font-size: 40px;
+        font-family: monospace;
+    }
+
+    span#roll-space1 {
+        width: 50px;
+        display: inline-block;
+    }
+
+    span#roll-space2 {
+        width: 200px;
+        display: inline-block;
+    }
 }
 
 </style>
 
-<!-- TODO: draw w/ Kotlin HTML DSL -->
+</head>
+<body>
+<!-- Transpiled kotlin here -->
+<script src="hello2.js"></script>
+
 <div id="play-area-wrapper">
+
+
+    <!--
+    UI Iteration 3
+    -->
     <div id="white-counters2">
         <div id="white-unstarted">
         </div>
@@ -60,9 +81,20 @@
         <div id="black-finished">
         </div>
     </div>
+
     <div id="root"></div>
 
 
+    <!--
+    UI Iteration 3
+    -->
+
+
+    <!-- TODO: want roll and skip button -->
+    <!-- new component for this one -->
+    <div>
+        <span id="roll-space1"></span><span id="roll-white">3</span><span id="roll-space2">space</span><span id="roll-black">3</span>
+    </div>
     <div>
         <canvas id="canvas-board" width="350" height="400">
         </canvas>

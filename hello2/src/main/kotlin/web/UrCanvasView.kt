@@ -7,7 +7,7 @@ import com.damon140.ur.Team
 import com.damon140.ur.Team.*
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.events.Event
+import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
 import kotlin.math.floor
@@ -110,6 +110,23 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         console.log("played sound")
     }
 
+    fun updateInstructions(currentTeam: Team, roll: Int) {
+        val spanToUpdate: HTMLSpanElement
+        val spanToBlank: HTMLSpanElement
+        if (white == currentTeam) {
+            spanToUpdate = pageObject.findRollWhite()
+            spanToBlank = pageObject.findRollBlack()
+        } else {
+            spanToUpdate = pageObject.findRollBlack()
+            spanToBlank = pageObject.findRollWhite()
+        }
+
+        spanToUpdate.innerText = "" + roll
+        spanToBlank.innerText = ""
+
+        // TODO need button for skip turn
+    }
+
     private fun drawOnBoardCounter(square: Square, team: Team) {
         val s1 = squarePairMap.get(square)!!
 
@@ -133,10 +150,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.stroke();
     }
 
-    fun updateInstructions() {
-
-    }
-
     // TODO: add moves
     fun drawGrid(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
@@ -150,15 +163,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val clientY = event.clientY
 
             var rect = this.htmlCanvasElement.getBoundingClientRect()
-            val xIndex = floor((clientX  - rect.left)/ 50).toInt()
-            val yIndex = floor((clientY -  rect.top)/ 50).toInt()
+            val xIndex = floor((clientX - rect.left) / 50).toInt()
+            val yIndex = floor((clientY - rect.top) / 50).toInt()
             console.log("x ind: $xIndex, y ind: $yIndex")
 
-            val matchingSquairPairsList = squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
+            val matchingSquairPairsList =
+                squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
             val size = matchingSquairPairsList.size
             console.log("matching list size " + size);
 
-            var clickedSquare:Square? = null;
+            var clickedSquare: Square? = null;
             if (0 != size) {
                 clickedSquare = matchingSquairPairsList
                     .map { entry -> entry.key }
@@ -195,7 +209,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun blank() {
-        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0 );
+        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0);
     }
 
     private fun drawBlanks() {

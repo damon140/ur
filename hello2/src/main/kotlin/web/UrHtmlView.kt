@@ -2,13 +2,11 @@ package web
 
 import com.damon140.ur.Square
 import com.damon140.ur.Team
+import com.damon140.ur.Team.*
 import kotlinx.browser.document
 import kotlinx.html.span
 import kotlinx.html.stream.createHTML
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLLIElement
-import org.w3c.dom.HTMLParagraphElement
-import org.w3c.dom.HTMLUListElement
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
 
 class UrHtmlView(lastMove: LastMove, pageObject: UrPageObject) {
@@ -54,19 +52,35 @@ class UrHtmlView(lastMove: LastMove, pageObject: UrPageObject) {
         return element.map { e -> "<span class=\"squary\">$e</span>" }.joinToString("")
     }
 
+    // FIXME: extract to new class??
+    fun updateRoll(team: Team, roll: Int) {
+        // switch to new thingy
+        val instructionsDiv = pageObject.findInstructionsDiv()
+
+        // blank both
+
+        if (white == team) {
+            // choose left element
+
+        } else {
+            // pick right element
+
+        }
+
+        val p = document.createElement("div") as HTMLDivElement
+        p.innerHTML = team.name + " (you) rolled " + roll
+        instructionsDiv.appendChild(p)
+    }
 
     fun updateInstructions(team: Team, roll: Int, moves: Map<Square, Square?>, continueFunction: () -> Unit) {
         val instructionsDiv = pageObject.findInstructionsDiv()
-        if (null != instructionsDiv.firstChild) {
-            instructionsDiv.removeChild(instructionsDiv.firstChild!!)
-        }
-        if (null != instructionsDiv.firstChild) {
-            instructionsDiv.removeChild(instructionsDiv.firstChild!!)
-        }
 
-        val p = document.createElement("p") as HTMLParagraphElement
-        p.innerText = team.name + " (you) rolled " + roll
-        instructionsDiv.appendChild(p)
+        if (null != instructionsDiv.firstChild) {
+            instructionsDiv.removeChild(instructionsDiv.firstChild!!)
+        }
+        if (null != instructionsDiv.firstChild) {
+            instructionsDiv.removeChild(instructionsDiv.firstChild!!)
+        }
 
         val ul = document.createElement("ul") as HTMLUListElement
         instructionsDiv.appendChild(ul)

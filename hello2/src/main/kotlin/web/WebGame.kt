@@ -5,60 +5,28 @@ import kotlinx.browser.document
 
 class WebGame {
 
-    private var dice: Dice = Dice()
-    private var playArea: PlayArea
-    private var ur: Ur
-    private var horizontalDrawnBoard: HorizontalDrawnBoard
-    private var pageObject: UrPageObject
-    private var urHtmlView: UrHtmlView
-    private var urCanvasView: UrCanvasView
-    private var playerSetup: PlayerSetup
-    private var lastMove: LastMove = LastMove()
-    private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier>
+    private val dice = Dice()
+    private val playArea = PlayArea()
+    private var lastMove = LastMove()
+    private val ur: Ur = Ur(playArea)
+    //private val horizontalDrawnBoard = HorizontalDrawnBoard(playArea)
+    private var pageObject = UrPageObject(document)
+    private var urHtmlView = UrHtmlView(lastMove, pageObject)
+    private var urCanvasView = UrCanvasView(lastMove, pageObject)
+    // TODO: impl player setup
+    private var playerSetup: PlayerSetup = PlayerSetup(lastMove, this.urHtmlView)
+    private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier> = hashMapOf(
+        Team.white to playerSetup.getPlayer(Team.white),
+        Team.black to playerSetup.getPlayer(Team.black)
+    )
 
-    init {
-        console.log("rolled " + dice.roll())
-
-        this.playArea = PlayArea()
-        console.log("made play area")
-
-        this.ur = Ur(playArea)
-        console.log("made ur")
-
-        console.log("will make a board")
-        this.horizontalDrawnBoard = HorizontalDrawnBoard(playArea)
-
-        console.log("made a board")
-
-        val f = horizontalDrawnBoard.fullBoard()
-        console.log("Full board: $f")
-
-        this.pageObject = UrPageObject(document)
-        this.urHtmlView = UrHtmlView(lastMove, pageObject)
-        this.urCanvasView = UrCanvasView(lastMove, pageObject)
-
-        // TODO: add UI bobs to constructor
-        this.playerSetup = PlayerSetup(lastMove, this.urHtmlView)
-
-        // TODO: maybe not a member??
-        this.moveSuppliers = HashMap()
-        moveSuppliers.put(Team.white, playerSetup.getPlayer(Team.white))
-        moveSuppliers.put(Team.black, playerSetup.getPlayer(Team.black))
-
-        setupAndPlayUr()
-    }
-
-    private fun setupAndPlayUr() {
-        // player setup
-
-
-        // run a game
+    fun play() {
         playUr(0, false)
     }
 
-    private fun playUr(humansRoll:Int, isCallBackIn:Boolean) {
+    private fun playUr(humansRoll: Int, isCallBackIn: Boolean) {
         var isCallBack = isCallBackIn
-        while(true) {
+        while (true) {
             val currentTeam = ur.currentTeam()
             var roll: Int
 
@@ -70,12 +38,6 @@ class WebGame {
             }
 
             val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
-
-//            // UI iteration 2
-//            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
-//            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
-//            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
-//            urHtmlView.updateBoard(vertBoard)
             val continueFunction = {
                 if (0 == roll || moves.isEmpty()) {
                     // skip processing of human roll, nothing to do
@@ -86,18 +48,23 @@ class WebGame {
                 }
             }
 
+//            // UI iteration 2
+//            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
+//            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
+//            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
+//            urHtmlView.updateBoard(vertBoard)
+
             // TODO: split to new shared view object
             urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
+            urHtmlView.updateRoll(currentTeam, roll)
 
             // UI iteration 3!
-            urCanvasView.blank();
-
+            urCanvasView.blank()
             urCanvasView.drawGrid(moves, continueFunction)
-
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
-            // urHtmlView.updateInstructions
+            urCanvasView.updateInstructions(currentTeam, roll)
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
 
@@ -108,12 +75,10 @@ class WebGame {
 
             val input = moveSupplier.choose(moves)
 
-            console.run {
+            console.log("Making turn of $currentTeam")
+            console.log("Moves are: ")
 
-                log("Making turn of $currentTeam")
-                log("Moves are: ")
-            }
-            moves.entries.forEach { e -> console.log(e.key.name + " -> " + e.value.name) }
+            //moves.entries.forEach { e -> console.log(e.key.name + " -> " + e.value.name) }
             console.log("player input was $input")
 
             if (0 == roll) {
@@ -144,4 +109,5 @@ class WebGame {
             isCallBack = false
         }
     }
+
 }
