@@ -110,7 +110,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         console.log("played sound")
     }
 
-    fun updateInstructions(currentTeam: Team, roll: Int) {
+    fun updateInstructions(currentTeam: Team, roll: Int, skip: Boolean) {
         val spanToUpdate: HTMLSpanElement
         val spanToBlank: HTMLSpanElement
         if (white == currentTeam) {
@@ -124,7 +124,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         spanToUpdate.innerText = "" + roll
         spanToBlank.innerText = ""
 
-        // TODO need button for skip turn
+        if (skip) {
+            // TODO need button for skip turn, copy from iteration 2
+        }
     }
 
     private fun drawOnBoardCounter(square: Square, team: Team) {

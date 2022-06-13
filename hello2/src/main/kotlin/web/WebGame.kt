@@ -64,7 +64,9 @@ class WebGame {
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
-            urCanvasView.updateInstructions(currentTeam, roll)
+            // TODO: add skip
+            val skip = moves.size == 0;
+            urCanvasView.updateInstructions(currentTeam, roll, skip)
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
 
