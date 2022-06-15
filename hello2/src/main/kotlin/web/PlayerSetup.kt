@@ -3,14 +3,12 @@ package web
 import com.damon140.ur.Square
 import com.damon140.ur.Team
 
-class PlayerSetup(lastMove: LastMove, urView: UrHtmlView) {
+class PlayerSetup(lastMove: LastMove) {
 
     private val lastMove: LastMove
-    private val urView: UrHtmlView
 
     init {
         this.lastMove = lastMove
-        this.urView = urView
     }
 
     interface InputSupplier {

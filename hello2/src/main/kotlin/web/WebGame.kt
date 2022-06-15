@@ -9,12 +9,10 @@ class WebGame {
     private val playArea = PlayArea()
     private var lastMove = LastMove()
     private val ur: Ur = Ur(playArea)
-    //private val horizontalDrawnBoard = HorizontalDrawnBoard(playArea)
     private var pageObject = UrPageObject(document)
-    private var urHtmlView = UrHtmlView(lastMove, pageObject)
     private var urCanvasView = UrCanvasView(lastMove, pageObject)
     // TODO: impl player setup
-    private var playerSetup: PlayerSetup = PlayerSetup(lastMove, this.urHtmlView)
+    private var playerSetup: PlayerSetup = PlayerSetup(lastMove)
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier> = hashMapOf(
         Team.white to playerSetup.getPlayer(Team.white),
         Team.black to playerSetup.getPlayer(Team.black)
@@ -48,20 +46,20 @@ class WebGame {
                 }
             }
 
-//            // UI iteration 2
-//            val vertBoard: List<String> = horizontalDrawnBoard.verticleBoard2()
-//            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
-//            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
-//            urHtmlView.updateBoard(vertBoard)
-//            urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
-//            urHtmlView.updateRoll(currentTeam, roll)
-
             // UI iteration 3!
             urCanvasView.blank()
             urCanvasView.drawGrid(moves, continueFunction)
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
+
+
+            // FIXME: need central event routing game thingy that checks for sound playing
+            //  HTMLMediaElement.paused
+
+
+            // FIXME: fix bug with taking other team's counter
+
             urCanvasView.updateInstructions(currentTeam, roll, continueFunction)
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
