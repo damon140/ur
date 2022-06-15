@@ -5,7 +5,9 @@ import com.damon140.ur.Square
 import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import com.damon140.ur.Team.*
+import kotlinx.browser.document
 import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.MouseEvent
@@ -110,7 +112,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         console.log("played sound")
     }
 
-    fun updateInstructions(currentTeam: Team, roll: Int, skip: Boolean) {
+    fun updateInstructions(currentTeam: Team, roll: Int, continueFunction: () -> Unit) {
         val spanToUpdate: HTMLSpanElement
         val spanToBlank: HTMLSpanElement
         if (white == currentTeam) {
@@ -123,9 +125,20 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         spanToUpdate.innerText = "" + roll
         spanToBlank.innerText = ""
+        val findRollSpace = pageObject.findRollSpace()
+        findRollSpace.innerText = "";
 
-        if (skip) {
-            // TODO need button for skip turn, copy from iteration 2
+        if (roll == 0) {
+
+            val button = document.createElement("button") as HTMLButtonElement
+            button.innerHTML = "You rolled zero, can't move, bummer!!"
+
+            button.addEventListener("click", {
+                console.log("Clicked on button!")
+                // run continue function here
+                continueFunction()
+            })
+            findRollSpace.append(button)
         }
     }
 

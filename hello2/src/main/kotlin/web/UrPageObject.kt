@@ -25,6 +25,7 @@ class UrPageObject(document: Document) {
         const val CANVAS_BOARD_ID = "canvas-board"
         const val ROLL_WHITE_ID = "roll-white"
         const val ROLL_BLACK_ID = "roll-black"
+        const val ROLL_SPACE_ID = "roll-space2"
 
         // ITERATION 4
         const val DICE_ID = "dice-audio";
@@ -50,6 +51,7 @@ class UrPageObject(document: Document) {
     private var canvasBoard: HTMLCanvasElement
     private var rollWhite: HTMLSpanElement
     private var rollBlack: HTMLSpanElement
+    private var rollSpace: HTMLSpanElement
 
     // iteration 4
     private var dice: HTMLAudioElement;
@@ -80,7 +82,7 @@ class UrPageObject(document: Document) {
         this.canvasBoard = document.getElementById(PageConstants.CANVAS_BOARD_ID)!! as HTMLCanvasElement
         this.rollWhite = document.getElementById(PageConstants.ROLL_WHITE_ID)!! as HTMLSpanElement
         this.rollBlack = document.getElementById(PageConstants.ROLL_BLACK_ID)!! as HTMLSpanElement
-
+        this.rollSpace = document.getElementById(PageConstants.ROLL_SPACE_ID)!! as HTMLSpanElement
 
         // iteration 4
         this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
@@ -126,6 +128,10 @@ class UrPageObject(document: Document) {
 
     fun findRollWhite(): HTMLSpanElement {
         return this.rollWhite
+    }
+
+    fun findRollSpace(): HTMLSpanElement {
+        return this.rollSpace
     }
 
     fun findRollBlack(): HTMLSpanElement {

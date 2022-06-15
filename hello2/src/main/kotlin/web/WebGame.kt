@@ -53,10 +53,8 @@ class WebGame {
 //            urHtmlView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
 //            urHtmlView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
 //            urHtmlView.updateBoard(vertBoard)
-
-            // TODO: split to new shared view object
-            urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
-            urHtmlView.updateRoll(currentTeam, roll)
+//            urHtmlView.updateInstructions(currentTeam, roll, moves, continueFunction)
+//            urHtmlView.updateRoll(currentTeam, roll)
 
             // UI iteration 3!
             urCanvasView.blank()
@@ -64,9 +62,7 @@ class WebGame {
             urCanvasView.updateWhiteCounters(playArea.unstartedCount(Team.white), playArea.completedCount(Team.white))
             urCanvasView.updateBlackCounters(playArea.unstartedCount(Team.black), playArea.completedCount(Team.black))
             urCanvasView.updateBoard(playArea)
-            // TODO: add skip
-            val skip = moves.size == 0;
-            urCanvasView.updateInstructions(currentTeam, roll, skip)
+            urCanvasView.updateInstructions(currentTeam, roll, continueFunction)
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
 
