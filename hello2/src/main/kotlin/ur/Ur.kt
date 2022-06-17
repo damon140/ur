@@ -75,7 +75,6 @@ class Ur(private val playArea: PlayArea) {
 
         if (!playArea.allStartedOrComplete(team)) {
             // start a new counter
-
             val v = canUseOrNull(team, Square.off_board_unstarted.calculateNewSquare(team, roll))
             if (null != v) {
                 moves[Square.off_board_unstarted] = v
@@ -83,9 +82,11 @@ class Ur(private val playArea: PlayArea) {
         }
 
         // current counters
+        // FIXME: move generation isn't returning taking moves???
         playArea.countersForTeam(team)
             .forEach { startSquare ->
-                val endSquare = canUseOrNull(team, startSquare.calculateNewSquare(team, roll))
+                val maybeEndSquare = startSquare.calculateNewSquare(team, roll)
+                val endSquare = canUseOrNull(team, maybeEndSquare)
                 if (null != endSquare) {
                     moves[startSquare] = endSquare
                 }
@@ -104,9 +105,10 @@ class Ur(private val playArea: PlayArea) {
         }
         // or other counter and not a safe square
         val occupantTeam = playArea[square]
-        return if (occupantTeam !== team && square.isSafeSquare) {
-            square
-        } else null
+        val otherTeamsSquare = occupantTeam != null && occupantTeam!! != team
+        val notASafeSquare = !square.isSafeSquare
+        return if (otherTeamsSquare && notASafeSquare)
+            square else null
     }
 }
 

@@ -173,7 +173,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.stroke();
     }
 
-    // TODO: add moves
     fun drawGrid(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
@@ -188,12 +187,12 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             var rect = this.htmlCanvasElement.getBoundingClientRect()
             val xIndex = floor((clientX - rect.left) / 50).toInt()
             val yIndex = floor((clientY - rect.top) / 50).toInt()
-            console.log("x ind: $xIndex, y ind: $yIndex")
+            //console.log("x ind: $xIndex, y ind: $yIndex")
 
             val matchingSquairPairsList =
                 squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
             val size = matchingSquairPairsList.size
-            console.log("matching list size " + size);
+            //console.log("matching list size " + size);
 
             var clickedSquare: Square? = null;
             if (0 != size) {
@@ -205,13 +204,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 clickedSquare = off_board_unstarted
             }
 
-            console.log("clicked square is $clickedSquare")
-            console.log("move for clicked square: " + moves.containsKey(clickedSquare))
+            console.log("move for clicked square $clickedSquare: ${moves.containsKey(clickedSquare)}")
+            console.log(moves.keys.joinToString(","))
 
             if (null != clickedSquare) {
-                console.log("trying to match move")
                 for ((index, entry) in moves.entries.withIndex()) {
                     if (entry.key == clickedSquare) {
+                        console.log("matched move of " + clickedSquare)
                         lastMove.setLastChosen((index + 1).toString())
                         // run continue function here
                         continueFunction()
