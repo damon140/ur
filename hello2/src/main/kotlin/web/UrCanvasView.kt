@@ -84,12 +84,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         // TODO: need grid thingy class w/ offsets around border
         (0..twosCount - 1).forEach { i ->
             val y = i * 50 + 25
-            counterLines += Pair(25 + baseX, lambda(y))
-            counterLines += Pair(75 + baseX, lambda(y))
+
+            // vary by team
+            val leftOffset = if (white == team) 25 else 50;
+            val rightOffset = if (white == team) 50 else 75;
+
+            counterLines += Pair(leftOffset + baseX, lambda(y))
+            counterLines += Pair(rightOffset + baseX, lambda(y))
         }
 
         if (1 == count % 2) {
-            val x = if (black == team) 25 else 75
+            val x = if (white == team) 25 else 75
             counterLines += Pair(x + baseX, lambda((twosCount * 50) + 25))
         }
 
@@ -157,11 +162,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.arc(x, y, 19.0, 0.0, 2 * PI);
         canvas.lineWidth = 3.0
 
+
         if (team == black) {
-            canvas.fill();
+            canvas.fillStyle = "green"
+        } else {
+            canvas.fillStyle = "white"
         }
 
-        canvas.fillStyle = "green"
+        canvas.fill();
         canvas.stroke();
     }
 

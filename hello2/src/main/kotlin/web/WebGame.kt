@@ -55,10 +55,10 @@ class WebGame {
 
 
             // FIXME: need central event routing game thingy that checks for sound playing
-            //  HTMLMediaElement.paused
+            // HTMLMediaElement.paused
 
 
-            // FIXME: fix bug with taking other team's counter
+            // FIXME: fix bug with taking other team's counter using console.log
 
             urCanvasView.updateInstructions(currentTeam, roll, continueFunction)
 
