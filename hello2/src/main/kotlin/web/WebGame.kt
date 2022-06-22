@@ -57,10 +57,7 @@ class WebGame {
             // FIXME: need central event routing game thingy that checks for sound playing
             // HTMLMediaElement.paused
 
-
-            // FIXME: fix bug with taking other team's counter using console.log
-
-            urCanvasView.updateInstructions(currentTeam, roll, continueFunction)
+            urCanvasView.updateInstructions(currentTeam, roll, moves.isEmpty(), continueFunction)
 
             val moveSupplier = moveSuppliers.get(currentTeam)!!
 
@@ -95,11 +92,13 @@ class WebGame {
             val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
 
             val result = ur.moveCounter(fromSquare, roll)
+            console.log("move result is" + result)
 
-            // FIXME: game over bug here for black
             if (result == Ur.MoveResult.gameOver) {
-                //System.out.println("Game won by " + playArea.currentTeam());
-                // TODO: add game alert here
+                console.log("Game won by")
+                urCanvasView.updateBoard(playArea)
+                urCanvasView.gameWon(currentTeam)
+
                 return
             }
             isCallBack = false

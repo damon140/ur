@@ -6,6 +6,7 @@ import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import com.damon140.ur.Team.*
 import kotlinx.browser.document
+import kotlinx.browser.window
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLCanvasElement
@@ -117,7 +118,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         console.log("played sound")
     }
 
-    fun updateInstructions(currentTeam: Team, roll: Int, continueFunction: () -> Unit) {
+    fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
         val spanToUpdate: HTMLSpanElement
         val spanToBlank: HTMLSpanElement
         if (white == currentTeam) {
@@ -134,7 +135,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         findRollSpace.innerText = "";
 
         if (roll == 0) {
-
             val button = document.createElement("button") as HTMLButtonElement
             button.innerHTML = "You rolled zero, can't move, bummer!!"
 
@@ -144,7 +144,36 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 continueFunction()
             })
             findRollSpace.append(button)
+        } else if (zeroMoves) {
+            val button = document.createElement("button") as HTMLButtonElement
+            button.innerHTML = "All moves blocked, bummer!!"
+
+            button.addEventListener("click", {
+                console.log("Clicked on button!")
+                // run continue function here
+                continueFunction()
+            })
+            findRollSpace.append(button)
         }
+    }
+
+    fun gameWon(currentTeam: Team) {
+        // black rolls
+        pageObject.findRollWhite().innerHTML = "";
+        pageObject.findRollBlack().innerHTML = "";
+
+        val button = document.createElement("button") as HTMLButtonElement
+        button.innerHTML = "Game won by " + currentTeam + ". Click to restart";
+
+        button.addEventListener("click", {
+            console.log("reloading")
+            window.location.reload()
+            // FIXME: or playArea.reset??
+        })
+
+        val findRollSpace = pageObject.findRollSpace()
+        findRollSpace.innerText = "";
+        findRollSpace.append(button)
     }
 
     private fun drawOnBoardCounter(square: Square, team: Team) {
@@ -249,5 +278,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 canvas.fillRect(50.0 * square.first + 1, 50.0 * square.second + 1, 48.0, 48.0)
             }
     }
+
+
+
 
 }
