@@ -15,13 +15,13 @@ for fancier work than here.
 
 ## TODO List
 
-* Java to JavaScript translate build step
-* Write HTML playable
 * Use git public website branch feature to allow internet play
 * Write a second "AI"
 
 ## Done List
 
+* ~~Kotlin to JavaScript translate build step~~
+* ~~Write HTML playable~~
 * ~~README blubs~~
 * ~~computer can play itself~~
 * ~~Console game~~
