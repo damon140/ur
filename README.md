@@ -1,5 +1,7 @@
 # ur
 
+[Play this code here](https://damon140.github.io/ur/)
+
 This is a simple implementation of the Royal Game of Ur, which is an ancient game that was
 played about 5,000 years ago in the Sumerian/ Arkadian empire
 [see history on youtube.](https://www.youtube.com/watch?v=d2lJUOv0hLA)
@@ -15,11 +17,13 @@ for fancier work than here.
 
 ## TODO List
 
-* Use git public website branch feature to allow internet play
+* mobile CSS
 * Write a second "AI"
+* game loop so play isn't instantaneous
 
 ## Done List
 
+* ~~Use git public website branch feature to allow internet play~~
 * ~~Kotlin to JavaScript translate build step~~
 * ~~Write HTML playable~~
 * ~~README blubs~~
