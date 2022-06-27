@@ -14,6 +14,7 @@ class PlayerSetup(lastMove: LastMove) {
     interface InputSupplier {
         fun waitForPlayer(): Boolean
         fun choose(moves: Map<Square, Square>): String
+        fun isHuman(): Boolean
     }
 
     fun getPlayer(team: Team): InputSupplier {
@@ -43,6 +44,10 @@ class PlayerSetup(lastMove: LastMove) {
         override fun choose(moves: Map<Square, Square>): String {
             return lastMove.getLastChosen()
         }
+
+        override fun isHuman(): Boolean {
+            return true
+        }
     }
 
     private inner class BadAi1 : InputSupplier {
@@ -53,6 +58,10 @@ class PlayerSetup(lastMove: LastMove) {
         override fun choose(unused: Map<Square, Square>): String {
             // always take the first move
             return "1"
+        }
+
+        override fun isHuman(): Boolean {
+            return false
         }
     }
 
