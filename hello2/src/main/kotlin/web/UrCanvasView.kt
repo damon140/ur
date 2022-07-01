@@ -59,11 +59,55 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         )
     }
 
-    fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
+    fun drawShowRollButton(playArea: PlayArea, continueFunction: () -> Unit) {
+        blank()
+        // FIXME: make draw grid variant without moves??
+        drawGrid()
+
+        updateWhiteCounters(playArea.unstartedCount(white), playArea.completedCount(white))
+        updateBlackCounters(playArea.unstartedCount(black), playArea.completedCount(black))
+        updateBoard(playArea)
+
+        // instructions
+        val findRollSpace = pageObject.findRollSpace()
+        findRollSpace.innerText = "";
+
+         val button = document.createElement("button") as HTMLButtonElement
+         button.innerHTML = "Click to roll"
+         button.addEventListener("click", {
+             console.log("Clicked on button!")
+
+             // TODO: play sound here and add timeout fn to run callback, wrap callbacks
+
+             // run continue function here
+             continueFunction()
+         })
+         findRollSpace.append(button)
+    }
+
+    fun drawMost(playArea: PlayArea) {
+        blank()
+        drawGrid()
+
+        updateWhiteCounters(playArea.unstartedCount(white), playArea.completedCount(white))
+        updateBlackCounters(playArea.unstartedCount(black), playArea.completedCount(black))
+        updateBoard(playArea)
+    }
+
+    fun drawAll(currentTeam: Team, roll: Int, moves: Map<Square, Square>, playArea: PlayArea, continueFunction: () -> Unit) {
+        drawMost(playArea)
+
+        attachClickHandler(moves, continueFunction)
+
+        updateInstructions(currentTeam, roll, moves.isEmpty(), continueFunction)
+    }
+
+
+    private fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
         drawOffboardCounters(unstartedCount, completedCount, white)
     }
 
-    fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
+    private fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
         drawOffboardCounters(unstartedCount, completedCount, black)
     }
 
@@ -100,7 +144,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
 
         counterLines.forEach { p ->
-            console.log("Drawing pair $p.first, $p.second")
+            //console.log("Drawing pair $p.first, $p.second")
             drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team)
         }
     }
@@ -108,17 +152,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     fun updateBoard(playArea: PlayArea) {
         drawBlanks()
 
-        // TODO: add doubles and safe square
-
         playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white) }
         playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black) }
-
-        // TODO: move to better place?
-        pageObject.findDice().play()
-        console.log("played sound")
     }
 
-    fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
+    private fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
         val spanToUpdate: HTMLSpanElement
         val spanToBlank: HTMLSpanElement
         if (white == currentTeam) {
@@ -202,12 +240,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.stroke();
     }
 
-    fun drawGrid(moves: Map<Square, Square>, continueFunction: () -> Unit) {
-
+    fun drawGrid() {
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
 
         drawSquares(canvas, squares)
+    }
+
+    fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
         htmlCanvasElement.onclick = { event: MouseEvent ->
             val clientX = event.clientX
@@ -278,8 +318,5 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 canvas.fillRect(50.0 * square.first + 1, 50.0 * square.second + 1, 48.0, 48.0)
             }
     }
-
-
-
 
 }
