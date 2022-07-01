@@ -57,30 +57,30 @@ class WebGame {
     // m02 wait for roll button to be clicked *
     private fun playM0102() {
         // FIXME: pass in roll
-
         val continueFunction = {
             // FIXME: get roll in callback, need a different callback thingy
             // FIXME: set roll as member var
             console.log("About to run continue function from roll")
-
-            playMbbbb()
+            playM0304()
         }
 
         if (currentPlayerIsHuman()) {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
-
             console.log("FIXME: do robot thinking UI here")
-
-            playMbbbb()
+            playM0304()
         }
-
     }
 
-    // M03
-    //         // TODO: move to better place?
-    //        pageObject.findDice().play()
-    //        console.log("played sound")
+    // m03 play sound
+    // m04 set interval callback to m05
+    private fun playM0304() {
+        // TODO: add lambda input
+        urCanvasView.playDiceRoll()
+
+        playMbbbb()
+    }
+
 
     private fun playMbbbb() {
         //var isCallBack = isCallBack
@@ -89,13 +89,6 @@ class WebGame {
 
         // TODO: push value into object
         this.roll = dice.roll()
-
-//        if (isCallBack) {
-//            roll = humansRoll
-//        } else {
-//            roll = dice.roll()
-//            lastMove.clearLastChosen()
-//        }
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
         val continueFunction = {
@@ -132,14 +125,12 @@ class WebGame {
         var skipTurn = 0 == roll || moves.isEmpty()
 
         if (skipTurn) {
-            // FIXME: this is skipping blacks turn somehow??
             ur.skipTurn(roll)
             urCanvasView.drawMost(playArea)
 
             val currentTeam2 = ur.currentTeam();
-            val sameTeam = currentTeam2 == currentTeam;
+            //val sameTeam = currentTeam2 == currentTeam;
 
-            // FIXME: damon, is this infinite looping?
             playM0102()
             return
         }

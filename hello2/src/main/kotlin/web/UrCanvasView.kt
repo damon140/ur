@@ -319,4 +319,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             }
     }
 
+    fun playDiceRoll() {
+        pageObject.findDice().play()
+        console.log("playing sound")
+
+        // TODO: clear and set event listener
+//
+//        document.querySelector("#music").addEventListener("ended", () => {
+//            console.log('ended')
+//        });
+
+
+
+    }
+
 }
