@@ -324,12 +324,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         console.log("playing sound")
 
         // TODO: clear and set event listener
-//
-//        document.querySelector("#music").addEventListener("ended", () => {
-//            console.log('ended')
-//        });
-
-
+        pageObject.findDice().addEventListener("ended", {
+            console.log("sound play ended");
+        })
 
     }
 

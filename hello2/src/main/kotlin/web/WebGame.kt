@@ -2,6 +2,7 @@ package web
 
 import com.damon140.ur.*
 import kotlinx.browser.document
+import kotlinx.browser.window
 
 class WebGame {
 
@@ -67,8 +68,12 @@ class WebGame {
         if (currentPlayerIsHuman()) {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
-            console.log("FIXME: do robot thinking UI here")
-            playM0304()
+            window.setTimeout(handler = {
+                // TODO: replace with Hmm sound/ event here
+                console.log("Robot finished thinking here")
+
+                playM0304()
+            }, timeout = 2000)
         }
     }
 
