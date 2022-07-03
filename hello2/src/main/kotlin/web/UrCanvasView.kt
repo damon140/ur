@@ -61,7 +61,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun drawShowRollButton(playArea: PlayArea, continueFunction: () -> Unit) {
         blank()
-        // FIXME: make draw grid variant without moves??
+        // TODO: can replace with draw most?
         drawGrid()
 
         updateWhiteCounters(playArea.unstartedCount(white), playArea.completedCount(white))
@@ -85,6 +85,12 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
          findRollSpace.append(button)
     }
 
+    fun drawRobotThinking(playArea: PlayArea) {
+        drawMost(playArea)
+        pageObject.findRollSpace().innerText = "AI is thinking"
+    }
+
+    // TODO: make private
     fun drawMost(playArea: PlayArea) {
         blank()
         drawGrid()

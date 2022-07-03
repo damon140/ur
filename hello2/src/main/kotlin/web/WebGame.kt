@@ -68,6 +68,7 @@ class WebGame {
         if (currentPlayerIsHuman()) {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
+            urCanvasView.drawRobotThinking(playArea)
             window.setTimeout(handler = {
                 // TODO: replace with Hmm sound/ event here
                 console.log("Robot finished thinking here")
