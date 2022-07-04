@@ -29,9 +29,7 @@ class UrPageObject(document: Document) {
 
         // ITERATION 4
         const val DICE_ID = "dice-audio";
-
-
-
+        const val HMM_ID = "hmm-audio";
     }
 
     // iteration 1
@@ -54,7 +52,8 @@ class UrPageObject(document: Document) {
     private var rollSpace: HTMLSpanElement
 
     // iteration 4
-    private var dice: HTMLAudioElement;
+    private var dice: HTMLAudioElement
+    private var hmm:  HTMLAudioElement
 
     init {
         this.document = document
@@ -86,7 +85,7 @@ class UrPageObject(document: Document) {
 
         // iteration 4
         this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
-
+        this.hmm = document.getElementById(PageConstants.HMM_ID)!! as HTMLAudioElement
 
     }
 
@@ -141,4 +140,9 @@ class UrPageObject(document: Document) {
     fun findDice(): HTMLAudioElement {
         return this.dice
     }
+
+    fun findHmm():  HTMLAudioElement {
+        return this.hmm
+    }
+
 }

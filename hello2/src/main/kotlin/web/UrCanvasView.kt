@@ -333,7 +333,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         pageObject.findDice().addEventListener("ended", {
             console.log("sound play ended");
         })
+    }
 
+    fun playHmm() {
+        pageObject.findHmm().play()
+        console.log("playing sound")
+
+        // TODO: clear and set event listener
+        pageObject.findDice().addEventListener("ended", {
+            console.log("sound play ended");
+        })
     }
 
 }

@@ -69,12 +69,17 @@ class WebGame {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
             urCanvasView.drawRobotThinking(playArea)
+            urCanvasView.playHmm()
+
             window.setTimeout(handler = {
                 // TODO: replace with Hmm sound/ event here
                 console.log("Robot finished thinking here")
 
+
                 playM0304()
-            }, timeout = 2000)
+
+                // timeout includes play time of sound
+            }, timeout = 3000)
         }
     }
 
