@@ -20,6 +20,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private val pageObject: UrPageObject
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
+    private var animateIntervalHandle = 0;
 
     private val squarePairMap: Map<Square, Pair<Int, Int>>
 
@@ -70,7 +71,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         // instructions
         val findRollSpace = pageObject.findRollSpace()
-        findRollSpace.innerText = "";
+        findRollSpace.innerText = ""
 
          val button = document.createElement("button") as HTMLButtonElement
          button.innerHTML = "Click to roll"
@@ -203,11 +204,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun gameWon(currentTeam: Team) {
         // black rolls
-        pageObject.findRollWhite().innerHTML = "";
-        pageObject.findRollBlack().innerHTML = "";
+        pageObject.findRollWhite().innerHTML = ""
+        pageObject.findRollBlack().innerHTML = ""
 
         val button = document.createElement("button") as HTMLButtonElement
-        button.innerHTML = "Game won by " + currentTeam + ". Click to restart";
+        button.innerHTML = "Game won by " + currentTeam + ". Click to restart"
 
         button.addEventListener("click", {
             console.log("reloading")
@@ -216,7 +217,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         })
 
         val findRollSpace = pageObject.findRollSpace()
-        findRollSpace.innerText = "";
+        findRollSpace.innerText = ""
         findRollSpace.append(button)
     }
 
@@ -224,15 +225,15 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val s1 = squarePairMap.get(square)!!
 
         // TODO: need grid thingy class w/ offsets around border
-        val x = s1.first * 50.0 + 25;
-        val y = s1.second * 50.0 + 25;
+        val x = s1.first * 50.0 + 25
+        val y = s1.second * 50.0 + 25
 
         drawCounterByCoordinates(x, y, team)
     }
 
     private fun drawCounterByCoordinates(x: Double, y: Double, team: Team) {
-        canvas.beginPath();
-        canvas.arc(x, y, 19.0, 0.0, 2 * PI);
+        canvas.beginPath()
+        canvas.arc(x, y, 19.0, 0.0, 2 * PI)
         canvas.lineWidth = 3.0
 
 
@@ -242,8 +243,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             canvas.fillStyle = "white"
         }
 
-        canvas.fill();
-        canvas.stroke();
+        canvas.fill()
+        canvas.stroke()
     }
 
     fun drawGrid() {
@@ -269,7 +270,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val size = matchingSquairPairsList.size
             //console.log("matching list size " + size);
 
-            var clickedSquare: Square? = null;
+            var clickedSquare: Square? = null
             if (0 != size) {
                 clickedSquare = matchingSquairPairsList
                     .map { entry -> entry.key }
@@ -299,13 +300,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun drawSquares(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
         squares.forEach { e ->
-            ctx.beginPath();
-            ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0);
-            ctx.stroke();
+            ctx.beginPath()
+            ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0)
+            ctx.stroke()
         }
     }
 
-    fun blank() {
+    private fun blank() {
         this.canvas.clearRect(0.0, 0.0, 350.0, 400.0);
     }
 
@@ -331,7 +332,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         // TODO: clear and set event listener
         pageObject.findDice().addEventListener("ended", {
-            console.log("sound play ended");
+            console.log("sound play ended")
         })
     }
 
@@ -341,8 +342,44 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         // TODO: clear and set event listener
         pageObject.findDice().addEventListener("ended", {
-            console.log("sound play ended");
+            console.log("sound play ended")
         })
     }
+
+    fun animate(currentTeam: Team, fromSquare: Square, toSquare: Square) {
+        var squares = Square.calculateSquaresBetween(currentTeam, fromSquare, toSquare)
+        console.log("Will animate counter path $squares")
+
+        var oneSqaureAnim = 0
+        var currentSquare = squares.drop(1)
+
+        val handler = {
+            if (++oneSqaureAnim === 5) {
+                oneSqaureAnim = 0
+                currentSquare = squares.drop(1)
+            }
+            // TODO: draw here
+            //drawAnimatedSquare(currentTeam, oneSquareAnim, currentSquare)
+            // if (squares.isEmpty()) {
+            // window.clearInterval(this.animateIntervalHandle);
+            // }
+        }
+
+        //this.animateIntervalHandle = window.setInterval(handler, 100);
+    }
+
+//    fun tempRenderMethod() {
+//        var x = 0;
+//        val handler = {
+//            // Your logic here
+//            console.log("TODO: damon impl animation here " + x);
+//            if (++x === 5) {
+//                window.clearInterval(this.intervalID);
+//            }
+//        }
+//
+//        this.intervalID = window.setInterval(handler, 100);
+//    }
+//
 
 }

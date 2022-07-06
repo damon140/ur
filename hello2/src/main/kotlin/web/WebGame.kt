@@ -46,12 +46,8 @@ class WebGame {
     // m23 change player if needed
 
     fun play() {
-
-        playM0102();
-
-        console.log("Fell out of play loop");
-
-        //playTail(0, false)
+        playM0102()
+        console.log("Fell out of play method")
     }
 
     // m01 draw (show roll button)
@@ -120,7 +116,7 @@ class WebGame {
         }
     }
 
-    fun playM0ccc() {
+    private fun playM0ccc() {
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
@@ -133,14 +129,11 @@ class WebGame {
         //moves.entries.forEach { e -> console.log(e.key.name + " -> " + e.value.name) }
         //console.log("player input was $input")
 
-        var skipTurn = 0 == roll || moves.isEmpty()
+        val skipTurn = 0 == roll || moves.isEmpty()
 
         if (skipTurn) {
             ur.skipTurn(roll)
             urCanvasView.drawMost(playArea)
-
-            val currentTeam2 = ur.currentTeam();
-            //val sameTeam = currentTeam2 == currentTeam;
 
             playM0102()
             return
@@ -151,6 +144,11 @@ class WebGame {
 
         val result = ur.moveCounter(fromSquare, roll)
         console.log("move result is $result")
+
+        urCanvasView.animate(currentTeam, fromSquare, moves[fromSquare]!!)
+
+        // TODO: break here to new method and callback from animate above
+        // { playDddd() }
 
         if (result == Ur.MoveResult.gameOver) {
             console.log("Game won by $currentTeam")
@@ -165,7 +163,7 @@ class WebGame {
 
         urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
 
-        console.log("playM0ccc: Current team is " + ur.currentTeam());
+        console.log("playM0ccc: Current team is " + ur.currentTeam())
 
         // loop the game loop
         playM0102()
@@ -175,8 +173,7 @@ class WebGame {
     private fun currentPlayerIsHuman(): Boolean {
         val currentTeam = ur.currentTeam()
         val inputSupplier = moveSuppliers[currentTeam]!!
-        val human = inputSupplier.isHuman()
-        return human
+        return inputSupplier.isHuman()
     }
 
     private fun currentPlayerIsAi(): Boolean {
