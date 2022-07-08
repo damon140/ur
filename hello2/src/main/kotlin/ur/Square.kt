@@ -10,7 +10,7 @@ enum class Square {
         }
 
         // FIXME: Damon unit test
-        fun calculateSquaresBetween(team: Team, startSquare: Square, endSquare: Square): List<Square> {
+        fun calculateSquaresBetween(team: Team, startSquare: Square, endSquare: Square): MutableList<Square> {
             var currentSquare = startSquare
             val squares = ArrayList<Square>()
             squares.add(startSquare)

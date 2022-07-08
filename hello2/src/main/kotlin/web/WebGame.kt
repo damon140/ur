@@ -145,7 +145,7 @@ class WebGame {
         val result = ur.moveCounter(fromSquare, roll)
         console.log("move result is $result")
 
-        urCanvasView.animate(currentTeam, fromSquare, moves[fromSquare]!!)
+        urCanvasView.animate(playArea, currentTeam, fromSquare, moves[fromSquare]!!)
 
         // TODO: break here to new method and callback from animate above
         // { playDddd() }

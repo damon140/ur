@@ -20,7 +20,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private val pageObject: UrPageObject
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
-    private var animateIntervalHandle = 0;
+    private var animateIntervalHandle = 0
 
     private val squarePairMap: Map<Square, Pair<Int, Int>>
 
@@ -73,17 +73,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val findRollSpace = pageObject.findRollSpace()
         findRollSpace.innerText = ""
 
-         val button = document.createElement("button") as HTMLButtonElement
-         button.innerHTML = "Click to roll"
-         button.addEventListener("click", {
-             console.log("Clicked on button!")
+        val button = document.createElement("button") as HTMLButtonElement
+        button.innerHTML = "Click to roll"
+        button.addEventListener("click", {
+            console.log("Clicked on button!")
 
-             // TODO: play sound here and add timeout fn to run callback, wrap callbacks
+            // TODO: play sound here and add timeout fn to run callback, wrap callbacks
 
-             // run continue function here
-             continueFunction()
-         })
-         findRollSpace.append(button)
+            // run continue function here
+            continueFunction()
+        })
+        findRollSpace.append(button)
     }
 
     fun drawRobotThinking(playArea: PlayArea) {
@@ -91,7 +91,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         pageObject.findRollSpace().innerText = "AI is thinking"
     }
 
-    // TODO: make private
+    // TODO: make private??
     fun drawMost(playArea: PlayArea) {
         blank()
         drawGrid()
@@ -101,7 +101,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         updateBoard(playArea)
     }
 
-    fun drawAll(currentTeam: Team, roll: Int, moves: Map<Square, Square>, playArea: PlayArea, continueFunction: () -> Unit) {
+    fun drawAll(
+        currentTeam: Team,
+        roll: Int,
+        moves: Map<Square, Square>,
+        playArea: PlayArea,
+        continueFunction: () -> Unit
+    ) {
         drawMost(playArea)
 
         attachClickHandler(moves, continueFunction)
@@ -131,18 +137,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         val twosCount = count / 2
 
-        var counterLines: List<Pair<Int, Int>> = mutableListOf()
+        var counterLines: MutableList<Pair<Int, Int>> = mutableListOf()
 
         // TODO: need grid thingy class w/ offsets around border
-        (0..twosCount - 1).forEach { i ->
+        (0 until twosCount).forEach { i ->
             val y = i * 50 + 25
 
             // vary by team
-            val leftOffset = if (white == team) 25 else 50;
-            val rightOffset = if (white == team) 50 else 75;
+            val leftOffset = if (white == team) 25 else 50
+            val rightOffset = if (white == team) 50 else 75
 
-            counterLines += Pair(leftOffset + baseX, lambda(y))
-            counterLines += Pair(rightOffset + baseX, lambda(y))
+            counterLines.add(Pair(leftOffset + baseX, lambda(y)))
+            counterLines.add(Pair(rightOffset + baseX, lambda(y)))
         }
 
         if (1 == count % 2) {
@@ -177,7 +183,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         spanToUpdate.innerText = "" + roll
         spanToBlank.innerText = ""
         val findRollSpace = pageObject.findRollSpace()
-        findRollSpace.innerText = "";
+        findRollSpace.innerText = ""
 
         if (roll == 0) {
             val button = document.createElement("button") as HTMLButtonElement
@@ -208,7 +214,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         pageObject.findRollBlack().innerHTML = ""
 
         val button = document.createElement("button") as HTMLButtonElement
-        button.innerHTML = "Game won by " + currentTeam + ". Click to restart"
+        button.innerHTML = "Game won by $currentTeam. Click to restart"
 
         button.addEventListener("click", {
             console.log("reloading")
@@ -222,11 +228,23 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun drawOnBoardCounter(square: Square, team: Team) {
-        val s1 = squarePairMap.get(square)!!
+        val pair = squarePairMap[square]!!
 
+        drawOnBoardCounter(pair, team)
+    }
+
+    private fun drawOnBoardCounter(pair: Pair<Int, Int>, team: Team) {
         // TODO: need grid thingy class w/ offsets around border
-        val x = s1.first * 50.0 + 25
-        val y = s1.second * 50.0 + 25
+        val x = pair.first * 50.0 + 25
+        val y = pair.second * 50.0 + 25
+
+        drawCounterByCoordinates(x, y, team)
+    }
+
+    private fun drawOnBoardCounter(pair: Pair<Double, Double>, team: Team) {
+        // TODO: need grid thingy class w/ offsets around border
+        val x = pair.first * 50.0 + 25
+        val y = pair.second * 50.0 + 25
 
         drawCounterByCoordinates(x, y, team)
     }
@@ -247,11 +265,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.stroke()
     }
 
-    fun drawGrid() {
+
+
+    private fun drawGrid() {
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
             .map { s -> squarePairMap.get(s)!! }
 
-        drawSquares(canvas, squares)
+        drawSquares(squares)
     }
 
     fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
@@ -260,7 +280,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val clientX = event.clientX
             val clientY = event.clientY
 
-            var rect = this.htmlCanvasElement.getBoundingClientRect()
+            val rect = this.htmlCanvasElement.getBoundingClientRect()
             val xIndex = floor((clientX - rect.left) / 50).toInt()
             val yIndex = floor((clientY - rect.top) / 50).toInt()
             //console.log("x ind: $xIndex, y ind: $yIndex")
@@ -286,7 +306,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             if (null != clickedSquare) {
                 for ((index, entry) in moves.entries.withIndex()) {
                     if (entry.key == clickedSquare) {
-                        console.log("matched move of " + clickedSquare)
+                        console.log("matched move of $clickedSquare")
                         lastMove.setLastChosen((index + 1).toString())
                         // run continue function here
                         continueFunction()
@@ -298,16 +318,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
     }
 
-    private fun drawSquares(ctx: CanvasRenderingContext2D, squares: List<Pair<Int, Int>>) {
-        squares.forEach { e ->
-            ctx.beginPath()
-            ctx.rect(50.0 * e.first, 50.0 * e.second, 50.0, 50.0)
-            ctx.stroke()
+    private fun drawSquares(pairs: List<Pair<Int, Int>>) {
+        pairs.forEach { pair ->
+            canvas.beginPath()
+            canvas.rect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
+            canvas.stroke()
         }
     }
 
     private fun blank() {
-        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0);
+        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0)
     }
 
     private fun drawBlanks() {
@@ -346,40 +366,61 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         })
     }
 
-    fun animate(currentTeam: Team, fromSquare: Square, toSquare: Square) {
-        var squares = Square.calculateSquaresBetween(currentTeam, fromSquare, toSquare)
+    fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square) {
+        val squares = Square.calculateSquaresBetween(team, fromSquare, toSquare)
         console.log("Will animate counter path $squares")
 
         var oneSqaureAnim = 0
-        var currentSquare = squares.drop(1)
 
-        val handler = {
-            if (++oneSqaureAnim === 5) {
-                oneSqaureAnim = 0
-                currentSquare = squares.drop(1)
+        var lastSquare = squares.removeFirst()
+        var currentSquare = squares.removeFirst()
+
+        // Hmm, this sort of works
+        val handler: () -> Unit = {
+            val countCompleted = oneSqaureAnim++ == 5
+            var draw = true
+            if (countCompleted) {
+                if (squares.isEmpty()) {
+                    window.clearInterval(this.animateIntervalHandle)
+                    draw = false
+                    drawMost(playArea)
+                } else {
+                    oneSqaureAnim = 0
+                    lastSquare = currentSquare
+                    currentSquare = squares.removeFirst()
+                }
             }
-            // TODO: draw here
-            //drawAnimatedSquare(currentTeam, oneSquareAnim, currentSquare)
-            // if (squares.isEmpty()) {
-            // window.clearInterval(this.animateIntervalHandle);
-            // }
+
+            if (draw) {
+
+//                // FIXME: need better black and white first squares here
+//                // white 2, 4???
+//                // black 4, 4???
+//                if (off_board_unstarted == lastSquare) {
+//
+//                }
+//                val square1Pos: Pair<Int, Int> = squarePairMap.get(square1)!!
+//                val square2Pos: Pair<Int, Int> = squarePairMap.get(square2)!!
+
+                val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), lastSquare, currentSquare)
+                console.log("anim of $currentSquare step $oneSqaureAnim" + pair)
+
+                drawOnBoardCounter(pair, team)
+            }
         }
 
-        //this.animateIntervalHandle = window.setInterval(handler, 100);
+        this.animateIntervalHandle = window.setInterval(handler, 100)
     }
 
-//    fun tempRenderMethod() {
-//        var x = 0;
-//        val handler = {
-//            // Your logic here
-//            console.log("TODO: damon impl animation here " + x);
-//            if (++x === 5) {
-//                window.clearInterval(this.intervalID);
-//            }
-//        }
-//
-//        this.intervalID = window.setInterval(handler, 100);
-//    }
-//
+    private fun tween(step: Double, ofSteps: Double, square1: Square, square2: Square) :Pair<Double, Double> {
+        // FIXME: switch to pairs
+        val square1Pos: Pair<Int, Int> = squarePairMap.get(square1)!!
+        val square2Pos: Pair<Int, Int> = squarePairMap.get(square2)!!
+
+        val first = square1Pos.first + (square2Pos.first - square1Pos.first) * (step / ofSteps)
+        val second = square1Pos.second + (square2Pos.second - square1Pos.second) * (step / ofSteps)
+
+        return Pair(first, second)
+    }
 
 }
