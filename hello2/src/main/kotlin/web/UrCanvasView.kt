@@ -412,8 +412,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         this.animateIntervalHandle = window.setInterval(handler, 100)
     }
 
+        // FIXME: switch to pairs as input
     private fun tween(step: Double, ofSteps: Double, square1: Square, square2: Square) :Pair<Double, Double> {
-        // FIXME: switch to pairs
         val square1Pos: Pair<Int, Int> = squarePairMap.get(square1)!!
         val square2Pos: Pair<Int, Int> = squarePairMap.get(square2)!!
 
