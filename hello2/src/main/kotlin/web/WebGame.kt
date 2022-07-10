@@ -142,13 +142,19 @@ class WebGame {
         val moveIndex: Int = input.toInt()
         val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
 
-        val result = ur.moveCounter(fromSquare, roll)
-        console.log("move result is $result")
+        val continueFunction = {
+            val result = ur.moveCounter(fromSquare, roll)
+            console.log("move result is $result")
 
-        urCanvasView.animate(playArea, currentTeam, fromSquare, moves[fromSquare]!!)
+            playDddd(result)
+        }
 
-        // TODO: break here to new method and callback from animate above
-        // { playDddd() }
+        urCanvasView.animate(playArea, currentTeam, fromSquare, moves[fromSquare]!!, continueFunction)
+    }
+
+    private fun playDddd(result: Ur.MoveResult) {
+        val currentTeam = ur.currentTeam()
+        val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
         if (result == Ur.MoveResult.gameOver) {
             console.log("Game won by $currentTeam")

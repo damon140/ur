@@ -366,7 +366,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         })
     }
 
-    fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square) {
+    fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
         val squares = Square.calculateSquaresBetween(team, fromSquare, toSquare)
         console.log("Will animate counter path $squares")
 
@@ -384,6 +384,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                     window.clearInterval(this.animateIntervalHandle)
                     draw = false
                     drawMost(playArea)
+                    continueFunction()
                 } else {
                     oneSqaureAnim = 0
                     lastSquare = currentSquare
@@ -392,17 +393,10 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             }
 
             if (draw) {
+                val square1Pos: Pair<Int, Int> = positionForAnimation(team, lastSquare)
+                val square2Pos: Pair<Int, Int> = positionForAnimation(team, currentSquare)
 
-//                // FIXME: need better black and white first squares here
-//                // white 2, 4???
-//                // black 4, 4???
-//                if (off_board_unstarted == lastSquare) {
-//
-//                }
-//                val square1Pos: Pair<Int, Int> = squarePairMap.get(square1)!!
-//                val square2Pos: Pair<Int, Int> = squarePairMap.get(square2)!!
-
-                val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), lastSquare, currentSquare)
+                val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), square1Pos, square2Pos)
                 console.log("anim of $currentSquare step $oneSqaureAnim" + pair)
 
                 drawOnBoardCounter(pair, team)
@@ -412,11 +406,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         this.animateIntervalHandle = window.setInterval(handler, 100)
     }
 
-        // FIXME: switch to pairs as input
-    private fun tween(step: Double, ofSteps: Double, square1: Square, square2: Square) :Pair<Double, Double> {
-        val square1Pos: Pair<Int, Int> = squarePairMap.get(square1)!!
-        val square2Pos: Pair<Int, Int> = squarePairMap.get(square2)!!
+    private fun positionForAnimation(team: Team, square: Square): Pair<Int, Int> {
+        // use special positions for each team for finishing and starting squares
+        return when {
+            square == off_board_unstarted && team == white -> Pair(2, 4)
+            square == off_board_unstarted && team == black -> Pair(4, 4)
+            square == off_board_finished && team == white -> Pair(2, 5)
+            square == off_board_finished && team == black -> Pair(4, 5)
+            else -> squarePairMap.get(square)!!
+        }
+    }
 
+    private fun tween(step: Double, ofSteps: Double, square1Pos: Pair<Int, Int>, square2Pos: Pair<Int, Int>) :Pair<Double, Double> {
         val first = square1Pos.first + (square2Pos.first - square1Pos.first) * (step / ofSteps)
         val second = square1Pos.second + (square2Pos.second - square1Pos.second) * (step / ofSteps)
 
