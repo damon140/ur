@@ -85,18 +85,14 @@ class WebGame {
     // m04 set interval callback to m05
     private fun playM0304() {
         urCanvasView.playDiceRoll()
-        // FIXME: make dice roll after sound finished
 
-        // diceRollMs
-        // val continueFunction = {
-        // playMbbbb()
-        // }
-
-        // setTimeout
-        // continueFunction
-        playMbbbb()
+        val diceRollMs = 700
+        window.setTimeout(handler = {
+            playMbbbb()
+        }, timeout =  diceRollMs)
 
         // FIXME: start dice roll animation
+        // diceRollMs
     }
 
     private fun playMbbbb() {
