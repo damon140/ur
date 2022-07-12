@@ -75,6 +75,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         val button = document.createElement("button") as HTMLButtonElement
         button.innerHTML = "Click to roll"
+
+        // blank out last roll
+        pageObject.findRollBlack().innerText = ""
+        pageObject.findRollWhite().innerText = ""
+
         button.addEventListener("click", {
             console.log("Clicked on button!")
 
@@ -89,6 +94,10 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     fun drawRobotThinking(playArea: PlayArea) {
         drawMost(playArea)
         pageObject.findRollSpace().innerText = "AI is thinking"
+
+        // blank out last roll
+        pageObject.findRollBlack().innerText = ""
+        pageObject.findRollWhite().innerText = ""
     }
 
     // TODO: make private??
@@ -403,7 +412,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             }
         }
 
-        this.animateIntervalHandle = window.setInterval(handler, 100)
+        this.animateIntervalHandle = window.setInterval(handler, 85)
     }
 
     private fun positionForAnimation(team: Team, square: Square): Pair<Int, Int> {

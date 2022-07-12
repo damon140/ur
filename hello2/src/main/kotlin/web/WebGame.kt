@@ -3,6 +3,7 @@ package web
 import com.damon140.ur.*
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlin.random.Random
 
 class WebGame {
 
@@ -75,19 +76,28 @@ class WebGame {
                 playM0304()
 
                 // timeout includes play time of sound
-            }, timeout = 3000)
+
+            }, timeout =  Random.nextInt(1000, 2500))
         }
     }
 
     // m03 play sound
     // m04 set interval callback to m05
     private fun playM0304() {
-        // TODO: add lambda input
         urCanvasView.playDiceRoll()
+        // FIXME: make dice roll after sound finished
 
+        // diceRollMs
+        // val continueFunction = {
+        // playMbbbb()
+        // }
+
+        // setTimeout
+        // continueFunction
         playMbbbb()
-    }
 
+        // FIXME: start dice roll animation
+    }
 
     private fun playMbbbb() {
         //var isCallBack = isCallBack
