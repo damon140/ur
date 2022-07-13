@@ -5,50 +5,35 @@
     <title>JS Client</title>
 
     <style>
-    div#white-counters2 {
-        display: inline-block;
-        background-color: lightblue;
-    }
-    div#board-spans {
-        display: inline-block;
-        background-color: lightyellow;
-    }
-    div#black-counters2 {
-        display: inline-block;
-        background-color: lightgreen;
-    }
-    pre {
-        font-size: 30px;
-        line-height: 0.2em
-    }
-    span.squary {
-        border: 1px solid black;
-    }
-    ul {
-        list-style-type: none; /* Remove bullets */
-        padding: 0; /* Remove padding */
-        margin: 0; /* Remove margins */
+
+    .box {
+        display: flex;
     }
 
-    span#roll-white, span#roll-black {
+    .one {
+        flex: 1.7 1 0;
         font-size: 40px;
         font-family: monospace;
     }
 
-    span#roll-space1 {
-        width: 50px;
-        display: inline-block;
+    .two {
+        flex: 3.6 1 0;
     }
 
-    span#roll-space2 {
-        width: 200px;
-        display: inline-block;
+    .three {
+        flex: 1.7 1 0;
+        font-size: 40px;
+        font-family: monospace;
     }
-}
 
-</style>
+    .center {
+        text-align: center;
+    }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </style>
+
+    <!-- Make mobile work better -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 </head>
 <body>
@@ -58,16 +43,19 @@
 <div id="play-area-wrapper">
 
 
+    <div class="box" style="width: 350px; height: 55px">
+        <div id="roll-white" class="one center">One</div>
+        <div id="roll-space2" class="two center">Two</div>
+        <div id="roll-black" class="three center">Three</div>
+    </div>
+
     <!--
-    UI Iteration 3
+    <div>
+        <span id="roll-space1"></span><span id="roll-white"></span><span id="roll-space2">space</span><span
+            id="roll-black"></span>
+    </div>
     -->
 
-
-    <!-- TODO: want roll and skip button -->
-    <!-- new component for this one -->
-    <div>
-        <span id="roll-space1"></span><span id="roll-white"></span><span id="roll-space2">space</span><span id="roll-black"></span>
-    </div>
     <div>
         <canvas id="canvas-board" width="350" height="400">
         </canvas>

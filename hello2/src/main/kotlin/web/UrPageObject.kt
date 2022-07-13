@@ -28,9 +28,9 @@ class UrPageObject(document: Document) {
 
     // iteration 3
     private var canvasBoard: HTMLCanvasElement
-    private var rollWhite: HTMLSpanElement
-    private var rollBlack: HTMLSpanElement
-    private var rollSpace: HTMLSpanElement
+    private var rollWhite: HTMLDivElement
+    private var rollBlack: HTMLDivElement
+    private var rollSpace: HTMLDivElement
 
     // iteration 4
     private var dice: HTMLAudioElement
@@ -41,9 +41,9 @@ class UrPageObject(document: Document) {
 
         // iteration 3
         this.canvasBoard = document.getElementById(PageConstants.CANVAS_BOARD_ID)!! as HTMLCanvasElement
-        this.rollWhite = document.getElementById(PageConstants.ROLL_WHITE_ID)!! as HTMLSpanElement
-        this.rollBlack = document.getElementById(PageConstants.ROLL_BLACK_ID)!! as HTMLSpanElement
-        this.rollSpace = document.getElementById(PageConstants.ROLL_SPACE_ID)!! as HTMLSpanElement
+        this.rollWhite = document.getElementById(PageConstants.ROLL_WHITE_ID)!! as HTMLDivElement
+        this.rollBlack = document.getElementById(PageConstants.ROLL_BLACK_ID)!! as HTMLDivElement
+        this.rollSpace = document.getElementById(PageConstants.ROLL_SPACE_ID)!! as HTMLDivElement
 
         // iteration 4
         this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
@@ -57,15 +57,15 @@ class UrPageObject(document: Document) {
         return this.canvasBoard
     }
 
-    fun findRollWhite(): HTMLSpanElement {
+    fun findRollWhite(): HTMLDivElement {
         return this.rollWhite
     }
 
-    fun findRollSpace(): HTMLSpanElement {
+    fun findRollSpace(): HTMLDivElement {
         return this.rollSpace
     }
 
-    fun findRollBlack(): HTMLSpanElement {
+    fun findRollBlack(): HTMLDivElement {
         return this.rollBlack
     }
 

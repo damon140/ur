@@ -7,10 +7,7 @@ import com.damon140.ur.Team
 import com.damon140.ur.Team.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
 import kotlin.math.PI
 import kotlin.math.floor
@@ -143,10 +140,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun drawOffboardCounters(team: Team, count: Int, lambda: (Int) -> Int) {
         val baseX = if (white == team) 0 else 250
-
         val twosCount = count / 2
-
-        var counterLines: MutableList<Pair<Int, Int>> = mutableListOf()
+        val counterLines: MutableList<Pair<Int, Int>> = mutableListOf()
 
         // TODO: need grid thingy class w/ offsets around border
         (0 until twosCount).forEach { i ->
@@ -179,8 +174,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
-        val spanToUpdate: HTMLSpanElement
-        val spanToBlank: HTMLSpanElement
+        val spanToUpdate: HTMLDivElement
+        val spanToBlank: HTMLDivElement
         if (white == currentTeam) {
             spanToUpdate = pageObject.findRollWhite()
             spanToBlank = pageObject.findRollBlack()
