@@ -262,19 +262,10 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.beginPath()
         canvas.arc(x, y, 19.0, 0.0, 2 * PI)
         canvas.lineWidth = 3.0
-
-
-        if (team == black) {
-            canvas.fillStyle = "green"
-        } else {
-            canvas.fillStyle = "white"
-        }
-
+        canvas.fillStyle = if (team == black) "pink" else "#abcedf"
         canvas.fill()
         canvas.stroke()
     }
-
-
 
     private fun drawGrid() {
         val squares: List<Pair<Int, Int>> = Square.drawableSquares()
@@ -343,15 +334,24 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         Square.drawableSquares()
             .map { s ->
                 val square = squarePairMap.get(s)!!
+                val x = 50.0 * square.first + 1
+                val y = 50.0 * square.second + 1
 
-                // TODO: find correct colour via new fn
+                canvas.fillStyle = "white"
+                canvas.fillRect(x, y, 48.0, 48.0)
+
                 if (s.rollAgain()) {
-                    canvas.fillStyle = if (s.isSafeSquare) "green" else "yellow"
-                } else {
-                    canvas.fillStyle = "white"
+                    val offset = 9
+                    listOfNotNull(Pair(25-offset, 25), Pair(25+offset, 25), Pair(25, 25-offset), Pair(25, 25+offset))
+                        .forEach { p ->
+                            canvas.beginPath()
+                            canvas.arc(x + p.first, y + p.second, 6.0, 0.0, 2 * PI)
+                            canvas.lineWidth = if (s.isSafeSquare) 1.8 else 1.1
+                            canvas.fillStyle = if (s.isSafeSquare) "green" else "white"
+                            canvas.fill()
+                            canvas.stroke()
+                        }
                 }
-
-                canvas.fillRect(50.0 * square.first + 1, 50.0 * square.second + 1, 48.0, 48.0)
             }
     }
 

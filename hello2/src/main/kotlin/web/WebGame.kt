@@ -71,13 +71,10 @@ class WebGame {
             window.setTimeout(handler = {
                 // TODO: replace with Hmm sound/ event here
                 console.log("Robot finished thinking here")
-
-
                 playM0304()
 
-                // timeout includes play time of sound
-
-            }, timeout =  Random.nextInt(1000, 2500))
+                //
+            }, timeout =  Random.nextInt(0, 900))
         }
     }
 
@@ -91,7 +88,7 @@ class WebGame {
             playMbbbb()
         }, timeout =  diceRollMs)
 
-        // FIXME: start dice roll animation
+        // TODO: start dice roll animation
         // diceRollMs
     }
 
@@ -100,7 +97,7 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         console.log("Current team is $currentTeam")
 
-        // TODO: push value into object
+        // TODO: push value into object?
         this.roll = dice.roll()
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
