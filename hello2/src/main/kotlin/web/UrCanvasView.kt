@@ -332,17 +332,30 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 val x = 50.0 * square.first + 1
                 val y = 50.0 * square.second + 1
 
-                canvas.fillStyle = "white"
+                val rollAgain = s.rollAgain()
+                val safeSquare = s.isSafeSquare
+                var squareFillColour =
+                    if (rollAgain) {
+                        if (safeSquare) {
+                            "orange"
+                        } else {
+                            "yellow"
+                        }
+                    } else {
+                        "white"
+                    }
+
+                canvas.fillStyle = squareFillColour
                 canvas.fillRect(x, y, 48.0, 48.0)
 
-                if (s.rollAgain()) {
+                if (rollAgain) {
                     val offset = 9
                     listOfNotNull(Pair(25-offset, 25), Pair(25+offset, 25), Pair(25, 25-offset), Pair(25, 25+offset))
                         .forEach { p ->
                             canvas.beginPath()
                             canvas.arc(x + p.first, y + p.second, 6.0, 0.0, 2 * PI)
-                            canvas.lineWidth = if (s.isSafeSquare) 1.8 else 1.1
-                            canvas.fillStyle = if (s.isSafeSquare) "green" else "white"
+                            canvas.lineWidth = if (safeSquare) 1.8 else 1.1
+                            canvas.fillStyle = if (safeSquare) "red" else "orange"
                             canvas.fill()
                             canvas.stroke()
                         }

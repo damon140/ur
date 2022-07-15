@@ -14,9 +14,8 @@ class Ur(private val playArea: PlayArea) {
         return true
     }
 
-
     enum class MoveResult {
-        illegal, legal, gameOver
+        illegal, legal, counterTaken, gameOver
     }
 
     fun moveCounter(square: Square, count: Int): MoveResult {
@@ -29,8 +28,7 @@ class Ur(private val playArea: PlayArea) {
             return MoveResult.illegal // can't add any more counters
         }
         if (fromSquare !== Square.off_board_unstarted && playArea.occupied(fromSquare)
-            && playArea[fromSquare] !== team
-        ) {
+            && playArea[fromSquare] !== team) {
             return MoveResult.illegal // teams counter not on square to move from
         }
         val newSquare: Square? = fromSquare.calculateNewSquare(team, count)
@@ -43,12 +41,9 @@ class Ur(private val playArea: PlayArea) {
         }
         val occupant = playArea[newSquare]
 
-        // FIXME: Damon safe square logic needed here
         if (null != occupant) {
             if (team === occupant) {
                 return MoveResult.illegal // clashes with own counter
-            } else {
-                // FIXME: to an unstarted counter change??
             }
         }
 
@@ -62,7 +57,11 @@ class Ur(private val playArea: PlayArea) {
         }
         console.log("after move current team is " + playArea.currentTeam().name)
 
-        return MoveResult.legal
+        return if (null != occupant) {
+            MoveResult.counterTaken
+        } else {
+            MoveResult.legal
+        }
     }
 
     // TODO: upgrade to object with properties for use by "AI"
@@ -105,7 +104,7 @@ class Ur(private val playArea: PlayArea) {
         }
         // or other counter and not a safe square
         val occupantTeam = playArea[square]
-        val otherTeamsSquare = occupantTeam != null && occupantTeam!! != team
+        val otherTeamsSquare = occupantTeam != null && occupantTeam != team
         val notASafeSquare = !square.isSafeSquare
         return if (otherTeamsSquare && notASafeSquare)
             square else null

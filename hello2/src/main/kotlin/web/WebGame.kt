@@ -54,10 +54,7 @@ class WebGame {
     // m01 draw (show roll button)
     // m02 wait for roll button to be clicked *
     private fun playM0102() {
-        // FIXME: pass in roll
         val continueFunction = {
-            // FIXME: get roll in callback, need a different callback thingy
-            // FIXME: set roll as member var
             console.log("About to run continue function from roll")
             playM0304()
         }
@@ -69,11 +66,8 @@ class WebGame {
             urCanvasView.playHmm()
 
             window.setTimeout(handler = {
-                // TODO: replace with Hmm sound/ event here
                 console.log("Robot finished thinking here")
                 playM0304()
-
-                //
             }, timeout =  Random.nextInt(0, 900))
         }
     }
@@ -164,6 +158,15 @@ class WebGame {
             urCanvasView.updateBoard(playArea)
             urCanvasView.gameWon(currentTeam)
             return
+        }
+
+        if (result == Ur.MoveResult.counterTaken) {
+            console.log("FIXME: play taken sound here")
+//            urCanvasView.playCounterTakenSound()
+//            window.setTimeout(handler = {
+//                console.log("Robot finished thinking here")
+//                playEeee()
+//            }, timeout =  Random.nextInt(0, 500))
         }
 
         val continueFunction = {
