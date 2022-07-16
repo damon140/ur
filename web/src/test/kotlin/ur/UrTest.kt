@@ -223,7 +223,7 @@ class UrTest {
               b    |bb
               """.trimIndent());
         whenAskMoves(white, 2);
-        thenMovesAre(Square.shared_4, Square.shared_7);
+        thenMovesAre(Square.shared_3, Square.shared_4, Square.shared_7);
     }
 
     @Test
