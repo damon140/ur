@@ -131,6 +131,7 @@ class WebGame {
         if (skipTurn) {
             ur.skipTurn(roll)
             urCanvasView.drawMost(playArea)
+            console.log("Skipping turn of $currentTeam. roll is $roll and moves size is ${moves.size}")
 
             playM0102()
             return
@@ -151,7 +152,6 @@ class WebGame {
 
     private fun playDddd(result: Ur.MoveResult) {
         val currentTeam = ur.currentTeam()
-        val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
         if (result == Ur.MoveResult.gameOver) {
             console.log("Game won by $currentTeam")
@@ -162,16 +162,25 @@ class WebGame {
 
         if (result == Ur.MoveResult.counterTaken) {
             console.log("FIXME: play taken sound here")
-//            urCanvasView.playCounterTakenSound()
-//            window.setTimeout(handler = {
-//                console.log("Robot finished thinking here")
-//                playEeee()
-//            }, timeout =  Random.nextInt(0, 500))
+            urCanvasView.playCounterTakenSound()
+            window.setTimeout(handler = {
+                console.log("Robot finished thinking here")
+                playEeee()
+            }, timeout = Random.nextInt(0, 500))
+            return
         }
 
+        // else
+        playEeee()
+    }
+
+    private fun playEeee() {
         val continueFunction = {
             playM0102()
         }
+
+        val currentTeam = ur.currentTeam()
+        val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
         urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
 

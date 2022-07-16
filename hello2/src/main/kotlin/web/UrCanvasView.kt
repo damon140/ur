@@ -375,12 +375,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun playHmm() {
         pageObject.findHmm().play()
-        console.log("playing sound")
 
         // TODO: clear and set event listener
         pageObject.findDice().addEventListener("ended", {
             console.log("sound play ended")
         })
+    }
+
+    fun playCounterTakenSound() {
+        pageObject.findCounterTakenSound().play()
+        console.log("play counter taken sound")
     }
 
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {

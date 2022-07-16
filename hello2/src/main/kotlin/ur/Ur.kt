@@ -80,8 +80,6 @@ class Ur(private val playArea: PlayArea) {
             }
         }
 
-        // current counters
-        // FIXME: move generation isn't returning taking moves???
         playArea.countersForTeam(team)
             .forEach { startSquare ->
                 val maybeEndSquare = startSquare.calculateNewSquare(team, roll)

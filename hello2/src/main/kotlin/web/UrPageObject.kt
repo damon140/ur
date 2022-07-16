@@ -1,17 +1,10 @@
 package web
 
-import kotlinx.html.div
-import kotlinx.html.id
-import kotlinx.html.stream.createHTML
 import org.w3c.dom.*
 
 class UrPageObject(document: Document) {
 
     object PageConstants {
-        // ITERATION 1
-        const val ROOT = "root";
-        const val INSTRUCTIONS_ID = "instructions";
-
         // ITERATION 3
         const val CANVAS_BOARD_ID = "canvas-board"
         const val ROLL_WHITE_ID = "roll-white"
@@ -19,8 +12,9 @@ class UrPageObject(document: Document) {
         const val ROLL_SPACE_ID = "roll-space2"
 
         // ITERATION 4
-        const val DICE_ID = "dice-audio";
-        const val HMM_ID = "hmm-audio";
+        const val DICE_ID = "dice-audio"
+        const val HMM_ID = "hmm-audio"
+        const val COUNTER_TAKEN_SOUND_ID = "counter-taken-audio"
     }
 
     // iteration 1
@@ -35,6 +29,7 @@ class UrPageObject(document: Document) {
     // iteration 4
     private var dice: HTMLAudioElement
     private var hmm:  HTMLAudioElement
+    private var counterTakenSound:  HTMLAudioElement
 
     init {
         this.document = document
@@ -48,11 +43,10 @@ class UrPageObject(document: Document) {
         // iteration 4
         this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
         this.hmm = document.getElementById(PageConstants.HMM_ID)!! as HTMLAudioElement
-
+        this.counterTakenSound = document.getElementById(PageConstants.COUNTER_TAKEN_SOUND_ID)!! as HTMLAudioElement
     }
 
     // Iteration 3
-
     fun findCanvasBoard(): HTMLCanvasElement {
         return this.canvasBoard
     }
@@ -73,8 +67,12 @@ class UrPageObject(document: Document) {
         return this.dice
     }
 
-    fun findHmm():  HTMLAudioElement {
+    fun findHmm(): HTMLAudioElement {
         return this.hmm
+    }
+
+    fun findCounterTakenSound(): HTMLAudioElement {
+        return this.counterTakenSound
     }
 
 }
