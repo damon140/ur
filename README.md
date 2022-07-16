@@ -5,9 +5,8 @@
 This is a simple implementation of the Royal Game of Ur, which is an ancient game that was
 played about 5,000 years ago in the Sumerian/ Arkadian empire,
 [see this cool history on youtube.](https://www.youtube.com/watch?v=d2lJUOv0hLA)
-
-I made it to explore the game, use Java 17, KotlinJS and to code a tiny game from scratch
-which I haven't done in 30 years since 8 bit days.
+* HTML browser implementation in KotlinJS is [here](./web/README.md)
+* Java 17 console implementation is [here](./console/README.md)
 
 See this
 [web site](https://royalur.net/)
@@ -20,11 +19,12 @@ There are some others, but need to build locally it appears.
 
 ## TODO List
 
-* game loop so play isn't instantaneous
 * Write a second "AI"
  
 ## Done List
 
+* ~~host in github static hosting~~
+* ~~game loop so play isn't instantaneous~~
 * ~~mobile meta hint layout~~
 * ~~Use git public website branch feature to allow internet play~~
 * ~~Kotlin to JavaScript translate build step~~
