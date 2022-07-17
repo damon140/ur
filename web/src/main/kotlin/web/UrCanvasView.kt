@@ -297,6 +297,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             console.log("move for clicked square $clickedSquare: ${moves.containsKey(clickedSquare)}")
             console.log(moves.keys.joinToString(","))
 
+            var found = false;
+
             if (null != clickedSquare) {
                 for ((index, entry) in moves.entries.withIndex()) {
                     if (entry.key == clickedSquare) {
@@ -304,10 +306,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                         lastMove.setLastChosen((index + 1).toString())
                         // run continue function here
                         continueFunction()
+                        found = true
                     }
                 }
-
-                // FIXME: overplaying bug here
+            }
+            if (!found) {
                 playBaBowSound()
             }
 
