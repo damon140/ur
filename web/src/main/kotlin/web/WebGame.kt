@@ -81,17 +81,13 @@ class WebGame {
         window.setTimeout(handler = {
             playMbbbb()
         }, timeout =  diceRollMs)
-
-        // TODO: start dice roll animation
-        // diceRollMs
     }
 
     private fun playMbbbb() {
-        //var isCallBack = isCallBack
         val currentTeam = ur.currentTeam()
         console.log("Current team is $currentTeam")
 
-        // TODO: push value into object?
+        // TODO: push value into object
         this.roll = dice.roll()
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
@@ -184,7 +180,7 @@ class WebGame {
 
         urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
 
-        console.log("playM0ccc: Current team is " + ur.currentTeam())
+        console.log("playEeee: Current team is " + ur.currentTeam())
 
         // loop the game loop
         playM0102()

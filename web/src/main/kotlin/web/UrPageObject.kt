@@ -15,6 +15,7 @@ class UrPageObject(document: Document) {
         const val DICE_ID = "dice-audio"
         const val HMM_ID = "hmm-audio"
         const val COUNTER_TAKEN_SOUND_ID = "counter-taken-audio"
+        const val BABOW_SOUND_ID = "babow-sound"
     }
 
     // iteration 1
@@ -30,6 +31,7 @@ class UrPageObject(document: Document) {
     private var dice: HTMLAudioElement
     private var hmm:  HTMLAudioElement
     private var counterTakenSound:  HTMLAudioElement
+    private var babowSound: HTMLAudioElement
 
     init {
         this.document = document
@@ -44,6 +46,7 @@ class UrPageObject(document: Document) {
         this.dice = document.getElementById(PageConstants.DICE_ID)!! as HTMLAudioElement
         this.hmm = document.getElementById(PageConstants.HMM_ID)!! as HTMLAudioElement
         this.counterTakenSound = document.getElementById(PageConstants.COUNTER_TAKEN_SOUND_ID)!! as HTMLAudioElement
+        this.babowSound = document.getElementById(PageConstants.BABOW_SOUND_ID)!! as HTMLAudioElement
     }
 
     // Iteration 3
@@ -74,5 +77,10 @@ class UrPageObject(document: Document) {
     fun findCounterTakenSound(): HTMLAudioElement {
         return this.counterTakenSound
     }
+
+    fun findBaBowSound(): HTMLAudioElement {
+        return this.babowSound
+    }
+
 
 }

@@ -121,7 +121,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         updateInstructions(currentTeam, roll, moves.isEmpty(), continueFunction)
     }
 
-
     private fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
         drawOffboardCounters(unstartedCount, completedCount, white)
     }
@@ -307,6 +306,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                         continueFunction()
                     }
                 }
+
+                // FIXME: overplaying bug here
+                playBaBowSound()
             }
 
             this
@@ -385,6 +387,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     fun playCounterTakenSound() {
         pageObject.findCounterTakenSound().play()
         console.log("play counter taken sound")
+    }
+
+    private fun playBaBowSound() {
+        pageObject.findBaBowSound().play()
+        console.log("Play babow sound.")
     }
 
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
