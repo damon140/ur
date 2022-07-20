@@ -63,7 +63,10 @@ class WebGame {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
             urCanvasView.drawRobotThinking(playArea)
-            urCanvasView.playHmm()
+
+            if (1 == Random.nextInt(1, 9)) {
+                urCanvasView.playHmm()
+            }
 
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
@@ -106,10 +109,14 @@ class WebGame {
 
         if (currentPlayerIsAi()) {
             playM0ccc()
+        } else {
+            urCanvasView.startMovesAnimation()
         }
     }
 
     private fun playM0ccc() {
+        urCanvasView.endMovesAnimation()
+
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
@@ -161,16 +168,16 @@ class WebGame {
             urCanvasView.playCounterTakenSound()
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
-                playEeee()
+                playRenderFinalMoveState()
             }, timeout = Random.nextInt(0, 500))
             return
         }
 
         // else
-        playEeee()
+        playRenderFinalMoveState()
     }
 
-    private fun playEeee() {
+    private fun playRenderFinalMoveState() {
         val continueFunction = {
             playM0102()
         }

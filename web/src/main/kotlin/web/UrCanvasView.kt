@@ -17,7 +17,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private val pageObject: UrPageObject
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
-    private var animateIntervalHandle = 0
+    private var moveCounterIntervalHandle = 0
+    private var animateMovesIntervalHandle = 0
 
     private val squarePairMap: Map<Square, Pair<Int, Int>>
 
@@ -412,7 +413,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             var draw = true
             if (countCompleted) {
                 if (squares.isEmpty()) {
-                    window.clearInterval(this.animateIntervalHandle)
+                    window.clearInterval(this.moveCounterIntervalHandle)
                     draw = false
                     drawMost(playArea)
                     continueFunction()
@@ -434,7 +435,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             }
         }
 
-        this.animateIntervalHandle = window.setInterval(handler, 85)
+        this.moveCounterIntervalHandle = window.setInterval(handler, 85)
     }
 
     private fun positionForAnimation(team: Team, square: Square): Pair<Int, Int> {
@@ -453,6 +454,20 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val second = square1Pos.second + (square2Pos.second - square1Pos.second) * (step / ofSteps)
 
         return Pair(first, second)
+    }
+
+    fun startMovesAnimation() {
+        var bigAnim = false
+        val handler: () -> Unit = {
+            console.log("animating here...$bigAnim")
+            bigAnim = !bigAnim
+        }
+
+        this.animateMovesIntervalHandle = window.setInterval(handler, 777)
+    }
+
+    fun endMovesAnimation() {
+        window.clearInterval(this.animateMovesIntervalHandle)
     }
 
 }
