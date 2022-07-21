@@ -9,6 +9,8 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
+import web.UrCanvasView.CounterSize.big
+import web.UrCanvasView.CounterSize.little
 import kotlin.math.PI
 import kotlin.math.floor
 
@@ -162,15 +164,15 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         counterLines.forEach { p ->
             //console.log("Drawing pair $p.first, $p.second")
-            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team)
+            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team, big)
         }
     }
 
     fun updateBoard(playArea: PlayArea) {
         drawBlanks()
 
-        playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white) }
-        playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black) }
+        playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white, big) }
+        playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black, big) }
     }
 
     private fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
@@ -231,31 +233,33 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         findRollSpace.append(button)
     }
 
-    private fun drawOnBoardCounter(square: Square, team: Team) {
+    private fun drawOnBoardCounter(square: Square, team: Team, size: CounterSize) {
         val pair = squarePairMap[square]!!
 
-        drawOnBoardCounter(pair, team)
+        drawOnBoardCounter(pair, team, size)
     }
 
-    private fun drawOnBoardCounter(pair: Pair<Int, Int>, team: Team) {
+    private fun drawOnBoardCounter(pair: Pair<Int, Int>, team: Team, size: CounterSize) {
         // TODO: need grid thingy class w/ offsets around border
         val x = pair.first * 50.0 + 25
         val y = pair.second * 50.0 + 25
 
-        drawCounterByCoordinates(x, y, team)
+        drawCounterByCoordinates(x, y, team, size)
     }
 
-    private fun drawOnBoardCounter(pair: Pair<Double, Double>, team: Team) {
+    private fun drawOnBoardCounter(pair: Pair<Double, Double>, team: Team, size: CounterSize) {
         // TODO: need grid thingy class w/ offsets around border
         val x = pair.first * 50.0 + 25
         val y = pair.second * 50.0 + 25
 
-        drawCounterByCoordinates(x, y, team)
+        drawCounterByCoordinates(x, y, team, size)
     }
 
-    private fun drawCounterByCoordinates(x: Double, y: Double, team: Team) {
+    enum class CounterSize(val pixels: Double) { big(19.toDouble()), little(16.toDouble()) }
+
+    private fun drawCounterByCoordinates(x: Double, y: Double, team: Team, size: CounterSize) {
         canvas.beginPath()
-        canvas.arc(x, y, 19.0, 0.0, 2 * PI)
+        canvas.arc(x, y, size.pixels, 0.0, 2 * PI)
         canvas.lineWidth = 3.0
         canvas.fillStyle = if (team == black) "pink" else "#abcedf"
         canvas.fill()
@@ -263,10 +267,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun drawGrid() {
-        val squares: List<Pair<Int, Int>> = Square.drawableSquares()
-            .map { s -> squarePairMap.get(s)!! }
-
-        drawSquares(squares)
+        Square.drawableSquares().forEach { square ->
+            drawSquare(square)
+        }
     }
 
     fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
@@ -298,7 +301,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             console.log("move for clicked square $clickedSquare: ${moves.containsKey(clickedSquare)}")
             console.log(moves.keys.joinToString(","))
 
-            var found = false;
+            var found = false
 
             if (null != clickedSquare) {
                 for ((index, entry) in moves.entries.withIndex()) {
@@ -319,12 +322,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
     }
 
-    private fun drawSquares(pairs: List<Pair<Int, Int>>) {
-        pairs.forEach { pair ->
-            canvas.beginPath()
-            canvas.rect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
-            canvas.stroke()
-        }
+    private fun drawSquare(square: Square) {
+        val pair = squarePairMap.get(square)!!
+        canvas.beginPath()
+        canvas.rect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
+        canvas.stroke()
     }
 
     private fun blank() {
@@ -340,7 +342,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
                 val rollAgain = s.rollAgain()
                 val safeSquare = s.isSafeSquare
-                var squareFillColour =
+                val squareFillColour =
                     if (rollAgain) {
                         if (safeSquare) {
                             "orange"
@@ -356,7 +358,12 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
                 if (rollAgain) {
                     val offset = 9
-                    listOfNotNull(Pair(25-offset, 25), Pair(25+offset, 25), Pair(25, 25-offset), Pair(25, 25+offset))
+                    listOfNotNull(
+                        Pair(25 - offset, 25),
+                        Pair(25 + offset, 25),
+                        Pair(25, 25 - offset),
+                        Pair(25, 25 + offset)
+                    )
                         .forEach { p ->
                             canvas.beginPath()
                             canvas.arc(x + p.first, y + p.second, 6.0, 0.0, 2 * PI)
@@ -370,22 +377,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun playDiceRoll() {
-        pageObject.findDice().play()
+        // FIXME: add dice roll sound
+        //pageObject.findDice().play()
         console.log("playing sound")
-
-        // TODO: clear and set event listener
-        pageObject.findDice().addEventListener("ended", {
-            console.log("sound play ended")
-        })
     }
 
     fun playHmm() {
         pageObject.findHmm().play()
-
-        // TODO: clear and set event listener
-        pageObject.findDice().addEventListener("ended", {
-            console.log("sound play ended")
-        })
     }
 
     fun playCounterTakenSound() {
@@ -431,7 +429,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), square1Pos, square2Pos)
                 console.log("anim of $currentSquare step $oneSqaureAnim" + pair)
 
-                drawOnBoardCounter(pair, team)
+                drawOnBoardCounter(pair, team, big)
             }
         }
 
@@ -449,16 +447,27 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
     }
 
-    private fun tween(step: Double, ofSteps: Double, square1Pos: Pair<Int, Int>, square2Pos: Pair<Int, Int>) :Pair<Double, Double> {
+    private fun tween(
+        step: Double,
+        ofSteps: Double,
+        square1Pos: Pair<Int, Int>,
+        square2Pos: Pair<Int, Int>
+    ): Pair<Double, Double> {
         val first = square1Pos.first + (square2Pos.first - square1Pos.first) * (step / ofSteps)
         val second = square1Pos.second + (square2Pos.second - square1Pos.second) * (step / ofSteps)
 
         return Pair(first, second)
     }
 
-    fun startMovesAnimation() {
+    fun startMovesAnimation(team: Team, movesFrom: Set<Square>) {
         var bigAnim = false
         val handler: () -> Unit = {
+            movesFrom.forEach { square ->
+                // TODO: improve offboard square position, want last
+                drawSquare(square)
+                this.drawOnBoardCounter(square, team, if (bigAnim) big else little)
+            }
+
             console.log("animating here...$bigAnim")
             bigAnim = !bigAnim
         }
@@ -468,6 +477,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun endMovesAnimation() {
         window.clearInterval(this.animateMovesIntervalHandle)
+    }
+
+    fun playRoll(roll: Int) {
+        when(roll) {
+            1 -> pageObject.findRoll1().play()
+            2 -> pageObject.findRoll2().play()
+            3 -> pageObject.findRoll3().play()
+            4 -> pageObject.findRoll4().play()
+            else -> console.log("Weird roll bro")
+        }
     }
 
 }
