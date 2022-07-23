@@ -150,8 +150,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val y = i * 50 + 25
 
             // vary by team
-            val leftOffset = if (white == team) 25 else 50
-            val rightOffset = if (white == team) 50 else 75
+            val leftOffset = if (white == team) 25 else 32
+            val rightOffset = if (white == team) 68 else 75
 
             counterLines.add(Pair(leftOffset + baseX, lambda(y)))
             counterLines.add(Pair(rightOffset + baseX, lambda(y)))
