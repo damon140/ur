@@ -78,7 +78,7 @@ class WebGame {
     // m03 play sound
     // m04 set interval callback to m05
     private fun playM0304() {
-//        urCanvasView.playDiceRoll()
+        urCanvasView.playDiceRoll()
 //
 //        val diceRollMs = 700
 //        window.setTimeout(handler = {
@@ -93,7 +93,6 @@ class WebGame {
 
         // TODO: push value into object
         this.roll = dice.roll()
-        urCanvasView.playRoll(roll)
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
         val continueFunction = {

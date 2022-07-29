@@ -377,13 +377,11 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun playDiceRoll() {
-        // FIXME: add dice roll sound
-        //pageObject.findDice().play()
-        console.log("playing sound")
+        pageObject.findDiceSound().play()
     }
 
     fun playHmm() {
-        pageObject.findHmm().play()
+        pageObject.findHmmSound().play()
     }
 
     fun playCounterTakenSound() {
@@ -477,16 +475,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun endMovesAnimation() {
         window.clearInterval(this.animateMovesIntervalHandle)
-    }
-
-    fun playRoll(roll: Int) {
-        when(roll) {
-            1 -> pageObject.findRoll1().play()
-            2 -> pageObject.findRoll2().play()
-            3 -> pageObject.findRoll3().play()
-            4 -> pageObject.findRoll4().play()
-            else -> console.log("Weird roll bro")
-        }
     }
 
 }
