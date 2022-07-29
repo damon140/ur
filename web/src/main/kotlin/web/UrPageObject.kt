@@ -16,6 +16,7 @@ class UrPageObject(document: Document) {
         const val COUNTER_TAKEN_SOUND_ID = "counter-taken-audio"
         const val BABOW_SOUND_ID = "babow-sound"
         const val DICE_SOUND_ID = "dice-sound"
+        const val TIC_SOUND_ID = "tic-sound"
     }
 
     // iteration 1
@@ -32,6 +33,7 @@ class UrPageObject(document: Document) {
     private var counterTakenSound:  HTMLAudioElement
     private var babowSound: HTMLAudioElement
     private var diceSound: HTMLAudioElement
+    private var ticSound: HTMLAudioElement
 
     init {
         this.document = document
@@ -47,6 +49,7 @@ class UrPageObject(document: Document) {
         this.counterTakenSound = document.getElementById(PageConstants.COUNTER_TAKEN_SOUND_ID)!! as HTMLAudioElement
         this.babowSound = document.getElementById(PageConstants.BABOW_SOUND_ID)!! as HTMLAudioElement
         this.diceSound = document.getElementById(PageConstants.DICE_SOUND_ID)!! as HTMLAudioElement
+        this.ticSound = document.getElementById(PageConstants.TIC_SOUND_ID)!! as HTMLAudioElement
     }
 
     // Iteration 3
@@ -66,20 +69,32 @@ class UrPageObject(document: Document) {
         return this.rollBlack
     }
 
+    // FIXME: switch to play
     fun findHmmSound(): HTMLAudioElement {
         return this.hmm
     }
 
+    // FIXME: switch to play
     fun findCounterTakenSound(): HTMLAudioElement {
         return this.counterTakenSound
     }
 
-    fun findBaBowSound(): HTMLAudioElement {
-        return this.babowSound
+    fun playBaBowSound() {
+        babowSound.currentTime = 0.15
+        babowSound.play()
     }
 
-    fun findDiceSound(): HTMLAudioElement {
-        return this.diceSound
+    fun playDiceSound() {
+        diceSound.volume = 0.7
+        diceSound.currentTime = 0.65
+        diceSound.play()
+
+    }
+
+    fun playTicSound() {
+        ticSound.volume = 0.4
+        ticSound.currentTime = 0.65
+        ticSound.play()
     }
 
 }

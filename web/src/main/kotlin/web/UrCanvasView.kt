@@ -377,7 +377,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun playDiceRoll() {
-        pageObject.findDiceSound().play()
+        pageObject.playDiceSound()
     }
 
     fun playHmm() {
@@ -390,7 +390,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun playBaBowSound() {
-        pageObject.findBaBowSound().play()
+        pageObject.playBaBowSound()
         console.log("Play babow sound.")
     }
 
@@ -418,6 +418,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                     lastSquare = currentSquare
                     currentSquare = squares.removeFirst()
                 }
+                pageObject.playTicSound()
             }
 
             if (draw) {
