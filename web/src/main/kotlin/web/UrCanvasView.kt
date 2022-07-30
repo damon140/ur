@@ -133,14 +133,22 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun drawOffboardCounters(unstarted: Int, finished: Int, team: Team) {
-        var lambda: (Int) -> Int = { y: Int -> y }
-        drawOffboardCounters(team, unstarted, lambda)
-
-        lambda = { y: Int -> 400 - y }
-        drawOffboardCounters(team, finished, lambda)
+        makeUnstartedOffboardCounterPairs(team, unstarted)
+            .plus(makeFinishedOffboardCounterPairs(team, finished))
+            .forEach { p -> drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team, big) }
     }
 
-    private fun drawOffboardCounters(team: Team, count: Int, lambda: (Int) -> Int) {
+    private fun makeFinishedOffboardCounterPairs(team: Team, finished: Int)
+        = makeOffboardCounterPairs(team, finished) { y: Int -> 400 - y }
+
+    private fun makeUnstartedOffboardCounterPairs(team: Team, unstarted: Int)
+        = makeOffboardCounterPairs(team, unstarted) { y: Int -> y }
+
+    private fun makeOffboardCounterPairs(
+        team: Team,
+        count: Int,
+        lambda: (Int) -> Int
+    ): MutableList<Pair<Int, Int>> {
         val baseX = if (white == team) 0 else 250
         val twosCount = count / 2
         val counterLines: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -149,30 +157,32 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         (0 until twosCount).forEach { i ->
             val y = i * 50 + 25
 
-            // vary by team
-            val leftOffset = if (white == team) 25 else 32
-            val rightOffset = if (white == team) 68 else 75
+            val sideXOffsetOffset = 10
+            val leftOffset = if (white == team) 25 else 25 + sideXOffsetOffset
+            val rightOffset = if (white == team) 75 - sideXOffsetOffset else 75
 
-            counterLines.add(Pair(leftOffset + baseX, lambda(y)))
-            counterLines.add(Pair(rightOffset + baseX, lambda(y)))
+            val sideYOffsetOffset = 19
+            if (white == team) {
+                counterLines.add(Pair(leftOffset + baseX, lambda(y)))
+                counterLines.add(Pair(rightOffset + baseX, lambda(y + sideYOffsetOffset)))
+            } else {
+                counterLines.add(Pair(leftOffset + baseX, lambda(y + sideYOffsetOffset)))
+                counterLines.add(Pair(rightOffset + baseX, lambda(y)))
+            }
         }
 
         if (1 == count % 2) {
             val x = if (white == team) 25 else 75
             counterLines += Pair(x + baseX, lambda((twosCount * 50) + 25))
         }
-
-        counterLines.forEach { p ->
-            //console.log("Drawing pair $p.first, $p.second")
-            drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team, big)
-        }
+        return counterLines
     }
 
     fun updateBoard(playArea: PlayArea) {
         drawBlanks()
 
-        playArea.countersForTeam(white).forEach { s -> drawOnBoardCounter(s, white, big) }
-        playArea.countersForTeam(black).forEach { s -> drawOnBoardCounter(s, black, big) }
+        playArea.countersForTeam(white).forEach { s -> drawCounterByIndex(s, white, big) }
+        playArea.countersForTeam(black).forEach { s -> drawCounterByIndex(s, black, big) }
     }
 
     private fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
@@ -233,27 +243,27 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         findRollSpace.append(button)
     }
 
-    private fun drawOnBoardCounter(square: Square, team: Team, size: CounterSize) {
-        val pair = squarePairMap[square]!!
-
-        drawOnBoardCounter(pair, team, size)
+    private fun drawCounterByIndex(square: Square, team: Team, size: CounterSize) {
+        drawCounterByIndex(squarePairMap[square]!!, team, size)
     }
 
-    private fun drawOnBoardCounter(pair: Pair<Int, Int>, team: Team, size: CounterSize) {
-        // TODO: need grid thingy class w/ offsets around border
-        val x = pair.first * 50.0 + 25
-        val y = pair.second * 50.0 + 25
+    private fun drawCounterByIndex(pair: Pair<Int, Int>, team: Team, size: CounterSize) {
+        val x = indexToCoordinate(pair.first)
+        val y = indexToCoordinate(pair.second)
 
         drawCounterByCoordinates(x, y, team, size)
     }
 
-    private fun drawOnBoardCounter(pair: Pair<Double, Double>, team: Team, size: CounterSize) {
-        // TODO: need grid thingy class w/ offsets around border
-        val x = pair.first * 50.0 + 25
-        val y = pair.second * 50.0 + 25
+    private fun drawCounterByIndex(pair: Pair<Double, Double>, team: Team, size: CounterSize) {
+        val x = indexToCoordinate(pair.first)
+        val y = indexToCoordinate(pair.second)
 
         drawCounterByCoordinates(x, y, team, size)
     }
+
+    // TODO: need grid thingy class w/ offsets around border
+    private fun indexToCoordinate(value: Double): Double = value * 50.0 + 25
+    private fun indexToCoordinate(value: Int): Double = value * 50.0 + 25
 
     enum class CounterSize(val pixels: Double) { big(19.toDouble()), little(16.toDouble()) }
 
@@ -272,7 +282,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
     }
 
-    fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
+    private fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
         htmlCanvasElement.onclick = { event: MouseEvent ->
             val clientX = event.clientX
@@ -381,17 +391,15 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun playHmm() {
-        pageObject.findHmmSound().play()
+        pageObject.playHmmSound()
     }
 
     fun playCounterTakenSound() {
-        pageObject.findCounterTakenSound().play()
-        console.log("play counter taken sound")
+        pageObject.playCounterTakenSound()
     }
 
     private fun playBaBowSound() {
         pageObject.playBaBowSound()
-        console.log("Play babow sound.")
     }
 
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
@@ -426,9 +434,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 val square2Pos: Pair<Int, Int> = positionForAnimation(team, currentSquare)
 
                 val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), square1Pos, square2Pos)
-                console.log("anim of $currentSquare step $oneSqaureAnim" + pair)
+                console.log("anim of $currentSquare step $oneSqaureAnim$pair")
 
-                drawOnBoardCounter(pair, team, big)
+                drawCounterByIndex(pair, team, big)
             }
         }
 
@@ -458,17 +466,23 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         return Pair(first, second)
     }
 
-    fun startMovesAnimation(team: Team, movesFrom: Set<Square>) {
+    fun startMovesAnimation(playArea: PlayArea, team: Team, movesFrom: Set<Square>) {
+        val unstartedCount = playArea.unstartedCount(team)
+        val pairs = movesFrom.map { square ->
+            if (square == off_board_unstarted) {
+                val f = makeUnstartedOffboardCounterPairs(team, unstartedCount).last()
+                f
+            } else {
+                val indexPair = squarePairMap[square]!!
+                Pair(indexToCoordinate(indexPair.first), indexToCoordinate(indexPair.second))
+            }
+        }.toList()
+
         var bigAnim = false
         val handler: () -> Unit = {
-            movesFrom.forEach { square ->
-                // TODO: improve offboard square position, want last
-                drawSquare(square)
-                this.drawOnBoardCounter(square, team, if (bigAnim) big else little)
-            }
-
-            console.log("animating here...$bigAnim")
+            pairs.forEach { pair -> drawCounterByCoordinates(pair.first.toDouble(), pair.second.toDouble(), team, if (bigAnim) big else little) }
             bigAnim = !bigAnim
+            console.log("anim")
         }
 
         this.animateMovesIntervalHandle = window.setInterval(handler, 777)

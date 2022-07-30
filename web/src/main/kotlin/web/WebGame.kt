@@ -79,11 +79,6 @@ class WebGame {
     // m04 set interval callback to m05
     private fun playM0304() {
         urCanvasView.playDiceRoll()
-//
-//        val diceRollMs = 700
-//        window.setTimeout(handler = {
-//            playMbbbb()
-//        }, timeout =  diceRollMs)
         playMbbbb()
     }
 
@@ -111,7 +106,7 @@ class WebGame {
         if (currentPlayerIsAi()) {
             playM0ccc()
         } else {
-            urCanvasView.startMovesAnimation(currentTeam, moves.keys)
+            urCanvasView.startMovesAnimation(this.playArea, currentTeam, moves.keys)
         }
     }
 

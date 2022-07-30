@@ -1,23 +1,11 @@
 package web
 
-import org.w3c.dom.*
+import org.w3c.dom.Document
+import org.w3c.dom.HTMLAudioElement
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLDivElement
 
 class UrPageObject(document: Document) {
-
-    object PageConstants {
-        // ITERATION 3
-        const val CANVAS_BOARD_ID = "canvas-board"
-        const val ROLL_WHITE_ID = "roll-white"
-        const val ROLL_BLACK_ID = "roll-black"
-        const val ROLL_SPACE_ID = "roll-space2"
-
-        // ITERATION 4
-        const val HMM_ID = "hmm-audio"
-        const val COUNTER_TAKEN_SOUND_ID = "counter-taken-audio"
-        const val BABOW_SOUND_ID = "babow-sound"
-        const val DICE_SOUND_ID = "dice-sound"
-        const val TIC_SOUND_ID = "tic-sound"
-    }
 
     // iteration 1
     private val document: Document
@@ -39,17 +27,17 @@ class UrPageObject(document: Document) {
         this.document = document
 
         // iteration 3
-        this.canvasBoard = document.getElementById(PageConstants.CANVAS_BOARD_ID)!! as HTMLCanvasElement
-        this.rollWhite = document.getElementById(PageConstants.ROLL_WHITE_ID)!! as HTMLDivElement
-        this.rollBlack = document.getElementById(PageConstants.ROLL_BLACK_ID)!! as HTMLDivElement
-        this.rollSpace = document.getElementById(PageConstants.ROLL_SPACE_ID)!! as HTMLDivElement
+        this.canvasBoard = document.getElementById("canvas-board")!! as HTMLCanvasElement
+        this.rollWhite = document.getElementById("roll-white")!! as HTMLDivElement
+        this.rollBlack = document.getElementById("roll-black")!! as HTMLDivElement
+        this.rollSpace = document.getElementById("roll-space2")!! as HTMLDivElement
 
         // iteration 4
-        this.hmm = document.getElementById(PageConstants.HMM_ID)!! as HTMLAudioElement
-        this.counterTakenSound = document.getElementById(PageConstants.COUNTER_TAKEN_SOUND_ID)!! as HTMLAudioElement
-        this.babowSound = document.getElementById(PageConstants.BABOW_SOUND_ID)!! as HTMLAudioElement
-        this.diceSound = document.getElementById(PageConstants.DICE_SOUND_ID)!! as HTMLAudioElement
-        this.ticSound = document.getElementById(PageConstants.TIC_SOUND_ID)!! as HTMLAudioElement
+        this.hmm = document.getElementById("hmm-audio")!! as HTMLAudioElement
+        this.counterTakenSound = document.getElementById("counter-taken-audio")!! as HTMLAudioElement
+        this.babowSound = document.getElementById("babow-sound")!! as HTMLAudioElement
+        this.diceSound = document.getElementById("dice-sound")!! as HTMLAudioElement
+        this.ticSound = document.getElementById("tic-sound")!! as HTMLAudioElement
     }
 
     // Iteration 3
@@ -69,14 +57,12 @@ class UrPageObject(document: Document) {
         return this.rollBlack
     }
 
-    // FIXME: switch to play
-    fun findHmmSound(): HTMLAudioElement {
-        return this.hmm
+    fun playHmmSound() {
+        hmm.play()
     }
 
-    // FIXME: switch to play
-    fun findCounterTakenSound(): HTMLAudioElement {
-        return this.counterTakenSound
+    fun playCounterTakenSound() {
+        counterTakenSound.play()
     }
 
     fun playBaBowSound() {
