@@ -7,6 +7,7 @@ import org.w3c.dom.HTMLDivElement
 
 class UrPageObject(document: Document) {
 
+
     // iteration 1
     private val document: Document
 
@@ -23,6 +24,10 @@ class UrPageObject(document: Document) {
     private var diceSound: HTMLAudioElement
     private var ticSound: HTMLAudioElement
 
+    // iteration 5
+    private var rollPartsWhite: HTMLDivElement
+    private var rollPartsBlack: HTMLDivElement
+
     init {
         this.document = document
 
@@ -38,6 +43,10 @@ class UrPageObject(document: Document) {
         this.babowSound = document.getElementById("babow-sound")!! as HTMLAudioElement
         this.diceSound = document.getElementById("dice-sound")!! as HTMLAudioElement
         this.ticSound = document.getElementById("tic-sound")!! as HTMLAudioElement
+
+        // iteration 5
+        this.rollPartsWhite = document.getElementById("roll-parts-white")!! as HTMLDivElement
+        this.rollPartsBlack = document.getElementById("roll-parts-black")!! as HTMLDivElement
     }
 
     // Iteration 3
@@ -81,6 +90,15 @@ class UrPageObject(document: Document) {
         ticSound.volume = 0.4
         ticSound.currentTime = 0.65
         ticSound.play()
+    }
+
+    // Iteration 5
+    fun findRollPartsBlack(): HTMLDivElement {
+        return this.rollPartsBlack
+    }
+
+    fun findRollPartsWhite(): HTMLDivElement {
+        return this.rollPartsWhite
     }
 
 }

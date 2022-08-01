@@ -62,8 +62,8 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         console.log("Current team is $currentTeam")
 
-        // FIXME: switch to dice object
-        this.roll = dice.roll()
+        dice.roll();
+        this.roll = dice.getLastValue()
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
         val continueFunction = {
@@ -77,7 +77,7 @@ class WebGame {
         }
 
         // UI iteration 3!
-        urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
+        urCanvasView.drawAll(currentTeam, dice, moves, playArea, continueFunction)
 
         if (currentPlayerIsAi()) {
             playPart4()
@@ -154,7 +154,7 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
-        urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
+        urCanvasView.drawAll(currentTeam, this.dice, moves, playArea, continueFunction)
 
         console.log("playEeee: Current team is " + ur.currentTeam())
 

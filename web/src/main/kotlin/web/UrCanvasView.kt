@@ -1,5 +1,6 @@
 package web
 
+import com.damon140.ur.Dice
 import com.damon140.ur.PlayArea
 import com.damon140.ur.Square
 import com.damon140.ur.Square.*
@@ -89,6 +90,9 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             continueFunction()
         })
         findRollSpace.append(button)
+
+        pageObject.findRollPartsWhite().innerText = ""
+        pageObject.findRollPartsBlack().innerText = ""
     }
 
     fun drawRobotThinking(playArea: PlayArea) {
@@ -112,7 +116,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun drawAll(
         currentTeam: Team,
-        roll: Int,
+        dice: Dice,
         moves: Map<Square, Square>,
         playArea: PlayArea,
         continueFunction: () -> Unit
@@ -121,7 +125,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         attachClickHandler(moves, continueFunction)
 
-        updateInstructions(currentTeam, roll, moves.isEmpty(), continueFunction)
+        updateInstructions(currentTeam, dice, moves.isEmpty(), continueFunction)
     }
 
     private fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
@@ -185,7 +189,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         playArea.countersForTeam(black).forEach { s -> drawCounterByIndex(s, black, big) }
     }
 
-    private fun updateInstructions(currentTeam: Team, roll: Int, zeroMoves: Boolean, continueFunction: () -> Unit) {
+    private fun updateInstructions(currentTeam: Team, dice: Dice, zeroMoves: Boolean, continueFunction: () -> Unit) {
+        val roll = dice.getLastValue()
         val spanToUpdate: HTMLDivElement
         val spanToBlank: HTMLDivElement
         if (white == currentTeam) {
@@ -200,6 +205,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         spanToBlank.innerText = ""
         val findRollSpace = pageObject.findRollSpace()
         findRollSpace.innerText = ""
+
+        if (currentTeam == white) {
+            pageObject.findRollPartsWhite().innerText = dice.getLastString()
+            pageObject.findRollPartsBlack().innerText = ""
+        } else {
+            pageObject.findRollPartsWhite().innerText = ""
+            pageObject.findRollPartsBlack().innerText = dice.getLastString()
+        }
 
         if (roll == 0) {
             val button = document.createElement("button") as HTMLButtonElement
