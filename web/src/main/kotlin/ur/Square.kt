@@ -2,7 +2,9 @@ package com.damon140.ur
 
 enum class Square {
     off_board_unstarted,  // synthetic square, not a square on the board
-    black_run_on_1, black_run_on_2, black_run_on_3, black_run_on_4, black_run_off_1, black_run_off_2, shared_1, shared_2, shared_3, shared_4, shared_5, shared_6, shared_7, shared_8, white_run_on_1, white_run_on_2, white_run_on_3, white_run_on_4, white_run_off_1, white_run_off_2, off_board_finished;
+    black_run_on_1, black_run_on_2, black_run_on_3, black_run_on_4, black_run_off_1, black_run_off_2,
+    shared_1, shared_2, shared_3, shared_4, shared_5, shared_6, shared_7, shared_8,
+    white_run_on_1, white_run_on_2, white_run_on_3, white_run_on_4, white_run_off_1, white_run_off_2, off_board_finished;
 
     companion object {
         fun drawableSquares(): List<Square> {
@@ -58,6 +60,11 @@ enum class Square {
 
     fun rollAgain(): Boolean {
         return setOf(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2)
+            .contains(this)
+    }
+
+    fun isRaceSquare(): Boolean {
+        return setOf(shared_1, shared_2, shared_3, shared_4, shared_5, shared_6, shared_7, shared_8)
             .contains(this)
     }
 }

@@ -12,6 +12,25 @@ class PlayArea {
         completedCounters[Team.white] = 0
     }
 
+    fun moveTakes(team: Team, fromSquare: Square, toSquare: Square): Boolean {
+        return teamHasCounterOn(team, fromSquare)
+                && teamHasCounterOn(team.other(), toSquare);
+    }
+
+    fun moveIsOnShareRace(team: Team, fromSquare: Square, toSquare: Square): Boolean {
+        return teamHasCounterOn(team, fromSquare)
+                && empty(toSquare)
+                && fromSquare.isRaceSquare()
+    }
+
+    fun empty(square: Square): Boolean {
+        return !counters.containsKey(square)
+    }
+
+    fun teamHasCounterOn(team: Team, square: Square): Boolean {
+        return counters[square] == team
+    }
+
     fun completedCount(team: Team): Int {
         return completedCounters[team]!!
     }

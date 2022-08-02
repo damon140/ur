@@ -6,10 +6,7 @@ class Ur(private val playArea: PlayArea) {
         return playArea.currentTeam()
     }
 
-    fun skipTurn(count: Int): Boolean {
-        if (0 != count) {
-            return false
-        }
+    fun skipTurn(): Boolean {
         playArea.swapTeam()
         return true
     }

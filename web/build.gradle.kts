@@ -26,6 +26,11 @@ kotlin {
             commonWebpackConfig {
                 cssSupport.enabled = true
             }
+            testTask {
+                useKarma {
+                    useFirefox()
+                }
+            }
         }
     }
 }

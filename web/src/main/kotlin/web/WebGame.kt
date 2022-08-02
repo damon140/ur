@@ -6,14 +6,13 @@ import kotlinx.browser.window
 import kotlin.random.Random
 
 class WebGame {
-
-    private var roll: Int = 0
     private val dice = Dice()
-    private val playArea = PlayArea()
+    private var playArea = PlayArea()
     private var lastMove = LastMove()
-    private val ur: Ur = Ur(playArea)
+    private var ur: Ur = Ur(playArea)
     private var pageObject = UrPageObject(document)
     private var urCanvasView = UrCanvasView(lastMove, pageObject)
+    private var roll: Int = 0
 
     // TODO: impl player setup
     private var playerSetup: PlayerSetup = PlayerSetup(lastMove)
@@ -22,41 +21,18 @@ class WebGame {
         Team.black to playerSetup.getPlayer(Team.black)
     )
 
-    // m01 draw (show roll button)
-    // m02 wait for roll button to be clicked * m03
-
-    // m03 play sound
-    // m04 set interval callback to m05
-
-    // m05 roll button clicked <- button handler
-    // m10 generate new roll
-    // m11 calculate moves
-    // m12 draw (show roll and show moves)
-    // m13 wait for move or skipped from player *
-
-    // m14 move selection received <- button handler or fn
-    // m15 play counter move sound of wah-wah 1 2 3 4
-    // m16 wait for move sound to finish *
-
-    // m17 move sound finished <- interval
-    // m18 move
-    // m19 draw here??
-    // m20 play counter taken or off board sound if needed
-    // m21 wait for sound to finish *
-    // m22 counter sound finished <- interval
-    // m23 change player if needed
-
-    fun play() {
-        playM0102()
-        console.log("Fell out of play method")
+    // set up a game for testing
+    fun fakeGame(game: String) {
+        playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game)
+        ur = Ur(playArea!!)
     }
 
-    // m01 draw (show roll button)
-    // m02 wait for roll button to be clicked *
-    private fun playM0102() {
+    // draw (show roll button)
+    // wait for roll button to be clicked *
+    fun playPart1() {
         val continueFunction = {
             console.log("About to run continue function from roll")
-            playM0304()
+            playPart2()
         }
 
         if (currentPlayerIsHuman()) {
@@ -70,33 +46,33 @@ class WebGame {
 
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
-                playM0304()
+                playPart2()
             }, timeout =  Random.nextInt(0, 900))
         }
     }
 
-    // m03 play sound
-    // m04 set interval callback to m05
-    private fun playM0304() {
+    // play ZZZ sound
+    // set interval callback to m05
+    private fun playPart2() {
         urCanvasView.playDiceRoll()
-        playMbbbb()
+        playPart3()
     }
 
-    private fun playMbbbb() {
+    private fun playPart3() {
         val currentTeam = ur.currentTeam()
         console.log("Current team is $currentTeam")
 
-        // TODO: push value into object
+        // FIXME: switch to dice object
         this.roll = dice.roll()
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
         val continueFunction = {
             if (0 == roll || moves.isEmpty()) {
                 // skip processing of human roll, nothing to do
-                playM0ccc()
+                playPart4()
             } else {
                 // regular turn
-                playM0ccc()
+                playPart4()
             }
         }
 
@@ -104,13 +80,13 @@ class WebGame {
         urCanvasView.drawAll(currentTeam, roll, moves, playArea, continueFunction)
 
         if (currentPlayerIsAi()) {
-            playM0ccc()
+            playPart4()
         } else {
             urCanvasView.startMovesAnimation(this.playArea, currentTeam, moves.keys)
         }
     }
 
-    private fun playM0ccc() {
+    private fun playPart4() {
         urCanvasView.endMovesAnimation()
 
         val currentTeam = ur.currentTeam()
@@ -120,20 +96,17 @@ class WebGame {
 
         val input = moveSupplier.choose(moves)
 
-        // console.log("Making turn of $currentTeam")
-        // console.log("Moves are: ")
-        //moves.entries.forEach { e -> console.log(e.key.name + " -> " + e.value.name) }
-        //console.log("player input was $input")
-
         val skipTurn = 0 == roll || moves.isEmpty()
 
         if (skipTurn) {
-            ur.skipTurn(roll)
+            ur.skipTurn()
             urCanvasView.drawMost(playArea)
             console.log("Skipping turn of $currentTeam. roll is $roll and moves size is ${moves.size}")
 
-            playM0102()
+            playPart1()
             return
+        } else {
+            console.log("Not skipping turn as skipTurn is $skipTurn")
         }
 
         val moveIndex: Int = input.toInt()
@@ -143,13 +116,13 @@ class WebGame {
             val result = ur.moveCounter(fromSquare, roll)
             console.log("move result is $result")
 
-            playDddd(result)
+            playPart5(result)
         }
 
         urCanvasView.animate(playArea, currentTeam, fromSquare, moves[fromSquare]!!, continueFunction)
     }
 
-    private fun playDddd(result: Ur.MoveResult) {
+    private fun playPart5(result: Ur.MoveResult) {
         val currentTeam = ur.currentTeam()
 
         if (result == Ur.MoveResult.gameOver) {
@@ -164,18 +137,18 @@ class WebGame {
             urCanvasView.playCounterTakenSound()
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
-                playRenderFinalMoveState()
+                playPart6()
             }, timeout = Random.nextInt(0, 500))
             return
         }
 
         // else
-        playRenderFinalMoveState()
+        playPart6()
     }
 
-    private fun playRenderFinalMoveState() {
+    private fun playPart6() {
         val continueFunction = {
-            playM0102()
+            playPart1()
         }
 
         val currentTeam = ur.currentTeam()
@@ -186,7 +159,7 @@ class WebGame {
         console.log("playEeee: Current team is " + ur.currentTeam())
 
         // loop the game loop
-        playM0102()
+        playPart1()
     }
 
 
@@ -199,5 +172,6 @@ class WebGame {
     private fun currentPlayerIsAi(): Boolean {
         return !currentPlayerIsHuman()
     }
+
 
 }

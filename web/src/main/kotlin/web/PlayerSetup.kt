@@ -56,6 +56,10 @@ class PlayerSetup(lastMove: LastMove) {
         }
 
         override fun choose(unused: Map<Square, Square>): String {
+            // FIXME: do "AI" sorting here with
+            //playArea.moveTakes(team: Team, fromSquare: Square, toSquare: Square)
+            //playArea.moveIsOnShareRace(team: Team, fromSquare: Square, toSquare: Square)
+
             // always take the first move
             return "1"
         }

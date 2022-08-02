@@ -2,11 +2,16 @@ import kotlinx.browser.window
 import web.WebGame
 
 fun main() {
-    // TODO: push almost all to new classes/ files
     window.onload = {
-        WebGame().play()
+        val webGame = WebGame()
 
-        // last line must be a return value for some reason
-        Unit
+//        webGame.fakeGame("""
+//            |wwwwww
+//            *...  w.
+//            ...*....
+//            *..b  *.
+//            b|bbbbb""".trimIndent())
+
+        webGame.playPart1()
     }
 }
