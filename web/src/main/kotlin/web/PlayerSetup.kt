@@ -55,10 +55,19 @@ class PlayerSetup(lastMove: LastMove) {
             return false
         }
 
-        override fun choose(unused: Map<Square, Square>): String {
+        override fun choose(moves: Map<Square, Square>): String {
             // FIXME: do "AI" sorting here with
             //playArea.moveTakes(team: Team, fromSquare: Square, toSquare: Square)
             //playArea.moveIsOnShareRace(team: Team, fromSquare: Square, toSquare: Square)
+
+//            val thing:  Comparator<Map.Entry<Square, Square>> = { entry -> }
+//            moves.entries
+//                .sortedWith(thing)
+                    //.thenByDescending { it.age })
+
+
+            // persons.sortedWith(compareBy<Person> { it.name }.thenByDescending { it.age })
+            //    //    .forEach(::println)
 
             // always take the first move
             return "1"
