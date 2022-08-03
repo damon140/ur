@@ -24,7 +24,7 @@ class WebGame {
     // set up a game for testing
     fun fakeGame(game: String) {
         playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game)
-        ur = Ur(playArea!!)
+        ur = Ur(playArea)
     }
 
     // draw (show roll button)
