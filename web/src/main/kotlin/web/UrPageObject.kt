@@ -1,9 +1,6 @@
 package web
 
-import org.w3c.dom.Document
-import org.w3c.dom.HTMLAudioElement
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.*
 
 class UrPageObject(document: Document) {
 
@@ -27,6 +24,7 @@ class UrPageObject(document: Document) {
     // iteration 5
     private var rollPartsWhite: HTMLDivElement
     private var rollPartsBlack: HTMLDivElement
+    private var levelSlider: HTMLInputElement
 
     init {
         this.document = document
@@ -47,6 +45,9 @@ class UrPageObject(document: Document) {
         // iteration 5
         this.rollPartsWhite = document.getElementById("roll-parts-white")!! as HTMLDivElement
         this.rollPartsBlack = document.getElementById("roll-parts-black")!! as HTMLDivElement
+
+        this.levelSlider = document.getElementById("ai-slider")!! as HTMLInputElement
+
     }
 
     // Iteration 3
@@ -99,6 +100,10 @@ class UrPageObject(document: Document) {
 
     fun findRollPartsWhite(): HTMLDivElement {
         return this.rollPartsWhite
+    }
+
+    fun readLevel(): Int {
+      return this.levelSlider.value.toInt()
     }
 
 }

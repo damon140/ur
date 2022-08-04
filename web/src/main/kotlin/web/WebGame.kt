@@ -15,7 +15,7 @@ class WebGame {
     private var roll: Int = 0
 
     // TODO: impl player setup
-    private var playerSetup: PlayerSetup = PlayerSetup(lastMove)
+    private var playerSetup: PlayerSetup = PlayerSetup(playArea, lastMove)
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier> = hashMapOf(
         Team.white to playerSetup.getPlayer(Team.white),
         Team.black to playerSetup.getPlayer(Team.black)
@@ -25,6 +25,7 @@ class WebGame {
     fun fakeGame(game: String) {
         playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game)
         ur = Ur(playArea)
+        playerSetup = PlayerSetup(playArea, lastMove)
     }
 
     // draw (show roll button)
@@ -94,8 +95,6 @@ class WebGame {
 
         val moveSupplier = moveSuppliers.get(currentTeam)!!
 
-        val input = moveSupplier.choose(moves)
-
         val skipTurn = 0 == roll || moves.isEmpty()
 
         if (skipTurn) {
@@ -109,7 +108,9 @@ class WebGame {
             console.log("Not skipping turn as skipTurn is $skipTurn")
         }
 
-        val moveIndex: Int = input.toInt()
+        // FIXME: get from slider here
+        val level = urCanvasView.getLevel()
+        val moveIndex = moveSupplier.choose(level, moves)
         val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
 
         val continueFunction = {

@@ -505,4 +505,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         window.clearInterval(this.animateMovesIntervalHandle)
     }
 
+    fun getLevel(): Int {
+        return this.pageObject.readLevel()
+    }
+
 }
