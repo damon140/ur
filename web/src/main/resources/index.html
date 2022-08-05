@@ -13,12 +13,12 @@
 
     div#title, button {
         font-family: didot, baskerville, serif;
-        font-size: 18px;
+        font-size: 16px;
     }
 
     div#title {
         padding-bottom: 10px;
-        font-size: 40px;
+        font-size: 37px;
         color: #abcdef;
     }
 
@@ -62,10 +62,15 @@
     }
 
     #footer {
-        padding-top: 14px;
+        font-size: 13px;
         color: grey;
-        font-size: 18px;
     }
+
+    #slideContainer {
+        border-top: 5px;
+        font-size: 14px;
+    }
+
     </style>
 
     <!-- Make mobile work better -->
@@ -75,7 +80,7 @@
 <body>
 
 <!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.3"></script>
+<script src="ur.js?v=0.4"></script>
 
 <div id="play-area-wrapper">
 
@@ -98,16 +103,15 @@
         <canvas id="canvas-board" width="350" height="400">
         </canvas>
     </div>
-
+    <div id="slideContainer">
+        AI level: <span id="ai-description"></span><br/>
+        <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
+    </div>
     <div id="footer">
-        <div>
-            AI level
-            <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
-        </div>
-        <div>
+        <div class="grey">
             Ur game is 4500 years old | <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
         </div>
-        <div>
+        <div class="grey">
             &copy; Damon van Opdorp 2022 | <a href="https://github.com/damon140/ur">Github</a>
         </div>
     </div>
