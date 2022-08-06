@@ -4,6 +4,7 @@ import com.damon140.ur.PlayArea
 import com.damon140.ur.Square
 import com.damon140.ur.Team
 import com.damon140.ur.Team.black
+import ur.AiWithLevels
 
 class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
 
@@ -36,7 +37,7 @@ class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
 
         return when(team) {
             Team.white -> HtmlSupplier()
-            black -> BadAi1(playArea)
+            black -> AiWithLevels(playArea)
         }
     }
 
@@ -46,59 +47,11 @@ class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
         }
 
         override fun choose(unused: Int, moves: Map<Square, Square>): Int {
-            // TODO: change stored to Int
             return lastMove.getLastChosen().toInt()
         }
 
         override fun isHuman(): Boolean {
             return true
-        }
-    }
-
-    private inner class AiCompare(playArea: PlayArea, level: Int): Comparator<Map.Entry<Square, Square>> {
-        val playArea = playArea
-        val level = level
-
-        override fun compare(a: Map.Entry<Square, Square>, b: Map.Entry<Square, Square>): Int {
-            return score(b.key, b.value) - score(a.key, a.value)
-        }
-
-        fun score(fromSquare: Square, toSquare: Square) : Int {
-            if (level > 3 && fromSquare.isSafeSquare && fromSquare.rollAgain()) {
-                return -100 // don't move great piece
-            }
-            if (level > 2 && playArea.moveIsOnShareRace(black, fromSquare, toSquare)) {
-                return 3
-            }
-            if (level > 1 && playArea.moveTakes(black, fromSquare, toSquare)) {
-                return 2
-            }
-            if (level > 0 && toSquare.rollAgain()) {
-                return 1
-            }
-
-            return 0
-        }
-    }
-
-    private inner class BadAi1(playArea: PlayArea) : InputSupplier {
-        val playArea = playArea
-
-        override fun waitForPlayer(): Boolean {
-            return false
-        }
-
-        override fun choose(level: Int, moves: Map<Square, Square>): Int {
-            val first = moves.entries
-                .sortedWith(AiCompare(playArea, level))
-                .first()
-            console.log("AI best move is $first given level $level")
-
-            return 1 + moves.keys.indexOf(first.key)
-        }
-
-        override fun isHuman(): Boolean {
-            return false
         }
     }
 
