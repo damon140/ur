@@ -96,7 +96,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     fun drawRobotThinking(playArea: PlayArea) {
-        drawMost(playArea)
+        //drawMost(playArea)
         pageObject.findRollSpace().innerText = "AI is thinking"
 
         // blank out last roll
@@ -161,22 +161,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         (0 until twosCount).forEach { i ->
             val y = i * 50 + 25
 
-            val sideXOffsetOffset = 10
-            val leftOffset = if (white == team) 25 else 25 + sideXOffsetOffset
-            val rightOffset = if (white == team) 75 - sideXOffsetOffset else 75
-
-            val sideYOffsetOffset = 19
+            val sideYOffsetOffset = 25
             if (white == team) {
-                counterLines.add(Pair(leftOffset + baseX, lambda(y)))
-                counterLines.add(Pair(rightOffset + baseX, lambda(y + sideYOffsetOffset)))
+                counterLines.add(Pair(24 + baseX, lambda(y)))
+                counterLines.add(Pair(69 - 8 + baseX, lambda(y + sideYOffsetOffset)))
             } else {
-                counterLines.add(Pair(leftOffset + baseX, lambda(y + sideYOffsetOffset)))
-                counterLines.add(Pair(rightOffset + baseX, lambda(y)))
+                counterLines.add(Pair(38 + baseX, lambda(y + sideYOffsetOffset)))
+                counterLines.add(Pair(75 + baseX, lambda(y)))
             }
         }
 
         if (1 == count % 2) {
-            val x = if (white == team) 25 else 75
+            val x = if (white == team) 24 else 75
             counterLines += Pair(x + baseX, lambda((twosCount * 50) + 25))
         }
         return counterLines
@@ -262,14 +258,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun drawCounterByIndex(pair: Pair<Int, Int>, team: Team, size: CounterSize) {
         val x = indexToCoordinate(pair.first)
-        val y = indexToCoordinate(pair.second)
+        val y = 2 + indexToCoordinate(pair.second)
 
         drawCounterByCoordinates(x, y, team, size)
     }
 
     private fun drawCounterByIndex(pair: Pair<Double, Double>, team: Team, size: CounterSize) {
         val x = indexToCoordinate(pair.first)
-        val y = indexToCoordinate(pair.second)
+        val y = 2 + indexToCoordinate(pair.second)
 
         drawCounterByCoordinates(x, y, team, size)
     }
@@ -347,13 +343,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun drawSquare(square: Square) {
         val pair = squarePairMap.get(square)!!
+
+        //canvas.clearRect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
+
+        // TODO: after animate it goes black, why??
         canvas.beginPath()
-        canvas.rect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
+        canvas.rect(50.0 * pair.first, 2 + 50.0 * pair.second, 50.0, 50.0)
         canvas.stroke()
     }
 
     private fun blank() {
-        this.canvas.clearRect(0.0, 0.0, 350.0, 400.0)
+        this.canvas.clearRect(0.0, 0.0, 350.0, 404.0)
     }
 
     private fun drawBlanks() {
@@ -361,7 +361,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             .map { s ->
                 val square = squarePairMap.get(s)!!
                 val x = 50.0 * square.first + 1
-                val y = 50.0 * square.second + 1
+                val y = 2 + 50.0 * square.second + 1
 
                 val rollAgain = s.rollAgain()
                 val safeSquare = s.isSafeSquare
@@ -487,7 +487,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 f
             } else {
                 val indexPair = squarePairMap[square]!!
-                Pair(indexToCoordinate(indexPair.first), indexToCoordinate(indexPair.second))
+                Pair(indexToCoordinate(indexPair.first), 2 + indexToCoordinate(indexPair.second))
             }
         }.toList()
 

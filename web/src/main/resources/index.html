@@ -9,6 +9,9 @@
     body {
         font-family: gill sans, sans-serif;
         background: antiquewhite;
+        margin: 0;
+        border: 0;
+        width: 350px;
     }
 
     div#title, button {
@@ -17,9 +20,14 @@
     }
 
     div#title {
-        padding-bottom: 10px;
-        font-size: 37px;
-        color: #abcdef;
+        font-size: 24px;
+        color: #333;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom: 2px;
+        border-style: solid;
+        border-color: black;
     }
 
     .box {
@@ -80,41 +88,43 @@
 <body>
 
 <!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.4"></script>
+<script src="ur.js?v=0.5"></script>
 
 <div id="play-area-wrapper">
 
-    <div id="title">
-        Royal Game of Ur
-    </div>
+<div id="title">
+    Damon's Ur
+</div>
 
-    <div class="box" style="width: 350px; height: 10px">
-        <div id="roll-parts-white" class="one smol center"></div>
-        <div class="two center"></div>
-        <div id="roll-parts-black" class="three smol center"></div>
-    </div>
-    <div class="box" style="width: 350px; height: 55px">
-        <div id="roll-white" class="one big center">-</div>
-        <div id="roll-space2" class="two big center">l</div>
-        <div id="roll-black" class="three big center">-</div>
-    </div>
+<div class="box" style="width: 350px; height: 10px">
+<div id="roll-parts-white" class="one smol center"></div>
+<div class="two center"></div>
+<div id="roll-parts-black" class="three smol center"></div>
+</div>
 
-    <div>
-        <canvas id="canvas-board" width="350" height="400">
-        </canvas>
-    </div>
-    <div id="slideContainer">
-        AI level: <span id="ai-description"></span><br/>
-        <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
-    </div>
-    <div id="footer">
-        <div class="grey">
-            Ur game is 4500 years old | <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
-        </div>
-        <div class="grey">
-            &copy; Damon van Opdorp 2022 | <a href="https://github.com/damon140/ur">Github</a>
-        </div>
-    </div>
+<div class="box" style="width: 350px; height: 55px">
+<div id="roll-white" class="one big center">-</div>
+<div id="roll-space2" class="two big center">l</div>
+<div id="roll-black" class="three big center">-</div>
+</div>
+
+<div>
+<canvas id="canvas-board" width="350" height="404">
+</canvas>
+</div>
+<div id="slideContainer">
+AI level: <span id="ai-description"></span><br/>
+<input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
+</div>
+<div id="footer">
+<div class="grey">
+    Ur game is 4500 years old | <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
+</div>
+<div class="grey">
+    &copy; Damon van Opdorp 2022 | <a href="https://github.com/damon140/ur">Github</a>
+</div>
+</div>
+
 
     <audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
     <audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>

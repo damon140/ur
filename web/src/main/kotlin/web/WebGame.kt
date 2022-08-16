@@ -108,7 +108,6 @@ class WebGame {
             console.log("Not skipping turn as skipTurn is $skipTurn")
         }
 
-        // FIXME: get from slider here
         val level = urCanvasView.getLevel()
         val moveIndex = moveSupplier.choose(level, moves)
         val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
@@ -155,9 +154,8 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
+        console.log("About to drawAll().")
         urCanvasView.drawAll(currentTeam, this.dice, moves, playArea, continueFunction)
-
-        console.log("playEeee: Current team is " + ur.currentTeam())
 
         // loop the game loop
         playPart1()
