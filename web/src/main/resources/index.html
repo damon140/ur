@@ -14,20 +14,24 @@
         width: 350px;
     }
 
-    div#title, button {
-        font-family: didot, baskerville, serif;
+    div#title {
+        font-size: 16px;
+    }
+
+    button {
         font-size: 16px;
     }
 
     div#title {
-        font-size: 24px;
+        margin: 5px;
+        font-size: 20px;
         color: #333;
         border-top: 0px;
         border-left: 0px;
         border-right: 0px;
-        border-bottom: 2px;
+        border-bottom: 1px;
         border-style: solid;
-        border-color: black;
+        border-color: grey;
     }
 
     .box {
@@ -50,7 +54,6 @@
     }
 
     .two {
-        font-family:  didot, baskerville, serif;
         font-size: 20px;
         flex: 3.6 1 0;
         flex-wrap: wrap;
@@ -67,16 +70,16 @@
 
     #ai {
         padding-top: 14px;
+        font-size: 18px;
     }
-
     #footer {
-        font-size: 13px;
         color: grey;
+        font-size: 18px;
     }
 
     #slideContainer {
         border-top: 5px;
-        font-size: 14px;
+        font-size: 18px;
     }
 
     </style>
@@ -88,12 +91,12 @@
 <body>
 
 <!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.5"></script>
+<script src="ur.js?v=0.6"></script>
 
 <div id="play-area-wrapper">
 
 <div id="title">
-    Damon's Ur
+    <b>Damon's Ur v 0.6</b>
 </div>
 
 <div class="box" style="width: 350px; height: 10px">
@@ -113,7 +116,7 @@
 </canvas>
 </div>
 <div id="slideContainer">
-AI level: <span id="ai-description"></span><br/>
+AI level: <span id="ai-description"></span>
 <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
 </div>
 <div id="footer">
@@ -125,14 +128,13 @@ AI level: <span id="ai-description"></span><br/>
 </div>
 </div>
 
-
-    <audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
-    <audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
-    <audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
-    <audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
-    <audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
-
 </div>
+
+<audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
+<audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
+<audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
+<audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
+<audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
 
 </body>
 </html>
