@@ -39,7 +39,7 @@ class WebGame {
         if (currentPlayerIsHuman()) {
             urCanvasView.drawShowRollButton(playArea, continueFunction)
         } else {
-            urCanvasView.drawRobotThinking(playArea)
+            urCanvasView.drawRobotThinking()
 
             if (1 == Random.nextInt(1, 9)) {
                 urCanvasView.playHmm()

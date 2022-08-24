@@ -95,9 +95,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         pageObject.findRollPartsBlack().innerText = ""
     }
 
-    fun drawRobotThinking(playArea: PlayArea) {
-        //drawMost(playArea)
-        pageObject.findRollSpace().innerText = "AI is thinking"
+    fun drawRobotThinking() {
+        pageObject.findRollSpace().innerHTML = "<i>AI is thinking</i>"
 
         // blank out last roll
         pageObject.findRollBlack().innerText = ""
@@ -283,12 +282,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         canvas.fillStyle = if (team == black) "pink" else "#abcedf"
         canvas.fill()
         canvas.stroke()
+
+//        // FIXME: add lines for greyscale play
+//        if (team == black) {
+//            canvas.beginPath()
+//            canvas.moveTo(x - 15, y + 10)
+//            canvas.lineTo(x, y + 3)
+//            canvas.stroke()
+//        }
     }
 
     private fun drawGrid() {
-        Square.drawableSquares().forEach { square ->
-            drawSquare(square)
-        }
+        Square.drawableSquares().forEach(::drawSquare)
     }
 
     private fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
