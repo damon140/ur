@@ -9,17 +9,29 @@
     body {
         font-family: gill sans, sans-serif;
         background: antiquewhite;
-    }
-
-    div#title, button {
-        font-family: didot, baskerville, serif;
-        font-size: 18px;
+        margin: 0;
+        border: 0;
+        width: 350px;
     }
 
     div#title {
-        padding-bottom: 10px;
-        font-size: 40px;
-        color: #abcdef;
+        font-size: 16px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+
+    div#title {
+        margin: 5px;
+        font-size: 20px;
+        color: #333;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom: 1px;
+        border-style: solid;
+        border-color: grey;
     }
 
     .box {
@@ -59,13 +71,18 @@
 
     #ai {
         padding-top: 14px;
+        font-size: 18px;
     }
-
     #footer {
-        padding-top: 14px;
         color: grey;
         font-size: 18px;
     }
+
+    #slideContainer {
+        border-top: 5px;
+        font-size: 18px;
+    }
+
     </style>
 
     <!-- Make mobile work better -->
@@ -75,42 +92,43 @@
 <body>
 
 <!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.3"></script>
+<script src="ur.js?v=0.5"></script>
 
 <div id="play-area-wrapper">
 
-    <div id="title">
-        Royal Game of Ur
-    </div>
+<div id="title">
+    <b>Damon's Ur</b>
+</div>
 
-    <div class="box" style="width: 350px; height: 10px">
-        <div id="roll-parts-white" class="one smol center"></div>
-        <div class="two center"></div>
-        <div id="roll-parts-black" class="three smol center"></div>
-    </div>
-    <div class="box" style="width: 350px; height: 55px">
-        <div id="roll-white" class="one big center">-</div>
-        <div id="roll-space2" class="two big center">l</div>
-        <div id="roll-black" class="three big center">-</div>
-    </div>
+<div class="box" style="width: 350px; height: 10px">
+<div id="roll-parts-white" class="one smol center"></div>
+<div class="two center"></div>
+<div id="roll-parts-black" class="three smol center"></div>
+</div>
 
-    <div>
-        <canvas id="canvas-board" width="350" height="400">
-        </canvas>
-    </div>
+<div class="box" style="width: 350px; height: 55px">
+<div id="roll-white" class="one big center">-</div>
+<div id="roll-space2" class="two big center">l</div>
+<div id="roll-black" class="three big center">-</div>
+</div>
 
-    <div id="footer">
-        <div>
-            AI level
-            <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
-        </div>
-        <div>
-            Ur game is 4500 years old | <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
-        </div>
-        <div>
-            &copy; Damon van Opdorp 2022 | <a href="https://github.com/damon140/ur">Github</a>
-        </div>
-    </div>
+<div>
+<canvas id="canvas-board" width="350" height="404">
+</canvas>
+</div>
+<div id="slideContainer">
+AI level: <span id="ai-description"></span>
+<input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
+</div>
+<div id="footer">
+<div class="grey">
+    Ur game is 4500 years old | <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
+</div>
+<div class="grey">
+    &copy; Damon van Opdorp 2022 | <a href="https://github.com/damon140/ur">Github</a>
+</div>
+</div>
+
 
     <audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
     <audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
