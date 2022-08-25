@@ -4,7 +4,6 @@ import org.w3c.dom.*
 
 class UrPageObject(document: Document) {
 
-
     // iteration 1
     private val document: Document
 
@@ -26,6 +25,10 @@ class UrPageObject(document: Document) {
     private var rollPartsBlack: HTMLDivElement
     private var levelSlider: HTMLInputElement
 
+    // iteration 6
+    private var aiWinsSound: HTMLAudioElement
+    private var clapsSound: HTMLAudioElement
+
     init {
         this.document = document
 
@@ -45,9 +48,11 @@ class UrPageObject(document: Document) {
         // iteration 5
         this.rollPartsWhite = document.getElementById("roll-parts-white")!! as HTMLDivElement
         this.rollPartsBlack = document.getElementById("roll-parts-black")!! as HTMLDivElement
-
         this.levelSlider = document.getElementById("ai-slider")!! as HTMLInputElement
 
+        // iteration 6
+        this.aiWinsSound = document.getElementById("ai-wins-sound")!! as HTMLAudioElement
+        this.clapsSound = document.getElementById("claps-sound")!! as HTMLAudioElement
     }
 
     // Iteration 3
@@ -84,7 +89,6 @@ class UrPageObject(document: Document) {
         diceSound.volume = 0.7
         diceSound.currentTime = 0.65
         diceSound.play()
-
     }
 
     fun playTicSound() {
@@ -104,6 +108,15 @@ class UrPageObject(document: Document) {
 
     fun readLevel(): Int {
       return this.levelSlider.value.toInt()
+    }
+
+    // iteration 6
+    fun playAiWinsSound() {
+        this.aiWinsSound.play()
+    }
+
+    fun playClapsSound() {
+        this.clapsSound.play()
     }
 
 }

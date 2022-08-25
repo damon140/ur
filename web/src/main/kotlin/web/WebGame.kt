@@ -52,8 +52,6 @@ class WebGame {
         }
     }
 
-    // play ZZZ sound
-    // set interval callback to m05
     private fun playPart2() {
         urCanvasView.playDiceRoll()
         playPart3()
@@ -126,14 +124,12 @@ class WebGame {
         val currentTeam = ur.currentTeam()
 
         if (result == Ur.MoveResult.gameOver) {
-            console.log("Game won by $currentTeam")
             urCanvasView.updateBoard(playArea)
             urCanvasView.gameWon(currentTeam)
             return
         }
 
         if (result == Ur.MoveResult.counterTaken) {
-            console.log("FIXME: play taken sound here")
             urCanvasView.playCounterTakenSound()
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")

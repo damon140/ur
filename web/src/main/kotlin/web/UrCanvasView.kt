@@ -243,12 +243,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         button.addEventListener("click", {
             console.log("reloading")
             window.location.reload()
-            // FIXME: or playArea.reset??
         })
 
         val findRollSpace = pageObject.findRollSpace()
         findRollSpace.innerText = ""
         findRollSpace.append(button)
+
+        if (white == currentTeam) {
+            pageObject.playClapsSound()
+        } else {
+            pageObject.playAiWinsSound()
+        }
     }
 
     private fun drawCounterByIndex(square: Square, team: Team, size: CounterSize) {
@@ -418,6 +423,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun playBaBowSound() {
         pageObject.playBaBowSound()
+    }
+
+    private fun playAiWinsSound() {
+        pageObject.playAiWinsSound()
+    }
+
+    private fun playClapsSound() {
+        pageObject.playClapsSound()
     }
 
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
