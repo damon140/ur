@@ -14,10 +14,6 @@
         width: 350px;
     }
 
-    div#title {
-        font-size: 16px;
-    }
-
     button {
         font-size: 16px;
     }
@@ -31,7 +27,7 @@
         border-right: 0px;
         border-bottom: 1px;
         border-style: solid;
-        border-color: grey;
+        border-color: #bbb;
     }
 
     .box {
@@ -54,7 +50,6 @@
     }
 
     .two {
-        font-family:  didot, baskerville, serif;
         font-size: 20px;
         flex: 3.6 1 0;
         flex-wrap: wrap;
@@ -92,12 +87,16 @@
 <body>
 
 <!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.5"></script>
+<script src="ur.js?v=0.6"></script>
 
 <div id="play-area-wrapper">
 
+<!--
+Damon add menu here:
+https://www.w3schools.com/howto/howto_js_mobile_navbar.asp
+-->
 <div id="title">
-    <b>Damon's Ur</b>
+    <b>Damon's Ur </b><span style="font-size: 15px">v0.6</span>
 </div>
 
 <div class="box" style="width: 350px; height: 10px">
@@ -129,14 +128,20 @@ AI level: <span id="ai-description"></span>
 </div>
 </div>
 
-
-    <audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
-    <audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
-    <audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
-    <audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
-    <audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
-
 </div>
+
+<!-- board sounds -->
+<audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
+<audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
+<audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
+
+<!-- Human player sounds -->
+<audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
+<audio id="claps-sound" src="claps.mp3" preload="auto"></audio>
+
+<!-- AI Sounds -->
+<audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
+<audio id="ai-wins-sound" src="ai-wins.mp3" preload="auto"></audio>
 
 </body>
 </html>
