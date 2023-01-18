@@ -1,24 +1,15 @@
 
-
-// Javascript transpile w/ jsweet
-// https://github.com/lgrignon/jsweet-gradle-plugin
-
 buildscript {
     repositories {
         mavenCentral()
 
     }
-    dependencies {
-        classpath 'io.github.zebalu:teavm-gradle-plugin:+'
-    }
 }
 
 plugins {
     id 'java'
-    id "application"
+    id 'application'
 }
-
-apply plugin: 'io.github.zebalu.teavm-gradle-plugin'
 
 sourceCompatibility = '1.17'
 targetCompatibility = '1.17'
@@ -59,16 +50,3 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
 }
-
-// Which JDK does Tea VM support??
-teavm {
-    /** The directory to monitor to decide if compile is up-to-date or not
-    // sourceDirectory = null;
-
-     /** How to name the result file. */
-    targetFileName = "ur.js";
-
-    /** Which class holds your public static void main(Strin[] args) method */
-    mainClass = "com.damon140.ur.helloWorld";
-}
-
