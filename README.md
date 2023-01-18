@@ -18,11 +18,10 @@ Also worth mentioning this [similar project in React](https://bizley.github.io/r
 There are some others, but need to build locally it appears.
 
 ## TODO List
-
-* Write a second "AI"
  
 ## Done List
 
+* ~~Write an AI slider~~
 * ~~host in github static hosting~~
 * ~~game loop so play isn't instantaneous~~
 * ~~mobile meta hint layout~~
