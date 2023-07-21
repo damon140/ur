@@ -42,16 +42,16 @@ enum class Square {
     // TODO: switch to new illegal_square square instead of opt??
     fun calculateNewSquare(team: Team, count: Int): Square? {
         if (this == off_board_finished) {
-            return off_board_finished;
+            return off_board_finished
         }
         var newSquare = this
         for (looper in 0 until count) {
             if (off_board_finished == newSquare) {
-                return null;
+                return null
             }
             newSquare = newSquare.calculateNewSquare(team)
         }
-        return newSquare;
+        return newSquare
     }
 
     // synthetic

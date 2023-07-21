@@ -35,5 +35,9 @@ enum class Team {
         fun fromCh(value: String): Team {
             return if (white.ch == value) white else black
         }
+
+        fun random(): Team {
+            return values()[(0..1).random()]
+        }
     }
 }

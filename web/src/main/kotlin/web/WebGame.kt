@@ -75,12 +75,19 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         console.log("Current team is $currentTeam")
 
-        dice.roll();
+        dice.roll()
         this.roll = dice.getLastValue()
 
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
+
+        val cantMove = 0 == roll || moves.isEmpty()
+
+        if (cantMove) {
+            urCanvasView.playCantMoveSound()
+        }
+
         val continueFunction = {
-            if (0 == roll || moves.isEmpty()) {
+            if (cantMove) {
                 // skip processing of human roll, nothing to do
                 playPart4()
             } else {

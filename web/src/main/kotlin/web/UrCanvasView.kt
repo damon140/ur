@@ -435,6 +435,10 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         pageObject.playCounterTakenSound()
     }
 
+    fun playCantMoveSound() {
+        pageObject.playCantMoveSound()
+    }
+
     private fun playBaBowSound() {
         pageObject.playBaBowSound()
     }

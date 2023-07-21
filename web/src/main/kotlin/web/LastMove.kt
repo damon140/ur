@@ -16,7 +16,7 @@ package web
 
 class LastMove {
 
-    private var lastChosen: String = "";
+    private var lastChosen: String = ""
 
     fun clearLastChosen() {
         this.lastChosen = ""

@@ -136,7 +136,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         }
 
         private fun assertLineCount(team: Team, deque: List<String>) {
-            val matchChar = team.ch.first();
+            val matchChar = team.ch.first()
             require(PlayArea.COUNTERS_PER_PLAYER == deque
                 .map { l: String ->
                     l.toList().filter { c -> c.equals(matchChar) }.size
@@ -163,14 +163,14 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
         fun <K, V> zipToMap(keys: List<K>, values: List<V>): Map<K, V> {
             if (keys.size < values.size) {
-                throw Exception("keys list too small");
+                throw Exception("keys list too small")
             }
             if (keys.size > values.size) {
-                throw Exception("values list too small");
+                throw Exception("values list too small")
             }
 
             if (keys.size != values.size) {
-                throw Exception("size mismach");
+                throw Exception("size mismach")
             }
 
             return (0..(keys.size - 1))
@@ -183,7 +183,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
             var result = 0
             if (!line.contains(COUNTER_START_SEPARATOR)) {
-                throw Exception("No separator " + COUNTER_START_SEPARATOR);
+                throw Exception("No separator " + COUNTER_START_SEPARATOR)
             }
 
             val deque: ArrayDeque<String> = ArrayDeque(

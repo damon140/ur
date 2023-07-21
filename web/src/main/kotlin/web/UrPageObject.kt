@@ -16,6 +16,7 @@
 package web
 
 import org.w3c.dom.*
+import kotlin.random.Random
 
 class UrPageObject(document: Document) {
 
@@ -44,6 +45,10 @@ class UrPageObject(document: Document) {
     private var aiWinsSound: HTMLAudioElement
     private var clapsSound: HTMLAudioElement
 
+    // iteration 7
+    private var cantMoveSound1: HTMLAudioElement
+    private var cantMoveSound2: HTMLAudioElement
+
     init {
         this.document = document
 
@@ -68,6 +73,10 @@ class UrPageObject(document: Document) {
         // iteration 6
         this.aiWinsSound = document.getElementById("ai-wins-sound")!! as HTMLAudioElement
         this.clapsSound = document.getElementById("claps-sound")!! as HTMLAudioElement
+
+        // iteration 7
+        this.cantMoveSound1 = document.getElementById("wah-wah1-sound")!! as HTMLAudioElement
+        this.cantMoveSound2 = document.getElementById("wah-wah2-sound")!! as HTMLAudioElement
     }
 
     // Iteration 3
@@ -132,6 +141,20 @@ class UrPageObject(document: Document) {
 
     fun playClapsSound() {
         this.clapsSound.play()
+    }
+
+    fun playCantMoveSound() {
+        if (4 != Random.nextInt(1, 4)) {
+            // prefer this sound most of the time
+            cantMoveSound1.volume = 0.8
+            cantMoveSound1.currentTime = 0.4
+            cantMoveSound1.play()
+        } else {
+            // this is Jazz's funny sound!!
+            cantMoveSound2.volume = 0.4
+            cantMoveSound2.currentTime = 0.65
+            cantMoveSound2.play()
+        }
     }
 
 }

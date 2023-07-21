@@ -17,7 +17,9 @@ package com.damon140.ur
 class PlayArea {
     private val counters: MutableMap<Square, Team>
     private val completedCounters: MutableMap<Team, Int>
-    private var currentTeam = Team.white // white starts
+
+    // init random, makes game much harder than if white always starts
+    private var currentTeam = Team.random()
 
     init {
         counters = HashMap()
@@ -28,7 +30,7 @@ class PlayArea {
 
     fun moveTakes(team: Team, fromSquare: Square, toSquare: Square): Boolean {
         return teamHasCounterOn(team, fromSquare)
-                && teamHasCounterOn(team.other(), toSquare);
+                && teamHasCounterOn(team.other(), toSquare)
     }
 
     fun moveIsOnShareRace(team: Team, fromSquare: Square, toSquare: Square): Boolean {

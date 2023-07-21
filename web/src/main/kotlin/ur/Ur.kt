@@ -16,6 +16,7 @@ package com.damon140.ur
 
 class Ur(private val playArea: PlayArea) {
 
+    // FIXME: Damon attempt to make private, does this tidy code?
     fun currentTeam(): Team {
         return playArea.currentTeam()
     }
