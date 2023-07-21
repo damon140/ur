@@ -9,12 +9,17 @@ Needs Java 17, run with
 
 Will open a browser to play in.
 
-#### Recent Changes
-* July 2022 - make off board counters not overlap
+#### Recent Changes July 2023
+* make start player random
+* add Jazz voice sound for when you can't move on your turn
 
 #### TODO
 
-* change counter choice animation to not use square, change border colour instead
 * implement a colour palette
 
-&copy; 2022 Damon van Opdorp
+### DONE
+* make off board counters not overlap
+* change counter choice animation to not use square, change border colour instead
+
+
+&copy; 2023 Damon van Opdorp
