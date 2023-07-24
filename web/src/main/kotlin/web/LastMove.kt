@@ -18,10 +18,6 @@ class LastMove {
 
     private var lastChosen: String = ""
 
-    fun clearLastChosen() {
-        this.lastChosen = ""
-    }
-
     fun hasLastChosen(): Boolean {
         console.log("lastChosen is [" + this.lastChosen + "]")
         console.log("lastChosen length is " + this.lastChosen.length)

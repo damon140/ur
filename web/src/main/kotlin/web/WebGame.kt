@@ -21,7 +21,8 @@ import kotlin.random.Random
 
 class WebGame {
     private val dice = Dice()
-    private var playArea = PlayArea()
+    // Random team makes it much harder to win
+    private var playArea = PlayArea(Team.random())
     private var lastMove = LastMove()
     private var ur: Ur = Ur(playArea)
     private var pageObject = UrPageObject(document)

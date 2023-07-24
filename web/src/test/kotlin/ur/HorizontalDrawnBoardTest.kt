@@ -155,7 +155,7 @@ internal class HorizontalDrawnBoardTest {
 
     @Test
     fun horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() {
-        val b = PlayArea()
+        val b = PlayArea(Team.white)
         b.move(Square.off_board_unstarted, Square.white_run_on_1, Team.white)
         b.move(Square.off_board_unstarted, Square.black_run_on_1, Team.black)
         b.move(Square.off_board_unstarted, Square.off_board_finished, Team.white)

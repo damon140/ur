@@ -255,6 +255,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         button.innerHTML = "Game won by $currentTeam. Click to restart"
 
         button.addEventListener("click", {
+            // FIXME: want a function handle to call here on game won
             console.log("reloading")
             window.location.reload()
         })
@@ -441,14 +442,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     private fun playBaBowSound() {
         pageObject.playBaBowSound()
-    }
-
-    private fun playAiWinsSound() {
-        pageObject.playAiWinsSound()
-    }
-
-    private fun playClapsSound() {
-        pageObject.playClapsSound()
     }
 
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {

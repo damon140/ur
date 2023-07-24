@@ -275,7 +275,7 @@ class UrTest {
     // --------------------------------------
     private fun givenNewGame() {
         moveResult = ArrayDeque<MoveResult>()
-        playArea = PlayArea()
+        playArea = PlayArea(Team.white)
         horizontalDrawnBoard = HorizontalDrawnBoard(playArea!!)
         ur = Ur(playArea!!)
     }

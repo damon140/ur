@@ -21,7 +21,7 @@ import web.PlayerSetup
 
 class AiWithLevels(playArea: PlayArea) : PlayerSetup.InputSupplier {
 
-    val playArea = playArea
+    private val playArea = playArea
 
     override fun waitForPlayer(): Boolean {
         return false
@@ -41,8 +41,8 @@ class AiWithLevels(playArea: PlayArea) : PlayerSetup.InputSupplier {
     }
 
     class AiCompare(playArea: PlayArea, level: Int): Comparator<Map.Entry<Square, Square>> {
-        val playArea = playArea
-        val level = level
+        private val playArea = playArea
+        private val level = level
 
         override fun compare(a: Map.Entry<Square, Square>, b: Map.Entry<Square, Square>): Int {
             return score(b.key, b.value) - score(a.key, a.value)

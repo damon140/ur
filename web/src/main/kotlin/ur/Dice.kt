@@ -25,7 +25,7 @@ class Dice {
         val d4 = (0..1).random()
 
         this.lastValue = d1 + d2 + d3 + d4
-        this.lastString = ("" + d1) + ("+" + d2) + ("+" + d3) + ("+" + d4)
+        this.lastString = ("" + d1) + ("+$d2") + ("+$d3") + ("+$d4")
     }
     fun getLastValue(): Int {
         return lastValue

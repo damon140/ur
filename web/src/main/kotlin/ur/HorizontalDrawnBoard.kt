@@ -55,21 +55,6 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             .toList()
     }
 
-    fun verticleBoard2(): List<String> {
-        return board(VERTICAL_BOARD)
-            .map { l ->
-                l.toList()
-                    .map { b -> b.ch }
-                    .joinToString("")
-            }
-            .toList()
-    }
-
-    // FIXME: Damon move to new class
-    fun verticalBoard(): List<List<BoardPart>> {
-        return board(VERTICAL_BOARD)
-    }
-
     fun board(xxx: Array<Array<Square?>>): List<List<BoardPart>> {
         return xxx.map { l ->
             l.map { square ->
@@ -82,11 +67,11 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         }.toList()
     }
 
-    enum class BoardPart(public val ch: String) {
+    enum class BoardPart(val ch: String) {
         white(Team.white.ch), black(Team.black.ch), star("*"), empty("."), space(" ");
 
         fun isChar(c: String?): Boolean {
-            return ch.equals(c)
+            return ch == c
         }
 
         companion object {
@@ -117,7 +102,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
             val whiteLine: String = deque.removeFirst()
             val blackLine: String = deque.removeLast()
-            val c = PlayArea()
+            val c = PlayArea(white)
             parseAndBuildCompletedCounters(blackLine, c, black)
             parseAndBuildCompletedCounters(whiteLine, c, white)
 
@@ -139,14 +124,14 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             val matchChar = team.ch.first()
             require(PlayArea.COUNTERS_PER_PLAYER == deque
                 .map { l: String ->
-                    l.toList().filter { c -> c.equals(matchChar) }.size
+                    l.toList().filter { c -> c == matchChar }.size
                 }
                 .sum()
             ) { "Wrong number of counters for " + team.name }
         }
 
         private fun extracted(maybeSparseBoard: List<Square?>, row: String, playArea: PlayArea) {
-            val boardRow: List<Square> = maybeSparseBoard.filter { s -> s != null }.toList() as List<Square>
+            val boardRow: List<Square> = maybeSparseBoard.filterNotNull().toList() as List<Square>
             val chars: List<String> = row.toList()
                 .map { c -> "" + c }
                 .filter { c ->  !BoardPart.space.isChar(c) }
@@ -173,7 +158,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
                 throw Exception("size mismach")
             }
 
-            return (0..(keys.size - 1))
+            return (0 until keys.size)
                 .map {keys.get(it) to values.get(it)}
                 .toMap()
         }
@@ -183,7 +168,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
             var result = 0
             if (!line.contains(COUNTER_START_SEPARATOR)) {
-                throw Exception("No separator " + COUNTER_START_SEPARATOR)
+                throw Exception("No separator $COUNTER_START_SEPARATOR")
             }
 
             val deque: ArrayDeque<String> = ArrayDeque(
@@ -195,19 +180,19 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             if (1 != deque.size) {
                 result = deque.last().length
             }
-            (0..(result- 1))
+            (0 until result)
                 .forEach { _ -> c.move(off_board_unstarted, off_board_finished, white) }
         }
 
-        protected val VERTICAL_BOARD: Array<Array<Square?>> = arrayOf(
-            arrayOf<Square?>(white_run_on_4, shared_1, black_run_on_4),
-            arrayOf<Square?>(white_run_on_3, shared_2, black_run_on_3),
-            arrayOf<Square?>(white_run_on_2, shared_3, black_run_on_2),
-            arrayOf<Square?>(white_run_on_1, shared_4, black_run_on_1),
-            arrayOf<Square?>(null, shared_5, null),
-            arrayOf<Square?>(null, shared_6, null),
-            arrayOf<Square?>(white_run_off_2, shared_7, black_run_off_2),
-            arrayOf<Square?>(white_run_off_1, shared_8, black_run_off_1)
+        private val VERTICAL_BOARD: Array<Array<Square?>> = arrayOf(
+            arrayOf(white_run_on_4, shared_1, black_run_on_4),
+            arrayOf(white_run_on_3, shared_2, black_run_on_3),
+            arrayOf(white_run_on_2, shared_3, black_run_on_2),
+            arrayOf(white_run_on_1, shared_4, black_run_on_1),
+            arrayOf(null, shared_5, null),
+            arrayOf(null, shared_6, null),
+            arrayOf(white_run_off_2, shared_7, black_run_off_2),
+            arrayOf(white_run_off_1, shared_8, black_run_off_1)
         )
         private val HORIZONTAL_BOARD: Array<Array<Square?>>
 

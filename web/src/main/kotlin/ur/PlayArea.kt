@@ -17,15 +17,17 @@ package com.damon140.ur
 class PlayArea {
     private val counters: MutableMap<Square, Team>
     private val completedCounters: MutableMap<Team, Int>
-
-    // init random, makes game much harder than if white always starts
-    private var currentTeam = Team.random()
+    private var currentTeam: Team
 
     init {
         counters = HashMap()
         completedCounters = HashMap<Team, Int>()
         completedCounters[Team.black] = 0
         completedCounters[Team.white] = 0
+    }
+    
+    constructor(currentTeam: Team) {
+        this.currentTeam = currentTeam
     }
 
     fun moveTakes(team: Team, fromSquare: Square, toSquare: Square): Boolean {
@@ -83,7 +85,7 @@ class PlayArea {
             .filter {e -> team === e.value }
             .count()
         val finishedCounters = completedCounters[team]!!
-        return COUNTERS_PER_PLAYER - (finishedCounters + inProgressCounters.toInt())
+        return COUNTERS_PER_PLAYER - (finishedCounters + inProgressCounters)
     }
 
     fun allStartedOrComplete(team: Team): Boolean {

@@ -2,6 +2,7 @@ package ur
 
 import com.damon140.ur.PlayArea
 import com.damon140.ur.Square.*
+import com.damon140.ur.Team
 import com.damon140.ur.Team.black
 import com.damon140.ur.Team.white
 import kotlin.test.Test
@@ -11,7 +12,7 @@ class PlayAreaTest {
 
     @Test
     fun moveTakes() {
-        val p = PlayArea()
+        val p = PlayArea(Team.white)
         assertEquals(p.moveTakes(white, white_run_on_4, shared_1), false)
 
         p.move(off_board_unstarted, black_run_on_4, black)
@@ -23,7 +24,7 @@ class PlayAreaTest {
 
     @Test
     fun moveIsOnShareRace() {
-        val p = PlayArea()
+        val p = PlayArea(Team.white)
 
         assertEquals(p.moveIsOnShareRace(black, shared_1, shared_2), false)
 
@@ -36,7 +37,7 @@ class PlayAreaTest {
 
     @Test
     fun empty() {
-        val p = PlayArea()
+        val p = PlayArea(Team.white)
         assertEquals(p.empty(white_run_on_4), true);
 
         p.move(off_board_unstarted, white_run_on_4, white)
@@ -45,7 +46,7 @@ class PlayAreaTest {
 
     @Test
     fun teamHasCounterOn() {
-        val p = PlayArea()
+        val p = PlayArea(Team.white)
         assertEquals(p.teamHasCounterOn(white, white_run_on_4), false);
 
         p.move(off_board_unstarted, white_run_on_4, white)
