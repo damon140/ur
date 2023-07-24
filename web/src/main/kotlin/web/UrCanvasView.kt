@@ -367,7 +367,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun drawSquare(square: Square) {
-        val pair = squarePairMap.get(square)!!
+        val pair = squarePairMap[square]!!
 
         //canvas.clearRect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
 
@@ -384,7 +384,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private fun drawBlanks() {
         Square.drawableSquares()
             .map { s ->
-                val square = squarePairMap.get(s)!!
+                val square = squarePairMap[s]!!
                 val x = 50.0 * square.first + 1
                 val y = 2 + 50.0 * square.second + 1
 
@@ -492,7 +492,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             square == off_board_unstarted && team == black -> Pair(4, 4)
             square == off_board_finished && team == white -> Pair(2, 5)
             square == off_board_finished && team == black -> Pair(4, 5)
-            else -> squarePairMap.get(square)!!
+            else -> squarePairMap[square]!!
         }
     }
 

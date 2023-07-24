@@ -41,13 +41,13 @@ internal class HorizontalDrawnBoardTest {
                 .w.w  w.
                 w.w.w.w.
                 *...  *.
-                bbbbbbb|""".trimIndent());
+                bbbbbbb|""".trimIndent())
         thenFullBoardAreaIs(playArea, """
                        |
                 *w.w  w.
                 w.w*w.w.
                 *...  *.
-                bbbbbbb|""".trimIndent());
+                bbbbbbb|""".trimIndent())
     }
 
     @Test
@@ -57,7 +57,7 @@ internal class HorizontalDrawnBoardTest {
                 ...w  ..
                 ........
                 ...b  ..
-                bbbbbb |""".trimIndent());
+                bbbbbb |""".trimIndent())
         thenFullBoardAreaIs(playArea, """
                 wwwwww |
                 *..w  *.
@@ -73,7 +73,7 @@ internal class HorizontalDrawnBoardTest {
                 ...w  ..
                 ........
                 ..b.  ..
-                bbbbbb |""".trimIndent());
+                bbbbbb |""".trimIndent())
         thenFullBoardAreaIs(playArea, """
                 wwww |ww
                 *..w  *.
@@ -89,7 +89,7 @@ internal class HorizontalDrawnBoardTest {
                 ...w  ..
                 ........
                 ..b.  ..
-                bbbbb|b""".trimIndent());
+                bbbbb|b""".trimIndent())
         thenFullBoardAreaIs(playArea, """
                 wwww |ww
                 *..w  *.
@@ -105,7 +105,7 @@ internal class HorizontalDrawnBoardTest {
                 ....  w.
                 ........
                 ....  b.
-                |bbbbbb """.trimIndent());
+                |bbbbbb """.trimIndent())
         thenFullBoardAreaIs(playArea, """
                  |wwwwww
                 *...  w.
@@ -121,7 +121,7 @@ internal class HorizontalDrawnBoardTest {
                 *..w  *.
                 ...*....
                 *..b  *.
-                bbbbb|b """.trimIndent());
+                bbbbb|b """.trimIndent())
         thenFullBoardAreaIs(playArea, """
                 wwwww |w
                 *..w  *.
@@ -144,7 +144,7 @@ internal class HorizontalDrawnBoardTest {
                 ...w  ..
                 ........
                 ..b.  ..
-                bbbbb|b """.trimIndent());
+                bbbbb|b """.trimIndent())
         assertEquals(playArea.completedCount(Team.white), 2)
         assertEquals(playArea.completedCount(Team.black), 1)
         assertEquals(playArea[Square.white_run_on_1], Team.white)

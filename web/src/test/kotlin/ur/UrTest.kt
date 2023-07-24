@@ -125,7 +125,7 @@ class UrTest {
               *...  *.
               b..*....
               *...  *.
-              bbbbbb |""".trimIndent());
+              bbbbbb |""".trimIndent())
         thenAllMovesWereLegal()
     }
 
@@ -143,7 +143,7 @@ class UrTest {
               *...  *.
               b..*....
               *...  *.
-              bbbbbb |""".trimIndent());
+              bbbbbb |""".trimIndent())
     }
 
     @Test
@@ -163,7 +163,7 @@ class UrTest {
               *...  *.
               ...*..b.
               *...  *.
-              bbbbbb |""".trimIndent());
+              bbbbbb |""".trimIndent())
         thenAllMovesWereLegal()
     }
 
@@ -188,7 +188,7 @@ class UrTest {
               *...  *.
               ...*....
               *...  *.
-              bbbbbb|b""".trimIndent());
+              bbbbbb|b""".trimIndent())
 
         thenAllMovesWereLegal()
     }
@@ -200,14 +200,14 @@ class UrTest {
             *...  w.
             ...*....
             *...  *.
-            |bbbbbbb""".trimIndent());
+            |bbbbbbb""".trimIndent())
 
         thenHorizontalFullBoardIs("""
             |wwwwww
             *...  w.
             ...*....
             *...  *.
-            |bbbbbbb""".trimIndent());
+            |bbbbbbb""".trimIndent())
 
         whenAskMoves(white, 1)
         thenMovesAre(Square.off_board_finished)
@@ -221,9 +221,9 @@ class UrTest {
               wwb*wb..
               b..b  *.
               b    |bb
-              """.trimIndent());
-        whenAskMoves(white, 2);
-        thenMovesAre(Square.shared_3, Square.shared_4, Square.shared_7);
+              """.trimIndent())
+        whenAskMoves(white, 2)
+        thenMovesAre(Square.shared_3, Square.shared_4, Square.shared_7)
     }
 
     @Test
@@ -233,9 +233,9 @@ class UrTest {
               *...  w.
               ...*....
               *...  *.
-              |bbbbbbb""".trimIndent());
-        whenAskMoves(white, 2);
-        thenNoMovesAreLegal();
+              |bbbbbbb""".trimIndent())
+        whenAskMoves(white, 2)
+        thenNoMovesAreLegal()
     }
 
     @Test
@@ -245,7 +245,7 @@ class UrTest {
               .w.w  w.
               w.w.w.w.
               *...  *.
-              bbbbbbb|""".trimIndent());
+              bbbbbbb|""".trimIndent())
         whenAskMoves(white, 1)
         thenMovesAre(
             Square.white_run_on_2,
@@ -265,7 +265,7 @@ class UrTest {
               *...  w.
               ...*....
               *...  *.
-              bbbbbbb|""".trimIndent());
+              bbbbbbb|""".trimIndent())
         whenMove(white, Square.white_run_off_2, 1)
         thenWhiteWon()
     }
@@ -275,7 +275,7 @@ class UrTest {
     // --------------------------------------
     private fun givenNewGame() {
         moveResult = ArrayDeque<MoveResult>()
-        playArea = PlayArea(Team.white)
+        playArea = PlayArea(white)
         horizontalDrawnBoard = HorizontalDrawnBoard(playArea!!)
         ur = Ur(playArea!!)
     }
@@ -314,7 +314,7 @@ class UrTest {
         assertEquals(moveResult.last(), MoveResult.legal)
     }
 
-    fun thenStateIsInitial() {
+    private fun thenStateIsInitial() {
         assertEquals(playArea!!.currentTeam(), white)
         assertEquals(playArea!!.inPlayCount(), 0)
         assertEquals(playArea!!.completedCount(white), 0)
@@ -336,9 +336,8 @@ class UrTest {
     }
 
     private fun thenHorizontalFullBoardIs(wantedBoard: String) {
-        val board: String = horizontalDrawnBoard!!.fullBoard()
-            .map { obj: String -> obj.trim { it <= ' ' } }
-            .joinToString("\n")
+        val board: String =
+            horizontalDrawnBoard!!.fullBoard().joinToString("\n") { obj: String -> obj.trim { it <= ' ' } }
         assertEquals(board, wantedBoard)
     }
 
@@ -354,7 +353,7 @@ class UrTest {
         for (i in moveResult.indices) {
             val r: MoveResult = moveResult.first()
             if (r === MoveResult.illegal) {
-                assertEquals(false, true, "Move [" + (i + 1) + "] was illegal")
+                assertEquals(expected = false, actual = true, message = "Move [" + (i + 1) + "] was illegal")
             }
         }
     }
@@ -383,7 +382,7 @@ class UrTest {
     }
 
     // TODO: add to all test failings
-    fun printBoard() {
+    private fun printBoard() {
 //        horizontalDrawnBoard!!.fullBoard()
 //            .map { obj: String -> obj.trim { it <= ' ' } }
 //            .forEach(java.lang.System.out::println)

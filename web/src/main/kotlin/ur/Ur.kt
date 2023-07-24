@@ -43,10 +43,7 @@ class Ur(private val playArea: PlayArea) {
             && playArea[fromSquare] !== team) {
             return MoveResult.illegal // teams counter not on square to move from
         }
-        val newSquare: Square? = fromSquare.calculateNewSquare(team, count)
-        if (null == newSquare) {
-            return MoveResult.illegal
-        }
+        val newSquare: Square = fromSquare.calculateNewSquare(team, count) ?: return MoveResult.illegal
 
         if (0 == count) {
             return MoveResult.illegal // illegal move of zero

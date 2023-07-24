@@ -113,7 +113,7 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
-        val moveSupplier = moveSuppliers.get(currentTeam)!!
+        val moveSupplier = moveSuppliers[currentTeam]!!
 
         val skipTurn = 0 == roll || moves.isEmpty()
 

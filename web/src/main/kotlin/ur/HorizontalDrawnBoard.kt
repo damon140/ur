@@ -18,7 +18,7 @@ import com.damon140.ur.Square.*
 import com.damon140.ur.Team.*
 
 class HorizontalDrawnBoard(playArea: PlayArea) {
-    val playArea: PlayArea
+    private val playArea: PlayArea
 
     init {
         this.playArea = playArea
@@ -34,7 +34,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         return lines.toList()
     }
 
-    fun countersLine(team: Team): String {
+    private fun countersLine(team: Team): String {
         val completed: Int = playArea.completedCount(team)
         val unstarted: Int = PlayArea.COUNTERS_PER_PLAYER - playArea.inPlayCount(team) - completed
         val padding: Int = 1 + PlayArea.COUNTERS_PER_PLAYER - completed - unstarted
@@ -48,20 +48,18 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
     fun smallBoard(): List<String> {
         return board(HORIZONTAL_BOARD)
             .map { l ->
-                l.toList()
-                    .map { b -> b.ch }
-                    .joinToString("")
+                l.toList().joinToString("") { b -> b.ch }
             }
             .toList()
     }
 
-    fun board(xxx: Array<Array<Square?>>): List<List<BoardPart>> {
+    private fun board(xxx: Array<Array<Square?>>): List<List<BoardPart>> {
         return xxx.map { l ->
             l.map { square ->
                 if (null == square) {
                     return@map BoardPart.space
                 } else {
-                    return@map BoardPart.from(square, playArea.get(square))
+                    return@map BoardPart.from(square, playArea[square])
                 }
             }.toList()
         }.toList()
@@ -122,16 +120,14 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
         private fun assertLineCount(team: Team, deque: List<String>) {
             val matchChar = team.ch.first()
-            require(PlayArea.COUNTERS_PER_PLAYER == deque
-                .map { l: String ->
-                    l.toList().filter { c -> c == matchChar }.size
-                }
-                .sum()
+            require(PlayArea.COUNTERS_PER_PLAYER == deque.sumOf { l: String ->
+                l.toList().filter { c -> c == matchChar }.size
+            }
             ) { "Wrong number of counters for " + team.name }
         }
 
         private fun extracted(maybeSparseBoard: List<Square?>, row: String, playArea: PlayArea) {
-            val boardRow: List<Square> = maybeSparseBoard.filterNotNull().toList() as List<Square>
+            val boardRow: List<Square> = maybeSparseBoard.filterNotNull().toList()
             val chars: List<String> = row.toList()
                 .map { c -> "" + c }
                 .filter { c ->  !BoardPart.space.isChar(c) }
@@ -146,7 +142,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
                 }
         }
 
-        fun <K, V> zipToMap(keys: List<K>, values: List<V>): Map<K, V> {
+        private fun <K, V> zipToMap(keys: List<K>, values: List<V>): Map<K, V> {
             if (keys.size < values.size) {
                 throw Exception("keys list too small")
             }
@@ -158,9 +154,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
                 throw Exception("size mismach")
             }
 
-            return (0 until keys.size)
-                .map {keys.get(it) to values.get(it)}
-                .toMap()
+            return (keys.indices).associate { keys[it] to values[it] }
         }
 
         private fun parseAndBuildCompletedCounters(line: String, c: PlayArea, white: Team) {

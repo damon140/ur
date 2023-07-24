@@ -14,20 +14,15 @@
 
 package com.damon140.ur
 
-class PlayArea {
+class PlayArea(private var currentTeam: Team) {
     private val counters: MutableMap<Square, Team>
     private val completedCounters: MutableMap<Team, Int>
-    private var currentTeam: Team
 
     init {
         counters = HashMap()
         completedCounters = HashMap<Team, Int>()
         completedCounters[Team.black] = 0
         completedCounters[Team.white] = 0
-    }
-    
-    constructor(currentTeam: Team) {
-        this.currentTeam = currentTeam
     }
 
     fun moveTakes(team: Team, fromSquare: Square, toSquare: Square): Boolean {
@@ -81,9 +76,7 @@ class PlayArea {
     }
 
     fun unstartedCount(team: Team): Int {
-        val inProgressCounters: Int = counters.entries
-            .filter {e -> team === e.value }
-            .count()
+        val inProgressCounters: Int = counters.entries.count { e -> team === e.value }
         val finishedCounters = completedCounters[team]!!
         return COUNTERS_PER_PLAYER - (finishedCounters + inProgressCounters)
     }
@@ -93,9 +86,7 @@ class PlayArea {
     }
 
     fun inPlayCount(team: Team): Int {
-        return counters.values
-            .filter { t: Team -> team === t }
-            .count()
+        return counters.values.count { t: Team -> team === t }
     }
 
     /** All counters currently on the board from both teams.  */
