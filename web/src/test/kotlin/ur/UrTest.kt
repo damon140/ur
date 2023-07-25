@@ -1,8 +1,8 @@
 package ur
 
 import com.damon140.ur.*
-import com.damon140.ur.Team.black
-import com.damon140.ur.Team.white
+import com.damon140.ur.Team.Black
+import com.damon140.ur.Team.White
 import com.damon140.ur.Ur.MoveResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,23 +25,23 @@ class UrTest {
     @Test
     fun whiteFirstMove() {
         givenNewGame()
-        whenAskMoves(white, 1)
-        thenMovesAre(Square.white_run_on_1)
+        whenAskMoves(White, 1)
+        thenMovesAre(Square.White_run_on_1)
     }
 
     // FIXME: Damon copy to java
     @Test
     fun whiteFirstMoveWhenRolledZero() {
         givenNewGame()
-        whenAskMoves(white, 0)
+        whenAskMoves(White, 0)
         thenThereArentAnyMoves()
     }
 
     @Test
     fun whiteRolls1() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 1)
-        thenWhiteHasCounterAt(Square.white_run_on_1)
+        whenMove(White, Square.Off_board_unstarted, 1)
+        thenWhiteHasCounterAt(Square.White_run_on_1)
         thenMoveWasLegal()
         thenSmallBoardIs(
             ""
@@ -63,12 +63,12 @@ class UrTest {
     @Test
     fun whiteAndBlackRoll1() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 1)
+        whenMove(White, Square.Off_board_unstarted, 1)
         thenMoveWasLegal()
-        whenMove(black, Square.off_board_unstarted, 1)
+        whenMove(Black, Square.Off_board_unstarted, 1)
         thenMoveWasLegal()
-        thenWhiteHasCounterAt(Square.white_run_on_1)
-        thenBlackHasCounterAt(Square.black_run_on_1)
+        thenWhiteHasCounterAt(Square.White_run_on_1)
+        thenBlackHasCounterAt(Square.Black_run_on_1)
         thenMoveWasLegal()
         /*
 
@@ -86,10 +86,10 @@ class UrTest {
     @Test
     fun illegalMoveOntoOwnCounter() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 1)
-        whenMove(black, Square.off_board_unstarted, 1)
+        whenMove(White, Square.Off_board_unstarted, 1)
+        whenMove(Black, Square.Off_board_unstarted, 1)
         thenAllMovesWereLegal()
-        whenMove(white, Square.off_board_unstarted, 1)
+        whenMove(White, Square.Off_board_unstarted, 1)
         thenMoveWasIllegal()
         thenItsWhitesMove()
     }
@@ -97,7 +97,7 @@ class UrTest {
     @Test
     fun move4ontoFlowerAndStillWhiteMove() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 4)
+        whenMove(White, Square.Off_board_unstarted, 4)
         thenMoveWasLegal()
         thenItsWhitesMove()
         thenHorizontalFullBoardIs(""
@@ -111,13 +111,13 @@ class UrTest {
     @Test
     fun blackTakesWhite() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 3)
+        whenMove(White, Square.Off_board_unstarted, 3)
         printBoard()
-        whenMove(black, Square.off_board_unstarted, 3)
+        whenMove(Black, Square.Off_board_unstarted, 3)
         printBoard()
-        whenMove(white, Square.white_run_on_3, 2)
+        whenMove(White, Square.White_run_on_3, 2)
         printBoard()
-        whenMove(black, Square.black_run_on_3, 2)
+        whenMove(Black, Square.Black_run_on_3, 2)
         printBoard()
         thenItsWhitesMove()
         thenHorizontalFullBoardIs("""
@@ -132,11 +132,11 @@ class UrTest {
     @Test
     fun blackTakesWhiteUsingDoubles() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 4)
-        whenMove(white, Square.white_run_on_4, 1)
+        whenMove(White, Square.Off_board_unstarted, 4)
+        whenMove(White, Square.White_run_on_4, 1)
         thenItsBlacksMove()
-        whenMove(black, Square.off_board_unstarted, 4)
-        whenMove(black, Square.black_run_on_4, 1)
+        whenMove(Black, Square.Off_board_unstarted, 4)
+        whenMove(Black, Square.Black_run_on_4, 1)
         thenItsWhitesMove()
         thenHorizontalFullBoardIs("""
               wwwwwww|
@@ -149,13 +149,13 @@ class UrTest {
     @Test
     fun whiteGetSafe() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 4)
-        whenMove(white, Square.white_run_on_4, 4)
-        whenMove(white, Square.shared_4, 4)
-        whenMove(black, Square.off_board_unstarted, 4)
-        whenMove(black, Square.black_run_on_4, 4)
-        whenMove(black, Square.shared_4, 3)
-        whenMove(white, Square.shared_8, 3)
+        whenMove(White, Square.Off_board_unstarted, 4)
+        whenMove(White, Square.White_run_on_4, 4)
+        whenMove(White, Square.Shared_4, 4)
+        whenMove(Black, Square.Off_board_unstarted, 4)
+        whenMove(Black, Square.Black_run_on_4, 4)
+        whenMove(Black, Square.Shared_4, 3)
+        whenMove(White, Square.Shared_8, 3)
         thenWhiteCompletedCountIs(1)
         thenItsBlacksMove()
         thenHorizontalFullBoardIs("""
@@ -170,17 +170,17 @@ class UrTest {
     @Test
     fun bothTeamsGetSafe() {
         givenNewGame()
-        whenMove(white, Square.off_board_unstarted, 4)
-        whenMove(white, Square.white_run_on_4, 4)
-        whenMove(white, Square.shared_4, 4)
+        whenMove(White, Square.Off_board_unstarted, 4)
+        whenMove(White, Square.White_run_on_4, 4)
+        whenMove(White, Square.Shared_4, 4)
         printBoard()
-        whenMove(black, Square.off_board_unstarted, 4)
-        whenMove(black, Square.black_run_on_4, 4)
-        whenMove(black, Square.shared_4, 3)
+        whenMove(Black, Square.Off_board_unstarted, 4)
+        whenMove(Black, Square.Black_run_on_4, 4)
+        whenMove(Black, Square.Shared_4, 3)
         printBoard()
-        whenMove(white, Square.shared_8, 3)
+        whenMove(White, Square.Shared_8, 3)
         printBoard()
-        whenMove(black, Square.shared_7, 4)
+        whenMove(Black, Square.Shared_7, 4)
         printBoard()
         thenItsWhitesMove()
         thenHorizontalFullBoardIs("""
@@ -209,8 +209,8 @@ class UrTest {
             *...  *.
             |bbbbbbb""".trimIndent())
 
-        whenAskMoves(white, 1)
-        thenMovesAre(Square.off_board_finished)
+        whenAskMoves(White, 1)
+        thenMovesAre(Square.Off_board_finished)
     }
 
     @Test
@@ -222,8 +222,8 @@ class UrTest {
               b..b  *.
               b    |bb
               """.trimIndent())
-        whenAskMoves(white, 2)
-        thenMovesAre(Square.shared_3, Square.shared_4, Square.shared_7)
+        whenAskMoves(White, 2)
+        thenMovesAre(Square.Shared_3, Square.Shared_4, Square.Shared_7)
     }
 
     @Test
@@ -234,7 +234,7 @@ class UrTest {
               ...*....
               *...  *.
               |bbbbbbb""".trimIndent())
-        whenAskMoves(white, 2)
+        whenAskMoves(White, 2)
         thenNoMovesAreLegal()
     }
 
@@ -246,15 +246,15 @@ class UrTest {
               w.w.w.w.
               *...  *.
               bbbbbbb|""".trimIndent())
-        whenAskMoves(white, 1)
+        whenAskMoves(White, 1)
         thenMovesAre(
-            Square.white_run_on_2,
-            Square.white_run_on_4,
-            Square.shared_2,
-            Square.shared_4,
-            Square.shared_6,
-            Square.shared_8,
-            Square.off_board_finished
+            Square.White_run_on_2,
+            Square.White_run_on_4,
+            Square.Shared_2,
+            Square.Shared_4,
+            Square.Shared_6,
+            Square.Shared_8,
+            Square.Off_board_finished
         )
     }
 
@@ -266,7 +266,7 @@ class UrTest {
               ...*....
               *...  *.
               bbbbbbb|""".trimIndent())
-        whenMove(white, Square.white_run_off_2, 1)
+        whenMove(White, Square.White_run_off_2, 1)
         thenWhiteWon()
     }
 
@@ -275,7 +275,7 @@ class UrTest {
     // --------------------------------------
     private fun givenNewGame() {
         moveResult = ArrayDeque<MoveResult>()
-        playArea = PlayArea(white)
+        playArea = PlayArea(White)
         horizontalDrawnBoard = HorizontalDrawnBoard(playArea!!)
         ur = Ur(playArea!!)
     }
@@ -307,26 +307,26 @@ class UrTest {
     }
 
     private fun thenMoveWasIllegal() {
-        assertEquals(moveResult.last(), MoveResult.illegal)
+        assertEquals(moveResult.last(), MoveResult.Illegal)
     }
 
     private fun thenMoveWasLegal() {
-        assertEquals(moveResult.last(), MoveResult.legal)
+        assertEquals(moveResult.last(), MoveResult.Legal)
     }
 
     private fun thenStateIsInitial() {
-        assertEquals(playArea!!.currentTeam(), white)
+        assertEquals(playArea!!.currentTeam(), White)
         assertEquals(playArea!!.inPlayCount(), 0)
-        assertEquals(playArea!!.completedCount(white), 0)
-        assertEquals(playArea!!.completedCount(black), 0)
+        assertEquals(playArea!!.completedCount(White), 0)
+        assertEquals(playArea!!.completedCount(Black), 0)
     }
 
     private fun thenWhiteHasCounterAt(square: Square) {
-        assertEquals(playArea!![square], white)
+        assertEquals(playArea!![square], White)
     }
 
     private fun thenBlackHasCounterAt(square: Square) {
-        assertEquals(playArea!![square], black)
+        assertEquals(playArea!![square], Black)
     }
 
     private fun thenSmallBoardIs(s: String) {
@@ -342,24 +342,24 @@ class UrTest {
     }
 
     private fun thenItsWhitesMove() {
-        assertEquals(ur!!.currentTeam(), white)
+        assertEquals(ur!!.currentTeam(), White)
     }
 
     private fun thenItsBlacksMove() {
-        assertEquals(ur!!.currentTeam(), black)
+        assertEquals(ur!!.currentTeam(), Black)
     }
 
     private fun thenAllMovesWereLegal() {
         for (i in moveResult.indices) {
             val r: MoveResult = moveResult.first()
-            if (r === MoveResult.illegal) {
+            if (r === MoveResult.Illegal) {
                 assertEquals(expected = false, actual = true, message = "Move [" + (i + 1) + "] was illegal")
             }
         }
     }
 
     private fun thenWhiteCompletedCountIs(count: Int) {
-        assertEquals(playArea!!.completedCount(white), count)
+        assertEquals(playArea!!.completedCount(White), count)
     }
 
     private fun thenMovesAre(vararg destinationSquares: Square) {
@@ -378,7 +378,7 @@ class UrTest {
     }
 
     private fun thenWhiteWon() {
-        assertEquals(moveResult.last(), MoveResult.gameOver)
+        assertEquals(moveResult.last(), MoveResult.GameOver)
     }
 
     // TODO: add to all test failings

@@ -145,21 +145,21 @@ internal class HorizontalDrawnBoardTest {
                 ........
                 ..b.  ..
                 bbbbb|b """.trimIndent())
-        assertEquals(playArea.completedCount(Team.white), 2)
-        assertEquals(playArea.completedCount(Team.black), 1)
-        assertEquals(playArea[Square.white_run_on_1], Team.white)
-        assertEquals(playArea[Square.black_run_on_2], Team.black)
-        assertEquals(playArea.unstartedCount(Team.white), 4)
-        assertEquals(playArea.unstartedCount(Team.black), 5)
+        assertEquals(playArea.completedCount(Team.White), 2)
+        assertEquals(playArea.completedCount(Team.Black), 1)
+        assertEquals(playArea[Square.White_run_on_1], Team.White)
+        assertEquals(playArea[Square.Black_run_on_2], Team.Black)
+        assertEquals(playArea.unstartedCount(Team.White), 4)
+        assertEquals(playArea.unstartedCount(Team.Black), 5)
     }
 
     @Test
     fun horizontalFullBoardStrings_givenCompleted_thenCorrectPadding() {
-        val b = PlayArea(Team.white)
-        b.move(Square.off_board_unstarted, Square.white_run_on_1, Team.white)
-        b.move(Square.off_board_unstarted, Square.black_run_on_1, Team.black)
-        b.move(Square.off_board_unstarted, Square.off_board_finished, Team.white)
-        b.move(Square.off_board_unstarted, Square.off_board_finished, Team.black)
+        val b = PlayArea(Team.White)
+        b.move(Square.Off_board_unstarted, Square.White_run_on_1, Team.White)
+        b.move(Square.Off_board_unstarted, Square.Black_run_on_1, Team.Black)
+        b.move(Square.Off_board_unstarted, Square.Off_board_finished, Team.White)
+        b.move(Square.Off_board_unstarted, Square.Off_board_finished, Team.Black)
         val d = HorizontalDrawnBoard(b)
         val string: String = d.fullBoard().joinToString("\n")
         assertEquals(string, """

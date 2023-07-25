@@ -2,8 +2,8 @@ package ur
 
 import com.damon140.ur.PlayArea
 import com.damon140.ur.Square.*
-import com.damon140.ur.Team.black
-import com.damon140.ur.Team.white
+import com.damon140.ur.Team.Black
+import com.damon140.ur.Team.White
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,46 +11,46 @@ class PlayAreaTest {
 
     @Test
     fun moveTakes() {
-        val p = PlayArea(white)
-        assertEquals(p.moveTakes(white, white_run_on_4, shared_1), false)
+        val p = PlayArea(White)
+        assertEquals(p.moveTakes(White, White_run_on_4, Shared_1), false)
 
-        p.move(off_board_unstarted, black_run_on_4, black)
-        p.move(black_run_on_4, shared_1, black)
-        p.move(off_board_unstarted, white_run_on_4, white)
-        assertEquals(p.moveTakes(white, white_run_on_4, shared_1), true)
-        assertEquals(p.moveTakes(black, white_run_on_4, shared_1), false)
+        p.move(Off_board_unstarted, Black_run_on_4, Black)
+        p.move(Black_run_on_4, Shared_1, Black)
+        p.move(Off_board_unstarted, White_run_on_4, White)
+        assertEquals(p.moveTakes(White, White_run_on_4, Shared_1), true)
+        assertEquals(p.moveTakes(Black, White_run_on_4, Shared_1), false)
     }
 
     @Test
     fun moveIsOnShareRace() {
-        val p = PlayArea(white)
+        val p = PlayArea(White)
 
-        assertEquals(p.moveIsOnShareRace(black, shared_1, shared_2), false)
+        assertEquals(p.moveIsOnShareRace(Black, Shared_1, Shared_2), false)
 
-        p.move(off_board_unstarted, black_run_on_4, black)
-        assertEquals(p.moveIsOnShareRace(black, black_run_on_4, shared_1), false)
+        p.move(Off_board_unstarted, Black_run_on_4, Black)
+        assertEquals(p.moveIsOnShareRace(Black, Black_run_on_4, Shared_1), false)
 
-        p.move(black_run_on_4, shared_1, black)
-        assertEquals(p.moveIsOnShareRace(black, shared_1, shared_2), true)
+        p.move(Black_run_on_4, Shared_1, Black)
+        assertEquals(p.moveIsOnShareRace(Black, Shared_1, Shared_2), true)
     }
 
     @Test
     fun empty() {
-        val p = PlayArea(white)
-        assertEquals(p.empty(white_run_on_4), true)
+        val p = PlayArea(White)
+        assertEquals(p.empty(White_run_on_4), true)
 
-        p.move(off_board_unstarted, white_run_on_4, white)
-        assertEquals(p.empty(white_run_on_4), false)
+        p.move(Off_board_unstarted, White_run_on_4, White)
+        assertEquals(p.empty(White_run_on_4), false)
     }
 
     @Test
     fun teamHasCounterOn() {
-        val p = PlayArea(white)
-        assertEquals(p.teamHasCounterOn(white, white_run_on_4), false)
+        val p = PlayArea(White)
+        assertEquals(p.teamHasCounterOn(White, White_run_on_4), false)
 
-        p.move(off_board_unstarted, white_run_on_4, white)
-        assertEquals(p.teamHasCounterOn(white, white_run_on_4), true)
-        assertEquals(p.teamHasCounterOn(black, white_run_on_4), false)
+        p.move(Off_board_unstarted, White_run_on_4, White)
+        assertEquals(p.teamHasCounterOn(White, White_run_on_4), true)
+        assertEquals(p.teamHasCounterOn(Black, White_run_on_4), false)
     }
 
 }

@@ -24,8 +24,8 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
-import web.UrCanvasView.CounterSize.big
-import web.UrCanvasView.CounterSize.little
+import web.UrCanvasView.CounterSize.Big
+import web.UrCanvasView.CounterSize.Little
 import kotlin.math.PI
 import kotlin.math.floor
 
@@ -47,31 +47,31 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         this.canvas = htmlCanvasElement.getContext("2d") as CanvasRenderingContext2D
 
         this.squarePairMap = mapOf(
-            white_run_on_1 to Pair(2, 3),
-            white_run_on_2 to Pair(2, 2),
-            white_run_on_3 to Pair(2, 1),
-            white_run_on_4 to Pair(2, 0),
-            white_run_off_2 to Pair(2, 6),
-            white_run_off_1 to Pair(2, 7),
+            White_run_on_1 to Pair(2, 3),
+            White_run_on_2 to Pair(2, 2),
+            White_run_on_3 to Pair(2, 1),
+            White_run_on_4 to Pair(2, 0),
+            White_run_off_2 to Pair(2, 6),
+            White_run_off_1 to Pair(2, 7),
 
-            black_run_on_1 to Pair(4, 3),
-            black_run_on_2 to Pair(4, 2),
-            black_run_on_3 to Pair(4, 1),
-            black_run_on_4 to Pair(4, 0),
-            black_run_off_2 to Pair(4, 6),
-            black_run_off_1 to Pair(4, 7),
+            Black_run_on_1 to Pair(4, 3),
+            Black_run_on_2 to Pair(4, 2),
+            Black_run_on_3 to Pair(4, 1),
+            Black_run_on_4 to Pair(4, 0),
+            Black_run_off_2 to Pair(4, 6),
+            Black_run_off_1 to Pair(4, 7),
 
-            shared_1 to Pair(3, 0),
-            shared_2 to Pair(3, 1),
-            shared_3 to Pair(3, 2),
-            shared_4 to Pair(3, 3),
-            shared_5 to Pair(3, 4),
-            shared_6 to Pair(3, 5),
-            shared_7 to Pair(3, 6),
-            shared_8 to Pair(3, 7),
+            Shared_1 to Pair(3, 0),
+            Shared_2 to Pair(3, 1),
+            Shared_3 to Pair(3, 2),
+            Shared_4 to Pair(3, 3),
+            Shared_5 to Pair(3, 4),
+            Shared_6 to Pair(3, 5),
+            Shared_7 to Pair(3, 6),
+            Shared_8 to Pair(3, 7),
 
-            off_board_unstarted to Pair(0, 0),
-            off_board_finished to Pair(0, 0)
+            Off_board_unstarted to Pair(0, 0),
+            Off_board_finished to Pair(0, 0)
         )
     }
 
@@ -80,8 +80,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         // TODO: can replace with draw most?
         drawGrid()
 
-        updateWhiteCounters(playArea.unstartedCount(white), playArea.completedCount(white))
-        updateBlackCounters(playArea.unstartedCount(black), playArea.completedCount(black))
+        updateWhiteCounters(playArea.unstartedCount(White), playArea.completedCount(White))
+        updateBlackCounters(playArea.unstartedCount(Black), playArea.completedCount(Black))
         updateBoard(playArea)
 
         // instructions
@@ -122,8 +122,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         blank()
         drawGrid()
 
-        updateWhiteCounters(playArea.unstartedCount(white), playArea.completedCount(white))
-        updateBlackCounters(playArea.unstartedCount(black), playArea.completedCount(black))
+        updateWhiteCounters(playArea.unstartedCount(White), playArea.completedCount(White))
+        updateBlackCounters(playArea.unstartedCount(Black), playArea.completedCount(Black))
         updateBoard(playArea)
     }
 
@@ -142,17 +142,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
-        drawOffboardCounters(unstartedCount, completedCount, white)
+        drawOffboardCounters(unstartedCount, completedCount, White)
     }
 
     private fun updateBlackCounters(unstartedCount: Int, completedCount: Int) {
-        drawOffboardCounters(unstartedCount, completedCount, black)
+        drawOffboardCounters(unstartedCount, completedCount, Black)
     }
 
     private fun drawOffboardCounters(unstarted: Int, finished: Int, team: Team) {
         makeUnstartedOffboardCounterPairs(team, unstarted)
             .plus(makeFinishedOffboardCounterPairs(team, finished))
-            .forEach { p -> drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team, big) }
+            .forEach { p -> drawCounterByCoordinates(p.first + 0.0, p.second + 0.0, team, Big) }
     }
 
     private fun makeFinishedOffboardCounterPairs(team: Team, finished: Int)
@@ -166,7 +166,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         count: Int,
         lambda: (Int) -> Int
     ): MutableList<Pair<Int, Int>> {
-        val baseX = if (white == team) 0 else 250
+        val baseX = if (White == team) 0 else 250
         val twosCount = count / 2
         val counterLines: MutableList<Pair<Int, Int>> = mutableListOf()
 
@@ -175,7 +175,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             val y = i * 50 + 25
 
             val sideYOffsetOffset = 25
-            if (white == team) {
+            if (White == team) {
                 counterLines.add(Pair(24 + baseX, lambda(y)))
                 counterLines.add(Pair(69 - 8 + baseX, lambda(y + sideYOffsetOffset)))
             } else {
@@ -185,7 +185,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         }
 
         if (1 == count % 2) {
-            val x = if (white == team) 24 else 75
+            val x = if (White == team) 24 else 75
             counterLines += Pair(x + baseX, lambda((twosCount * 50) + 25))
         }
         return counterLines
@@ -194,15 +194,15 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     fun updateBoard(playArea: PlayArea) {
         drawBlanks()
 
-        playArea.countersForTeam(white).forEach { s -> drawCounterByIndex(s, white, big) }
-        playArea.countersForTeam(black).forEach { s -> drawCounterByIndex(s, black, big) }
+        playArea.countersForTeam(White).forEach { s -> drawCounterByIndex(s, White, Big) }
+        playArea.countersForTeam(Black).forEach { s -> drawCounterByIndex(s, Black, Big) }
     }
 
     private fun updateInstructions(currentTeam: Team, dice: Dice, zeroMoves: Boolean, continueFunction: () -> Unit) {
         val roll = dice.getLastValue()
         val spanToUpdate: HTMLDivElement
         val spanToBlank: HTMLDivElement
-        if (white == currentTeam) {
+        if (White == currentTeam) {
             spanToUpdate = pageObject.findRollWhite()
             spanToBlank = pageObject.findRollBlack()
         } else {
@@ -215,7 +215,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val findRollSpace = pageObject.findRollSpace()
         findRollSpace.innerText = ""
 
-        if (currentTeam == white) {
+        if (currentTeam == White) {
             pageObject.findRollPartsWhite().innerText = dice.getLastString()
             pageObject.findRollPartsBlack().innerText = ""
         } else {
@@ -264,7 +264,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         findRollSpace.innerText = ""
         findRollSpace.append(button)
 
-        if (white == currentTeam) {
+        if (White == currentTeam) {
             pageObject.playClapsSound()
         } else {
             pageObject.playAiWinsSound()
@@ -293,13 +293,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private fun indexToCoordinate(value: Double): Double = value * 50.0 + 25
     private fun indexToCoordinate(value: Int): Double = value * 50.0 + 25
 
-    enum class CounterSize(val pixels: Double) { big(19.toDouble()), little(16.toDouble()) }
+    enum class CounterSize(val pixels: Double) { Big(19.toDouble()), Little(16.toDouble()) }
 
     private fun drawCounterByCoordinates(x: Double, y: Double, team: Team, size: CounterSize) {
         canvas.beginPath()
         canvas.arc(x, y, size.pixels, 0.0, 2 * PI)
         canvas.lineWidth = 3.0
-        canvas.fillStyle = if (team == black) "pink" else "#abcedf"
+        canvas.fillStyle = if (team == Black) "pink" else "#abcedf"
         canvas.fill()
         canvas.stroke()
 
@@ -339,7 +339,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                     .first()
             } else if (yIndex < 4) {
                 // off board unstarted
-                clickedSquare = off_board_unstarted
+                clickedSquare = Off_board_unstarted
             }
 
             console.log("move for clicked square $clickedSquare: ${moves.containsKey(clickedSquare)}")
@@ -478,7 +478,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), square1Pos, square2Pos)
                 console.log("anim of $currentSquare step $oneSqaureAnim$pair")
 
-                drawCounterByIndex(pair, team, big)
+                drawCounterByIndex(pair, team, Big)
             }
         }
 
@@ -488,10 +488,10 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private fun positionForAnimation(team: Team, square: Square): Pair<Int, Int> {
         // use special positions for each team for finishing and starting squares
         return when {
-            square == off_board_unstarted && team == white -> Pair(2, 4)
-            square == off_board_unstarted && team == black -> Pair(4, 4)
-            square == off_board_finished && team == white -> Pair(2, 5)
-            square == off_board_finished && team == black -> Pair(4, 5)
+            square == Off_board_unstarted && team == White -> Pair(2, 4)
+            square == Off_board_unstarted && team == Black -> Pair(4, 4)
+            square == Off_board_finished && team == White -> Pair(2, 5)
+            square == Off_board_finished && team == Black -> Pair(4, 5)
             else -> squarePairMap[square]!!
         }
     }
@@ -511,7 +511,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     fun startMovesAnimation(playArea: PlayArea, team: Team, movesFrom: Set<Square>) {
         val unstartedCount = playArea.unstartedCount(team)
         val pairs = movesFrom.map { square ->
-            if (square == off_board_unstarted) {
+            if (square == Off_board_unstarted) {
                 val f = makeUnstartedOffboardCounterPairs(team, unstartedCount).last()
                 f
             } else {
@@ -522,7 +522,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
         var bigAnim = false
         val handler: () -> Unit = {
-            pairs.forEach { pair -> drawCounterByCoordinates(pair.first.toDouble(), pair.second.toDouble(), team, if (bigAnim) big else little) }
+            pairs.forEach { pair -> drawCounterByCoordinates(pair.first.toDouble(), pair.second.toDouble(), team, if (bigAnim) Big else Little) }
             bigAnim = !bigAnim
             console.log("anim")
         }

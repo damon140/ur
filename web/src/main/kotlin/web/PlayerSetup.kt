@@ -17,7 +17,7 @@ package web
 import com.damon140.ur.PlayArea
 import com.damon140.ur.Square
 import com.damon140.ur.Team
-import com.damon140.ur.Team.black
+import com.damon140.ur.Team.Black
 import ur.AiWithLevels
 
 class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
@@ -50,8 +50,8 @@ class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
 //        }
 
         return when(team) {
-            Team.white -> HtmlSupplier()
-            black -> AiWithLevels(playArea)
+            Team.White -> HtmlSupplier()
+            Black -> AiWithLevels(playArea)
         }
     }
 

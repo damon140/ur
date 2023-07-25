@@ -15,9 +15,9 @@
 package com.damon140.ur
 
 enum class Team {
-    white, black;
+    White, Black;
 
-    val ch: String = name.substring(0, 1)
+    val ch: String = name.substring(0, 1).lowercase()
 
     fun other(): Team {
         return values()[(ordinal + 1) % 2]
@@ -25,11 +25,11 @@ enum class Team {
 
     companion object {
         fun isTeamChar(value: String): Boolean {
-            return value == white.ch || value == black.ch
+            return value == White.ch || value == Black.ch
         }
 
         fun fromCh(value: String): Team {
-            return if (white.ch == value) white else black
+            return if (White.ch == value) White else Black
         }
 
         fun random(): Team {

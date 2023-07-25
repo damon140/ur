@@ -21,8 +21,8 @@ class PlayArea(private var currentTeam: Team) {
     init {
         counters = HashMap()
         completedCounters = HashMap<Team, Int>()
-        completedCounters[Team.black] = 0
-        completedCounters[Team.white] = 0
+        completedCounters[Team.Black] = 0
+        completedCounters[Team.White] = 0
     }
 
     fun moveTakes(team: Team, fromSquare: Square, toSquare: Square): Boolean {
@@ -96,7 +96,7 @@ class PlayArea(private var currentTeam: Team) {
 
     fun move(fromSquare: Square, newSquare: Square, team: Team) {
         counters.remove(fromSquare)
-        if (newSquare !== Square.off_board_finished) {
+        if (newSquare !== Square.Off_board_finished) {
             counters[newSquare] = team
         } else {
             completedCounters[team] = 1 + completedCounters[team]!!

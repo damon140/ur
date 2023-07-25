@@ -6,8 +6,8 @@ class TeamTest {
 
     @Test
     fun other() {
-        assertEquals(Team.white, Team.black.other())
-        assertEquals(Team.black, Team.white.other())
+        assertEquals(Team.White, Team.Black.other())
+        assertEquals(Team.Black, Team.White.other())
     }
 
 }

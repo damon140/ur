@@ -19,9 +19,7 @@ import com.damon140.ur.Square
 import com.damon140.ur.Team
 import web.PlayerSetup
 
-class AiWithLevels(playArea: PlayArea) : PlayerSetup.InputSupplier {
-
-    private val playArea = playArea
+class AiWithLevels(private val playArea: PlayArea) : PlayerSetup.InputSupplier {
 
     override fun waitForPlayer(): Boolean {
         return false
@@ -40,9 +38,7 @@ class AiWithLevels(playArea: PlayArea) : PlayerSetup.InputSupplier {
         return false
     }
 
-    class AiCompare(playArea: PlayArea, level: Int): Comparator<Map.Entry<Square, Square>> {
-        private val playArea = playArea
-        private val level = level
+    class AiCompare(private val playArea: PlayArea, private val level: Int): Comparator<Map.Entry<Square, Square>> {
 
         override fun compare(a: Map.Entry<Square, Square>, b: Map.Entry<Square, Square>): Int {
             return score(b.key, b.value) - score(a.key, a.value)
@@ -53,10 +49,10 @@ class AiWithLevels(playArea: PlayArea) : PlayerSetup.InputSupplier {
             if (level > 3 && fromSquare.isSafeSquare && fromSquare.rollAgain()) {
                 return -100 // don't move great piece
             }
-            if (level > 2 && playArea.moveIsOnShareRace(Team.black, fromSquare, toSquare)) {
+            if (level > 2 && playArea.moveIsOnShareRace(Team.Black, fromSquare, toSquare)) {
                 return 3
             }
-            if (level > 1 && playArea.moveTakes(Team.black, fromSquare, toSquare)) {
+            if (level > 1 && playArea.moveTakes(Team.Black, fromSquare, toSquare)) {
                 return 2
             }
             if (level > 0 && toSquare.rollAgain()) {

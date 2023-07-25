@@ -29,8 +29,8 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
     fun fullBoard(): List<String> {
         val lines: ArrayDeque<String> = ArrayDeque(smallBoard())
-        lines.addFirst(countersLine(white))
-        lines.addLast(countersLine(black))
+        lines.addFirst(countersLine(White))
+        lines.addLast(countersLine(Black))
         return lines.toList()
     }
 
@@ -57,7 +57,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         return xxx.map { l ->
             l.map { square ->
                 if (null == square) {
-                    return@map BoardPart.space
+                    return@map BoardPart.Space
                 } else {
                     return@map BoardPart.from(square, playArea[square])
                 }
@@ -66,24 +66,25 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
     }
 
     enum class BoardPart(val ch: String) {
-        white(Team.white.ch), black(Team.black.ch), star("*"), empty("."), space(" ");
+        White(Team.White.ch), Black(Team.Black.ch), Star("*"), Empty("."), Space(" ");
 
         fun isChar(c: String?): Boolean {
-            return ch == c
+            // TODO: put back constructor and add lowercasing then remove here
+            return ch.lowercase() == c
         }
 
         companion object {
             fun from(square: Square, team: Team?): BoardPart {
                 // need teams first so that we draw a w in precedence to a * or .
-                if (Team.white === team) {
-                    return white
+                if (Team.White === team) {
+                    return White
                 }
-                if (Team.black === team) {
-                    return black
+                if (Team.Black === team) {
+                    return Black
                 }
                 return if (square.rollAgain()) {
-                    star
-                } else empty
+                    Star
+                } else Empty
             }
         }
     }
@@ -93,16 +94,16 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
         fun parsePlayAreaFromHorizontal(game: String): PlayArea {
             val lines = game.split("\n").toList()
-            assertLineCount(white, lines)
-            assertLineCount(black, lines)
+            assertLineCount(White, lines)
+            assertLineCount(Black, lines)
 
             val deque: ArrayDeque<String> = ArrayDeque(lines)
 
             val whiteLine: String = deque.removeFirst()
             val blackLine: String = deque.removeLast()
-            val c = PlayArea(white)
-            parseAndBuildCompletedCounters(blackLine, c, black)
-            parseAndBuildCompletedCounters(whiteLine, c, white)
+            val c = PlayArea(White)
+            parseAndBuildCompletedCounters(blackLine, c, Black)
+            parseAndBuildCompletedCounters(whiteLine, c, White)
 
             // TODO: tidy & shrink
             val topBoard: List<Square?> = HORIZONTAL_BOARD[0].toList()
@@ -130,7 +131,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
             val boardRow: List<Square> = maybeSparseBoard.filterNotNull().toList()
             val chars: List<String> = row.toList()
                 .map { c -> "" + c }
-                .filter { c ->  !BoardPart.space.isChar(c) }
+                .filter { c ->  !BoardPart.Space.isChar(c) }
                 .toList()
             val topRow: Map<Square, String> = zipToMap<Square, String>(boardRow, chars)
             topRow.entries
@@ -138,7 +139,7 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
                 .forEach { e ->
                     val square: Square = e.key
                     val team: Team = Team.fromCh(e.value)
-                    playArea.move(off_board_unstarted, square, team)
+                    playArea.move(Off_board_unstarted, square, team)
                 }
         }
 
@@ -175,18 +176,18 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
                 result = deque.last().length
             }
             (0 until result)
-                .forEach { _ -> c.move(off_board_unstarted, off_board_finished, white) }
+                .forEach { _ -> c.move(Off_board_unstarted, Off_board_finished, white) }
         }
 
         private val VERTICAL_BOARD: Array<Array<Square?>> = arrayOf(
-            arrayOf(white_run_on_4, shared_1, black_run_on_4),
-            arrayOf(white_run_on_3, shared_2, black_run_on_3),
-            arrayOf(white_run_on_2, shared_3, black_run_on_2),
-            arrayOf(white_run_on_1, shared_4, black_run_on_1),
-            arrayOf(null, shared_5, null),
-            arrayOf(null, shared_6, null),
-            arrayOf(white_run_off_2, shared_7, black_run_off_2),
-            arrayOf(white_run_off_1, shared_8, black_run_off_1)
+            arrayOf(White_run_on_4, Shared_1, Black_run_on_4),
+            arrayOf(White_run_on_3, Shared_2, Black_run_on_3),
+            arrayOf(White_run_on_2, Shared_3, Black_run_on_2),
+            arrayOf(White_run_on_1, Shared_4, Black_run_on_1),
+            arrayOf(null, Shared_5, null),
+            arrayOf(null, Shared_6, null),
+            arrayOf(White_run_off_2, Shared_7, Black_run_off_2),
+            arrayOf(White_run_off_1, Shared_8, Black_run_off_1)
         )
         private val HORIZONTAL_BOARD: Array<Array<Square?>>
 

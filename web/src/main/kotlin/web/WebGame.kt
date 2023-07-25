@@ -32,8 +32,8 @@ class WebGame {
     // TODO: impl player setup
     private var playerSetup: PlayerSetup = PlayerSetup(playArea, lastMove)
     private var moveSuppliers: HashMap<Team, PlayerSetup.InputSupplier> = hashMapOf(
-        Team.white to playerSetup.getPlayer(Team.white),
-        Team.black to playerSetup.getPlayer(Team.black)
+        Team.White to playerSetup.getPlayer(Team.White),
+        Team.Black to playerSetup.getPlayer(Team.Black)
     )
 
     // set up a game for testing
@@ -145,13 +145,13 @@ class WebGame {
     private fun playPart5(result: Ur.MoveResult) {
         val currentTeam = ur.currentTeam()
 
-        if (result == Ur.MoveResult.gameOver) {
+        if (result == Ur.MoveResult.GameOver) {
             urCanvasView.updateBoard(playArea)
             urCanvasView.gameWon(currentTeam)
             return
         }
 
-        if (result == Ur.MoveResult.counterTaken) {
+        if (result == Ur.MoveResult.CounterTaken) {
             urCanvasView.playCounterTakenSound()
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")

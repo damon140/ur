@@ -27,7 +27,7 @@ class Ur(private val playArea: PlayArea) {
     }
 
     enum class MoveResult {
-        illegal, legal, counterTaken, gameOver
+        Illegal, Legal, CounterTaken, GameOver
     }
 
     fun moveCounter(square: Square, count: Int): MoveResult {
@@ -37,29 +37,29 @@ class Ur(private val playArea: PlayArea) {
     fun moveCounter(team: Team, fromSquare: Square, count: Int): MoveResult {
         // FIXMME: check correct team
         if (playArea.allCountersStarted(team)) {
-            return MoveResult.illegal // can't add any more counters
+            return MoveResult.Illegal // can't add any more counters
         }
-        if (fromSquare !== Square.off_board_unstarted && playArea.occupied(fromSquare)
+        if (fromSquare !== Square.Off_board_unstarted && playArea.occupied(fromSquare)
             && playArea[fromSquare] !== team) {
-            return MoveResult.illegal // teams counter not on square to move from
+            return MoveResult.Illegal // teams counter not on square to move from
         }
-        val newSquare: Square = fromSquare.calculateNewSquare(team, count) ?: return MoveResult.illegal
+        val newSquare: Square = fromSquare.calculateNewSquare(team, count) ?: return MoveResult.Illegal
 
         if (0 == count) {
-            return MoveResult.illegal // illegal move of zero
+            return MoveResult.Illegal // illegal move of zero
         }
         val occupant = playArea[newSquare]
 
         if (null != occupant) {
             if (team === occupant) {
-                return MoveResult.illegal // clashes with own counter
+                return MoveResult.Illegal // clashes with own counter
             }
         }
 
         // move counter
         playArea.move(fromSquare, newSquare, team)
         if (playArea.allCompleted(team)) {
-            return MoveResult.gameOver
+            return MoveResult.GameOver
         }
         if (newSquare.dontRollAgain()) {
             playArea.swapTeam()
@@ -67,14 +67,12 @@ class Ur(private val playArea: PlayArea) {
         console.log("after move current team is " + playArea.currentTeam().name)
 
         return if (null != occupant) {
-            MoveResult.counterTaken
+            MoveResult.CounterTaken
         } else {
-            MoveResult.legal
+            MoveResult.Legal
         }
     }
 
-    // TODO: upgrade to object with properties for use by "AI"
-    // takes_other, rolls_again, safe
     fun askMoves(team: Team, roll: Int): Map<Square, Square> {
         val moves: MutableMap<Square, Square> = HashMap()
         if (0 == roll) {
@@ -83,9 +81,9 @@ class Ur(private val playArea: PlayArea) {
 
         if (!playArea.allStartedOrComplete(team)) {
             // start a new counter
-            val v = canUseOrNull(team, Square.off_board_unstarted.calculateNewSquare(team, roll))
+            val v = canUseOrNull(team, Square.Off_board_unstarted.calculateNewSquare(team, roll))
             if (null != v) {
-                moves[Square.off_board_unstarted] = v
+                moves[Square.Off_board_unstarted] = v
             }
         }
 

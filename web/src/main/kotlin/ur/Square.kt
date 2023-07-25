@@ -15,14 +15,14 @@
 package com.damon140.ur
 
 enum class Square {
-    off_board_unstarted,  // synthetic square, not a square on the board
-    black_run_on_1, black_run_on_2, black_run_on_3, black_run_on_4, black_run_off_1, black_run_off_2,
-    shared_1, shared_2, shared_3, shared_4, shared_5, shared_6, shared_7, shared_8,
-    white_run_on_1, white_run_on_2, white_run_on_3, white_run_on_4, white_run_off_1, white_run_off_2, off_board_finished;
+    Off_board_unstarted,  // synthetic square, not a square on the board
+    Black_run_on_1, Black_run_on_2, Black_run_on_3, Black_run_on_4, Black_run_off_1, Black_run_off_2,
+    Shared_1, Shared_2, Shared_3, Shared_4, Shared_5, Shared_6, Shared_7, Shared_8,
+    White_run_on_1, White_run_on_2, White_run_on_3, White_run_on_4, White_run_off_1, White_run_off_2, Off_board_finished;
 
     companion object {
         fun drawableSquares(): List<Square> {
-            return Square.values().toList().filter { v -> v != off_board_finished && v!= off_board_unstarted }
+            return Square.values().toList().filter { v -> v != Off_board_finished && v!= Off_board_unstarted }
         }
 
         // FIXME: Damon unit test
@@ -31,7 +31,7 @@ enum class Square {
             val squares = ArrayList<Square>()
             squares.add(startSquare)
 
-            while(currentSquare != endSquare && currentSquare != off_board_finished) {
+            while(currentSquare != endSquare && currentSquare != Off_board_finished) {
                 currentSquare = currentSquare.calculateNewSquare(team)
                 squares.add(currentSquare)
             }
@@ -41,12 +41,12 @@ enum class Square {
 
     // TODO: switch to new illegal_square square instead of opt??
     fun calculateNewSquare(team: Team, count: Int): Square? {
-        if (this == off_board_finished) {
-            return off_board_finished
+        if (this == Off_board_finished) {
+            return Off_board_finished
         }
         var newSquare = this
         for (looper in 0 until count) {
-            if (off_board_finished == newSquare) {
+            if (Off_board_finished == newSquare) {
                 return null
             }
             newSquare = newSquare.calculateNewSquare(team)
@@ -57,10 +57,10 @@ enum class Square {
     // synthetic
     fun calculateNewSquare(team: Team): Square {
         return when (this) {
-            black_run_on_4, white_run_on_4 -> shared_1
-            shared_8 -> if (team === Team.black) black_run_off_1 else white_run_off_1
-            black_run_off_2, white_run_off_2 -> off_board_finished
-            off_board_unstarted -> if (team === Team.black) black_run_on_1 else white_run_on_1
+            Black_run_on_4, White_run_on_4 -> Shared_1
+            Shared_8 -> if (team === Team.Black) Black_run_off_1 else White_run_off_1
+            Black_run_off_2, White_run_off_2 -> Off_board_finished
+            Off_board_unstarted -> if (team === Team.Black) Black_run_on_1 else White_run_on_1
             else -> values()[1 + ordinal]
         }
     }
@@ -70,15 +70,15 @@ enum class Square {
     }
 
     val isSafeSquare: Boolean
-        get() = shared_4 == this
+        get() = Shared_4 == this
 
     fun rollAgain(): Boolean {
-        return setOf(black_run_on_4, white_run_on_4, shared_4, black_run_off_2, white_run_off_2)
+        return setOf(Black_run_on_4, White_run_on_4, Shared_4, Black_run_off_2, White_run_off_2)
             .contains(this)
     }
 
     fun isRaceSquare(): Boolean {
-        return setOf(shared_1, shared_2, shared_3, shared_4, shared_5, shared_6, shared_7, shared_8)
+        return setOf(Shared_1, Shared_2, Shared_3, Shared_4, Shared_5, Shared_6, Shared_7, Shared_8)
             .contains(this)
     }
 }
