@@ -45,7 +45,7 @@ class PlayArea(private var currentTeam: Team) {
     }
 
     fun completedCount(team: Team): Int {
-        return completedCounters[team]!!
+        return completedCounters.getValue(team)
     }
 
     fun countersForTeam(team: Team): Set<Square> {
@@ -77,7 +77,7 @@ class PlayArea(private var currentTeam: Team) {
 
     fun unstartedCount(team: Team): Int {
         val inProgressCounters: Int = counters.entries.count { e -> team === e.value }
-        val finishedCounters = completedCounters[team]!!
+        val finishedCounters = completedCounters.getValue(team)
         return COUNTERS_PER_PLAYER - (finishedCounters + inProgressCounters)
     }
 
@@ -99,7 +99,7 @@ class PlayArea(private var currentTeam: Team) {
         if (newSquare !== Square.Off_board_finished) {
             counters[newSquare] = team
         } else {
-            completedCounters[team] = 1 + completedCounters[team]!!
+            completedCounters[team] = 1 + completedCounters.getValue(team)
         }
     }
 

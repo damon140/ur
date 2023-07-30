@@ -24,9 +24,6 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
         this.playArea = playArea
     }
 
-
-
-
     fun fullBoard(): List<String> {
         val lines: ArrayDeque<String> = ArrayDeque(smallBoard())
         lines.addFirst(countersLine(White))
@@ -55,20 +52,26 @@ class HorizontalDrawnBoard(playArea: PlayArea) {
 
     private fun board(xxx: Array<Array<Square?>>): List<List<BoardPart>> {
         return xxx.map { l ->
-            l.map { square ->
-                if (null == square) {
-                    return@map BoardPart.Space
-                } else {
-                    return@map BoardPart.from(square, playArea[square])
-                }
-            }.toList()
+            blah(l)
         }.toList()
+    }
+
+    private fun blah(l: Array<Square?>) = l.map { square ->
+        return@map boardPart(square)
+    }.toList()
+
+    private fun boardPart(square: Square?): BoardPart {
+        return if (null == square) {
+            BoardPart.Space
+        } else {
+            BoardPart.from(square, playArea[square])
+        }
     }
 
     enum class BoardPart(val ch: String) {
         White(Team.White.ch), Black(Team.Black.ch), Star("*"), Empty("."), Space(" ");
 
-        fun isChar(c: String?): Boolean {
+        fun isChar(c: String): Boolean {
             // TODO: put back constructor and add lowercasing then remove here
             return ch.lowercase() == c
         }

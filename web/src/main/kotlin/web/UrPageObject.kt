@@ -17,7 +17,6 @@ package web
 
 import org.w3c.dom.*
 import kotlin.random.Random
-
 class UrPageObject(document: Document) {
 
     // iteration 1
@@ -30,15 +29,15 @@ class UrPageObject(document: Document) {
     private var rollSpace: HTMLDivElement
 
     // iteration 4
-    private var hmm:  HTMLAudioElement
+    private var hmmSound:  HTMLAudioElement
     private var counterTakenSound:  HTMLAudioElement
     private var babowSound: HTMLAudioElement
     private var diceSound: HTMLAudioElement
     private var ticSound: HTMLAudioElement
 
     // iteration 5
-    private var rollPartsWhite: HTMLDivElement
-    private var rollPartsBlack: HTMLDivElement
+    private var rollPartsWhiteDiv: HTMLDivElement
+    private var rollPartsBlackDiv: HTMLDivElement
     private var levelSlider: HTMLInputElement
 
     // iteration 6
@@ -49,35 +48,51 @@ class UrPageObject(document: Document) {
     private var cantMoveSound1: HTMLAudioElement
     private var cantMoveSound2: HTMLAudioElement
 
+    // iteration 8
+    private var counterMovedHomeSound: HTMLAudioElement
+
     init {
         this.document = document
 
         // iteration 3
-        this.canvasBoard = document.getElementById("canvas-board")!! as HTMLCanvasElement
-        this.rollWhite = document.getElementById("roll-white")!! as HTMLDivElement
-        this.rollBlack = document.getElementById("roll-black")!! as HTMLDivElement
-        this.rollSpace = document.getElementById("roll-space2")!! as HTMLDivElement
+        this.canvasBoard = htmlCanvasElement(document, "canvas-board")
+        this.rollWhite = htmlDivElement(document, "roll-white")
+        this.rollBlack = htmlDivElement(document, "roll-black")
+        this.rollSpace = htmlDivElement(document, "roll-space2")
 
         // iteration 4
-        this.hmm = document.getElementById("hmm-audio")!! as HTMLAudioElement
-        this.counterTakenSound = document.getElementById("counter-taken-audio")!! as HTMLAudioElement
-        this.babowSound = document.getElementById("babow-sound")!! as HTMLAudioElement
-        this.diceSound = document.getElementById("dice-sound")!! as HTMLAudioElement
-        this.ticSound = document.getElementById("tic-sound")!! as HTMLAudioElement
+        this.hmmSound = htmlAudioElement(document, "hmm-audio")
+        this.counterTakenSound = htmlAudioElement(document, "counter-taken-audio")
+        this.babowSound = htmlAudioElement(document, "babow-sound")
+        this.diceSound = htmlAudioElement(document, "dice-sound")
+        this.ticSound = htmlAudioElement(document, "tic-sound")
 
         // iteration 5
-        this.rollPartsWhite = document.getElementById("roll-parts-white")!! as HTMLDivElement
-        this.rollPartsBlack = document.getElementById("roll-parts-black")!! as HTMLDivElement
+        this.rollPartsWhiteDiv = htmlDivElement(document, "roll-parts-white")
+        this.rollPartsBlackDiv = htmlDivElement(document, "roll-parts-black")
         this.levelSlider = document.getElementById("ai-slider")!! as HTMLInputElement
 
         // iteration 6
-        this.aiWinsSound = document.getElementById("ai-wins-sound")!! as HTMLAudioElement
-        this.clapsSound = document.getElementById("claps-sound")!! as HTMLAudioElement
+        this.aiWinsSound = htmlAudioElement(document, "ai-wins-sound")
+        this.clapsSound = htmlAudioElement(document, "claps-sound")
 
         // iteration 7
-        this.cantMoveSound1 = document.getElementById("wah-wah1-sound")!! as HTMLAudioElement
-        this.cantMoveSound2 = document.getElementById("wah-wah2-sound")!! as HTMLAudioElement
+        this.cantMoveSound1 = htmlAudioElement(document, "wah-wah1-sound")
+        this.cantMoveSound2 = htmlAudioElement(document, "wah-wah2-sound")
+
+        // iteration 8
+        // FIXME: Damon add "ting" success sound for counter getting offboard to home
+        this.counterMovedHomeSound = htmlAudioElement(document, "ting-sound")
     }
+
+    private fun htmlAudioElement(document: Document, elementId: String) =
+        document.getElementById(elementId)!! as HTMLAudioElement
+
+    private fun htmlDivElement(document: Document, elementId: String) =
+        document.getElementById(elementId)!! as HTMLDivElement
+
+    private fun htmlCanvasElement(document: Document, elementId: String) =
+        document.getElementById(elementId)!! as HTMLCanvasElement
 
     // Iteration 3
     fun findCanvasBoard(): HTMLCanvasElement {
@@ -97,7 +112,7 @@ class UrPageObject(document: Document) {
     }
 
     fun playHmmSound() {
-        hmm.play()
+        hmmSound.play()
     }
 
     fun playCounterTakenSound() {
@@ -123,11 +138,11 @@ class UrPageObject(document: Document) {
 
     // Iteration 5
     fun findRollPartsBlack(): HTMLDivElement {
-        return this.rollPartsBlack
+        return this.rollPartsBlackDiv
     }
 
     fun findRollPartsWhite(): HTMLDivElement {
-        return this.rollPartsWhite
+        return this.rollPartsWhiteDiv
     }
 
     fun readLevel(): Int {
@@ -157,4 +172,9 @@ class UrPageObject(document: Document) {
         }
     }
 
+    fun playCounterMovedHomeSound() {
+        counterMovedHomeSound.play()
+    }
+
 }
+

@@ -11,9 +11,9 @@ class UrTest {
 
     private var moveResult: ArrayDeque<MoveResult> = ArrayDeque<MoveResult>()
     private var lastAskMoves: Map<Square, Square> = HashMap<Square, Square>()
-    private var playArea: PlayArea? = null
-    private var horizontalDrawnBoard: HorizontalDrawnBoard? = null
-    private var ur: Ur? = null
+    private var playArea: PlayArea = PlayArea(White)
+    private var horizontalDrawnBoard: HorizontalDrawnBoard = HorizontalDrawnBoard(playArea)
+    private var ur: Ur = Ur(playArea)
 
     @Test
     fun initialStateTest() {
@@ -276,27 +276,27 @@ class UrTest {
     private fun givenNewGame() {
         moveResult = ArrayDeque<MoveResult>()
         playArea = PlayArea(White)
-        horizontalDrawnBoard = HorizontalDrawnBoard(playArea!!)
-        ur = Ur(playArea!!)
+        horizontalDrawnBoard = HorizontalDrawnBoard(playArea)
+        ur = Ur(playArea)
     }
 
     private fun givenGame(game: String) {
         moveResult = ArrayDeque<MoveResult>()
         playArea = HorizontalDrawnBoard.parsePlayAreaFromHorizontal(game)
-        horizontalDrawnBoard = HorizontalDrawnBoard(playArea!!)
-        ur = Ur(playArea!!)
+        horizontalDrawnBoard = HorizontalDrawnBoard(playArea)
+        ur = Ur(playArea)
     }
 
     // --------------------------------------
     // When section
     // --------------------------------------
     private fun whenMove(team: Team, square: Square, i: Int) {
-        val result = ur!!.moveCounter(team, square, i)
+        val result = ur.moveCounter(team, square, i)
         moveResult.add(result)
     }
 
     private fun whenAskMoves(team: Team, roll: Int) {
-        lastAskMoves = ur!!.askMoves(team, roll)
+        lastAskMoves = ur.askMoves(team, roll)
     }
 
     // --------------------------------------
@@ -315,38 +315,38 @@ class UrTest {
     }
 
     private fun thenStateIsInitial() {
-        assertEquals(playArea!!.currentTeam(), White)
-        assertEquals(playArea!!.inPlayCount(), 0)
-        assertEquals(playArea!!.completedCount(White), 0)
-        assertEquals(playArea!!.completedCount(Black), 0)
+        assertEquals(playArea.currentTeam(), White)
+        assertEquals(playArea.inPlayCount(), 0)
+        assertEquals(playArea.completedCount(White), 0)
+        assertEquals(playArea.completedCount(Black), 0)
     }
 
     private fun thenWhiteHasCounterAt(square: Square) {
-        assertEquals(playArea!![square], White)
+        assertEquals(playArea[square], White)
     }
 
     private fun thenBlackHasCounterAt(square: Square) {
-        assertEquals(playArea!![square], Black)
+        assertEquals(playArea[square], Black)
     }
 
     private fun thenSmallBoardIs(s: String) {
-        val smallBoard: String = horizontalDrawnBoard!!.smallBoard()
+        val smallBoard: String = horizontalDrawnBoard.smallBoard()
             .joinToString("\n")
         assertEquals(s, smallBoard)
     }
 
     private fun thenHorizontalFullBoardIs(wantedBoard: String) {
         val board: String =
-            horizontalDrawnBoard!!.fullBoard().joinToString("\n") { obj: String -> obj.trim { it <= ' ' } }
+            horizontalDrawnBoard.fullBoard().joinToString("\n") { obj: String -> obj.trim { it <= ' ' } }
         assertEquals(board, wantedBoard)
     }
 
     private fun thenItsWhitesMove() {
-        assertEquals(ur!!.currentTeam(), White)
+        assertEquals(ur.currentTeam(), White)
     }
 
     private fun thenItsBlacksMove() {
-        assertEquals(ur!!.currentTeam(), Black)
+        assertEquals(ur.currentTeam(), Black)
     }
 
     private fun thenAllMovesWereLegal() {
@@ -359,7 +359,7 @@ class UrTest {
     }
 
     private fun thenWhiteCompletedCountIs(count: Int) {
-        assertEquals(playArea!!.completedCount(White), count)
+        assertEquals(playArea.completedCount(White), count)
     }
 
     private fun thenMovesAre(vararg destinationSquares: Square) {
@@ -383,7 +383,7 @@ class UrTest {
 
     // TODO: add to all test failings
     private fun printBoard() {
-//        horizontalDrawnBoard!!.fullBoard()
+//        horizontalDrawnBoard.fullBoard()
 //            .map { obj: String -> obj.trim { it <= ' ' } }
 //            .forEach(java.lang.System.out::println)
     }

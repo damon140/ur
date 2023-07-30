@@ -35,7 +35,7 @@ class Ur(private val playArea: PlayArea) {
     }
 
     fun moveCounter(team: Team, fromSquare: Square, count: Int): MoveResult {
-        // FIXMME: check correct team
+        // FIXME: check correct team
         if (playArea.allCountersStarted(team)) {
             return MoveResult.Illegal // can't add any more counters
         }
@@ -69,6 +69,8 @@ class Ur(private val playArea: PlayArea) {
         return if (null != occupant) {
             MoveResult.CounterTaken
         } else {
+            // FIXME: Damon need a new move result here
+
             MoveResult.Legal
         }
     }

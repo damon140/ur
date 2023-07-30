@@ -27,6 +27,7 @@ class WebGame {
     private var ur: Ur = Ur(playArea)
     private var pageObject = UrPageObject(document)
     private var urCanvasView = UrCanvasView(lastMove, pageObject)
+    private var urWebSound = UrWebSound(pageObject)
     private var roll: Int = 0
 
     // TODO: impl player setup
@@ -57,7 +58,7 @@ class WebGame {
             urCanvasView.drawRobotThinking()
 
             if (1 == Random.nextInt(1, 9)) {
-                urCanvasView.playHmm()
+                urWebSound.playHmm()
             }
 
             window.setTimeout(handler = {
@@ -68,7 +69,7 @@ class WebGame {
     }
 
     private fun playPart2() {
-        urCanvasView.playDiceRoll()
+        urWebSound.playDiceRoll()
         playPart3()
     }
 
@@ -84,7 +85,7 @@ class WebGame {
         val cantMove = 0 == roll || moves.isEmpty()
 
         if (cantMove) {
-            urCanvasView.playCantMoveSound()
+            urWebSound.playCantMoveSound()
         }
 
         val continueFunction = {
@@ -113,7 +114,7 @@ class WebGame {
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
-        val moveSupplier = moveSuppliers[currentTeam]!!
+        val moveSupplier = moveSuppliers.getValue(currentTeam)
 
         val skipTurn = 0 == roll || moves.isEmpty()
 
@@ -139,7 +140,7 @@ class WebGame {
             playPart5(result)
         }
 
-        urCanvasView.animate(playArea, currentTeam, fromSquare, moves[fromSquare]!!, continueFunction)
+        urCanvasView.animate(playArea, currentTeam, fromSquare, moves.getValue(fromSquare), continueFunction)
     }
 
     private fun playPart5(result: Ur.MoveResult) {
@@ -152,13 +153,17 @@ class WebGame {
         }
 
         if (result == Ur.MoveResult.CounterTaken) {
-            urCanvasView.playCounterTakenSound()
+            urWebSound.playCounterTakenSound()
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
                 playPart6()
             }, timeout = Random.nextInt(0, 500))
             return
         }
+
+        // FIXME: Damon, play counter offboard sound here??
+        // FIXME: Damon, new move result needed?
+        //if (result == Ur.MoveResult.????)
 
         // else
         playPart6()
@@ -182,7 +187,7 @@ class WebGame {
 
     private fun currentPlayerIsHuman(): Boolean {
         val currentTeam = ur.currentTeam()
-        val inputSupplier = moveSuppliers[currentTeam]!!
+        val inputSupplier = moveSuppliers.getValue(currentTeam)
         return inputSupplier.isHuman()
     }
 

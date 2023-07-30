@@ -98,8 +98,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         button.addEventListener("click", {
             console.log("Clicked on button!")
 
-            // TODO: play sound here and add timeout fn to run callback, wrap callbacks
-
             // run continue function here
             continueFunction()
         })
@@ -265,14 +263,16 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         findRollSpace.append(button)
 
         if (White == currentTeam) {
+            // TODO: move to UrWebSound
             pageObject.playClapsSound()
         } else {
+            // TODO: move to UrWebSound
             pageObject.playAiWinsSound()
         }
     }
 
     private fun drawCounterByIndex(square: Square, team: Team, size: CounterSize) {
-        drawCounterByIndex(squarePairMap[square]!!, team, size)
+        drawCounterByIndex(squarePairMap.getValue(square), team, size)
     }
 
     private fun drawCounterByIndex(pair: Pair<Int, Int>, team: Team, size: CounterSize) {
@@ -359,7 +359,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 }
             }
             if (!found) {
-                playBaBowSound()
+                // FIXME: Damon move to UrWebSound
+                pageObject.playBaBowSound()
             }
 
             this
@@ -367,7 +368,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     }
 
     private fun drawSquare(square: Square) {
-        val pair = squarePairMap[square]!!
+        val pair = squarePairMap.getValue(square)
 
         //canvas.clearRect(50.0 * pair.first, 50.0 * pair.second, 50.0, 50.0)
 
@@ -384,7 +385,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
     private fun drawBlanks() {
         Square.drawableSquares()
             .map { s ->
-                val square = squarePairMap[s]!!
+                val square = squarePairMap.getValue(s)
                 val x = 50.0 * square.first + 1
                 val y = 2 + 50.0 * square.second + 1
 
@@ -424,26 +425,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             }
     }
 
-    fun playDiceRoll() {
-        pageObject.playDiceSound()
-    }
-
-    fun playHmm() {
-        pageObject.playHmmSound()
-    }
-
-    fun playCounterTakenSound() {
-        pageObject.playCounterTakenSound()
-    }
-
-    fun playCantMoveSound() {
-        pageObject.playCantMoveSound()
-    }
-
-    private fun playBaBowSound() {
-        pageObject.playBaBowSound()
-    }
-
     fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
         val squares = Square.calculateSquaresBetween(team, fromSquare, toSquare)
         console.log("Will animate counter path $squares")
@@ -468,6 +449,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                     lastSquare = currentSquare
                     currentSquare = squares.removeFirst()
                 }
+                // TODO: move to UrWebSound
                 pageObject.playTicSound()
             }
 
@@ -492,7 +474,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             square == Off_board_unstarted && team == Black -> Pair(4, 4)
             square == Off_board_finished && team == White -> Pair(2, 5)
             square == Off_board_finished && team == Black -> Pair(4, 5)
-            else -> squarePairMap[square]!!
+            else -> squarePairMap.getValue(square)
         }
     }
 
@@ -515,7 +497,7 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 val f = makeUnstartedOffboardCounterPairs(team, unstartedCount).last()
                 f
             } else {
-                val indexPair = squarePairMap[square]!!
+                val indexPair = squarePairMap.getValue(square)
                 Pair(indexToCoordinate(indexPair.first), 2 + indexToCoordinate(indexPair.second))
             }
         }.toList()
