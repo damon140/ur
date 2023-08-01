@@ -152,21 +152,26 @@ class WebGame {
             return
         }
 
+        var showThinking = false
         if (result == Ur.MoveResult.CounterTaken) {
             urWebSound.playCounterTakenSound()
+            showThinking = true
+        }
+
+        if (result == Ur.MoveResult.CounterOffboard) {
+            urWebSound.playCounterMovedHomeSound()
+            showThinking = true
+        }
+
+        if (showThinking) {
             window.setTimeout(handler = {
                 console.log("Robot finished thinking here")
                 playPart6()
             }, timeout = Random.nextInt(0, 500))
             return
+        } else {
+            playPart6()
         }
-
-        // FIXME: Damon, play counter offboard sound here??
-        // FIXME: Damon, new move result needed?
-        //if (result == Ur.MoveResult.????)
-
-        // else
-        playPart6()
     }
 
     private fun playPart6() {

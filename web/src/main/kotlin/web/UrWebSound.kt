@@ -24,7 +24,6 @@ class UrWebSound (pageObject: UrPageObject) {
         pageObject.playCantMoveSound()
     }
 
-    // FIXME: Damon, call this
     fun playCounterMovedHomeSound() {
         pageObject.playCounterMovedHomeSound()
     }

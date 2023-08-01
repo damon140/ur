@@ -27,7 +27,7 @@ class Ur(private val playArea: PlayArea) {
     }
 
     enum class MoveResult {
-        Illegal, Legal, CounterTaken, GameOver
+        Illegal, Legal, CounterTaken, CounterOffboard, GameOver
     }
 
     fun moveCounter(square: Square, count: Int): MoveResult {
@@ -69,9 +69,11 @@ class Ur(private val playArea: PlayArea) {
         return if (null != occupant) {
             MoveResult.CounterTaken
         } else {
-            // FIXME: Damon need a new move result here
-
-            MoveResult.Legal
+            return if (Square.Off_board_finished == newSquare) {
+                MoveResult.CounterOffboard
+            } else {
+                MoveResult.Legal
+            }
         }
     }
 

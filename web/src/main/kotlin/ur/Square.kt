@@ -18,7 +18,8 @@ enum class Square {
     Off_board_unstarted,  // synthetic square, not a square on the board
     Black_run_on_1, Black_run_on_2, Black_run_on_3, Black_run_on_4, Black_run_off_1, Black_run_off_2,
     Shared_1, Shared_2, Shared_3, Shared_4, Shared_5, Shared_6, Shared_7, Shared_8,
-    White_run_on_1, White_run_on_2, White_run_on_3, White_run_on_4, White_run_off_1, White_run_off_2, Off_board_finished;
+    White_run_on_1, White_run_on_2, White_run_on_3, White_run_on_4, White_run_off_1, White_run_off_2,
+    Off_board_finished;
 
     companion object {
         fun drawableSquares(): List<Square> {
@@ -81,4 +82,5 @@ enum class Square {
         return setOf(Shared_1, Shared_2, Shared_3, Shared_4, Shared_5, Shared_6, Shared_7, Shared_8)
             .contains(this)
     }
+
 }
