@@ -73,6 +73,13 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             Off_board_unstarted to Pair(0, 0),
             Off_board_finished to Pair(0, 0)
         )
+
+        val slider = pageObject.findLevelSlider()
+        slider.addEventListener("change", {
+            console.log("Slider change to " + slider.value)
+            // FIXME: Damon add fun AI names
+            //updateAiName(level)
+        })
     }
 
     fun drawShowRollButton(playArea: PlayArea, continueFunction: () -> Unit) {

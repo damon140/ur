@@ -136,7 +136,6 @@ class WebGame {
         val continueFunction = {
             val result = ur.moveCounter(fromSquare, roll)
             console.log("move result is $result")
-
             playPart5(result)
         }
 

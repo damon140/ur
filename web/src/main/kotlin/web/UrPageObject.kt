@@ -111,6 +111,10 @@ class UrPageObject(document: Document) {
         return this.rollBlack
     }
 
+    fun findLevelSlider(): HTMLInputElement {
+        return this.levelSlider;
+    }
+
     fun playHmmSound() {
         hmmSound.play()
     }
