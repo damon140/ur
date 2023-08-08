@@ -77,8 +77,17 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val slider = pageObject.findLevelSlider()
         slider.addEventListener("change", {
             console.log("Slider change to " + slider.value)
+
+            val levelName = "level " + (slider.value.toInt() + 1).toString();
+            console.log("AI level name: " + levelName)
+
             // FIXME: Damon add fun AI names
-            //updateAiName(level)
+            // 0 plodder pl0dder
+            // 1 roller  ro11er
+            // 2 taker  2aker
+            // 3 hogger hogg3r
+            // 4 supreme supr4me
+            pageObject.findAiLevel().innerText = levelName
         })
     }
 
