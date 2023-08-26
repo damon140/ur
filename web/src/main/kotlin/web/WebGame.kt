@@ -25,9 +25,8 @@ class WebGame {
     private var playArea = PlayArea(Team.random())
     private var lastMove = LastMove()
     private var ur: Ur = Ur(playArea)
-    private var pageObject = UrPageObject(document)
-    private var urCanvasView = UrCanvasView(lastMove, pageObject)
-    private var urWebSound = UrWebSound(pageObject)
+    private var urWebView = UrWebView(lastMove)
+
     private var roll: Int = 0
 
     // TODO: impl player setup
@@ -53,12 +52,13 @@ class WebGame {
         }
 
         if (currentPlayerIsHuman()) {
-            urCanvasView.drawShowRollButton(playArea, continueFunction)
+            urWebView.drawShowRollButton(playArea, continueFunction)
         } else {
-            urCanvasView.drawRobotThinking()
+            urWebView.drawRobotThinking()
 
+            // FIXME: Damon push into webView
             if (1 == Random.nextInt(1, 9)) {
-                urWebSound.playHmm()
+                urWebView.playHmm()
             }
 
             window.setTimeout(handler = {
@@ -69,7 +69,7 @@ class WebGame {
     }
 
     private fun playPart2() {
-        urWebSound.playDiceRoll()
+        urWebView.playDiceRoll()
         playPart3()
     }
 
@@ -85,7 +85,7 @@ class WebGame {
         val cantMove = 0 == roll || moves.isEmpty()
 
         if (cantMove) {
-            urWebSound.playCantMoveSound()
+            urWebView.playCantMoveSound()
         }
 
         val continueFunction = {
@@ -99,17 +99,17 @@ class WebGame {
         }
 
         // UI iteration 3!
-        urCanvasView.drawAll(currentTeam, dice, moves, playArea, continueFunction)
+        urWebView.drawAll(currentTeam, dice, moves, playArea, continueFunction)
 
         if (currentPlayerIsAi()) {
             playPart4()
         } else {
-            urCanvasView.startMovesAnimation(this.playArea, currentTeam, moves.keys)
+            urWebView.startMovesAnimation(this.playArea, currentTeam, moves.keys)
         }
     }
 
     private fun playPart4() {
-        urCanvasView.endMovesAnimation()
+        urWebView.endMovesAnimation()
 
         val currentTeam = ur.currentTeam()
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
@@ -120,7 +120,7 @@ class WebGame {
 
         if (skipTurn) {
             ur.skipTurn()
-            urCanvasView.drawMost(playArea)
+            urWebView.drawMost(playArea)
             console.log("Skipping turn of $currentTeam. roll is $roll and moves size is ${moves.size}")
 
             playPart1()
@@ -129,7 +129,7 @@ class WebGame {
             console.log("Not skipping turn as skipTurn is $skipTurn")
         }
 
-        val level = urCanvasView.getLevel()
+        val level = urWebView.getLevel()
         val moveIndex = moveSupplier.choose(level, moves)
         val fromSquare: Square = moves.keys.toList()[moveIndex - 1]
 
@@ -139,26 +139,26 @@ class WebGame {
             playPart5(result)
         }
 
-        urCanvasView.animate(playArea, currentTeam, fromSquare, moves.getValue(fromSquare), continueFunction)
+        urWebView.animate(playArea, currentTeam, fromSquare, moves.getValue(fromSquare), continueFunction)
     }
 
     private fun playPart5(result: Ur.MoveResult) {
         val currentTeam = ur.currentTeam()
 
         if (result == Ur.MoveResult.GameOver) {
-            urCanvasView.updateBoard(playArea)
-            urCanvasView.gameWon(currentTeam)
+            urWebView.updateBoard(playArea)
+            urWebView.gameWon(currentTeam)
             return
         }
 
         var showThinking = false
         if (result == Ur.MoveResult.CounterTaken) {
-            urWebSound.playCounterTakenSound()
+            urWebView.playCounterTakenSound()
             showThinking = true
         }
 
         if (result == Ur.MoveResult.CounterOffboard) {
-            urWebSound.playCounterMovedHomeSound()
+            urWebView.playCounterMovedHomeSound()
             showThinking = true
         }
 
@@ -182,12 +182,11 @@ class WebGame {
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
         console.log("About to drawAll().")
-        urCanvasView.drawAll(currentTeam, this.dice, moves, playArea, continueFunction)
+        urWebView.drawAll(currentTeam, this.dice, moves, playArea, continueFunction)
 
         // loop the game loop
         playPart1()
     }
-
 
     private fun currentPlayerIsHuman(): Boolean {
         val currentTeam = ur.currentTeam()
@@ -198,6 +197,5 @@ class WebGame {
     private fun currentPlayerIsAi(): Boolean {
         return !currentPlayerIsHuman()
     }
-
 
 }

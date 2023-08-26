@@ -24,16 +24,25 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
-import web.UrCanvasView.CounterSize.Big
-import web.UrCanvasView.CounterSize.Little
+import web.UrCanvasBoard.CounterSize.Big
+import web.UrCanvasBoard.CounterSize.Little
 import kotlin.math.PI
 import kotlin.math.floor
 
-class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
+class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: UrWebSound) {
     private val lastMove: LastMove
-    private val pageObject: UrPageObject
+
+    private val urWebSound: UrWebSound
+
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
+
+    private val rollSpace: HTMLDivElement
+    private val rollPartsWhite: HTMLDivElement
+    private val rollPartsBlack: HTMLDivElement
+    private val rollBlack: HTMLDivElement
+    private val rollWhite: HTMLDivElement
+
     private var moveCounterIntervalHandle = 0
     private var animateMovesIntervalHandle = 0
 
@@ -41,10 +50,15 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     init {
         this.lastMove = lastMove
-        this.pageObject = pageObject
+        this.urWebSound = urWebSound
         this.htmlCanvasElement = pageObject.findCanvasBoard()
-
         this.canvas = htmlCanvasElement.getContext("2d") as CanvasRenderingContext2D
+
+        this.rollSpace = pageObject.findRollSpace();
+        this.rollPartsWhite = pageObject.findRollPartsWhite()
+        this.rollPartsBlack = pageObject.findRollPartsBlack()
+        this.rollBlack = pageObject.findRollBlack()
+        this.rollWhite = pageObject.findRollWhite()
 
         this.squarePairMap = mapOf(
             White_run_on_1 to Pair(2, 3),
@@ -101,15 +115,14 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         updateBoard(playArea)
 
         // instructions
-        val findRollSpace = pageObject.findRollSpace()
-        findRollSpace.innerText = ""
+        rollSpace.innerText = ""
 
         val button = document.createElement("button") as HTMLButtonElement
         button.innerHTML = "Click to roll"
 
         // blank out last roll
-        pageObject.findRollBlack().innerText = ""
-        pageObject.findRollWhite().innerText = ""
+        rollBlack.innerText = ""
+        rollWhite.innerText = ""
 
         button.addEventListener("click", {
             console.log("Clicked on button!")
@@ -117,18 +130,18 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
             // run continue function here
             continueFunction()
         })
-        findRollSpace.append(button)
+        rollSpace.append(button)
 
-        pageObject.findRollPartsWhite().innerText = ""
-        pageObject.findRollPartsBlack().innerText = ""
+        rollPartsWhite.innerText = ""
+        rollPartsBlack.innerText = ""
     }
 
     fun drawRobotThinking() {
-        pageObject.findRollSpace().innerHTML = "<i>AI is thinking</i>"
+        rollSpace.innerHTML = "<i>AI is thinking</i>"
 
         // blank out last roll
-        pageObject.findRollBlack().innerText = ""
-        pageObject.findRollWhite().innerText = ""
+        rollBlack.innerText = ""
+        rollWhite.innerText = ""
     }
 
     // TODO: make private??
@@ -217,24 +230,24 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
         val spanToUpdate: HTMLDivElement
         val spanToBlank: HTMLDivElement
         if (White == currentTeam) {
-            spanToUpdate = pageObject.findRollWhite()
-            spanToBlank = pageObject.findRollBlack()
+            spanToUpdate = rollWhite
+            spanToBlank = rollBlack
         } else {
-            spanToUpdate = pageObject.findRollBlack()
-            spanToBlank = pageObject.findRollWhite()
+            spanToUpdate = rollBlack
+            spanToBlank = rollWhite
         }
 
         spanToUpdate.innerText = "" + roll
         spanToBlank.innerText = ""
-        val findRollSpace = pageObject.findRollSpace()
+        val findRollSpace = rollSpace
         findRollSpace.innerText = ""
 
         if (currentTeam == White) {
-            pageObject.findRollPartsWhite().innerText = dice.getLastString()
-            pageObject.findRollPartsBlack().innerText = ""
+            rollPartsWhite.innerText = dice.getLastString()
+            rollPartsBlack.innerText = ""
         } else {
-            pageObject.findRollPartsWhite().innerText = ""
-            pageObject.findRollPartsBlack().innerText = dice.getLastString()
+            rollPartsWhite.innerText = ""
+            rollPartsBlack.innerText = dice.getLastString()
         }
 
         if (roll == 0) {
@@ -257,33 +270,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 continueFunction()
             })
             findRollSpace.append(button)
-        }
-    }
-
-    fun gameWon(currentTeam: Team) {
-        // black rolls
-        pageObject.findRollWhite().innerHTML = ""
-        pageObject.findRollBlack().innerHTML = ""
-
-        val button = document.createElement("button") as HTMLButtonElement
-        button.innerHTML = "Game won by $currentTeam. Click to restart"
-
-        button.addEventListener("click", {
-            // FIXME: want a function handle to call here on game won
-            console.log("reloading")
-            window.location.reload()
-        })
-
-        val findRollSpace = pageObject.findRollSpace()
-        findRollSpace.innerText = ""
-        findRollSpace.append(button)
-
-        if (White == currentTeam) {
-            // TODO: move to UrWebSound
-            pageObject.playClapsSound()
-        } else {
-            // TODO: move to UrWebSound
-            pageObject.playAiWinsSound()
         }
     }
 
@@ -375,8 +361,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                 }
             }
             if (!found) {
-                // FIXME: Damon move to UrWebSound
-                pageObject.playBaBowSound()
+                // FIXME: push up somehow, split view out
+                urWebSound.playBaBowSound()
             }
 
             this
@@ -465,8 +451,8 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
                     lastSquare = currentSquare
                     currentSquare = squares.removeFirst()
                 }
-                // TODO: move to UrWebSound
-                pageObject.playTicSound()
+                // TODO: push up and out of this class
+                urWebSound.playTicSound()
             }
 
             if (draw) {
@@ -530,10 +516,6 @@ class UrCanvasView(lastMove: LastMove, pageObject: UrPageObject) {
 
     fun endMovesAnimation() {
         window.clearInterval(this.animateMovesIntervalHandle)
-    }
-
-    fun getLevel(): Int {
-        return this.pageObject.readLevel()
     }
 
 }

@@ -28,5 +28,21 @@ class UrWebSound (pageObject: UrPageObject) {
         pageObject.playCounterMovedHomeSound()
     }
 
+    fun playTicSound() {
+        pageObject.playTicSound()
+    }
+
+    fun playClapsSound() {
+        pageObject.playClapsSound()
+    }
+
+    fun playAiWinsSound() {
+        pageObject.playAiWinsSound()
+    }
+
+    fun playBaBowSound() {
+        pageObject.playBaBowSound()
+    }
+
 }
 
