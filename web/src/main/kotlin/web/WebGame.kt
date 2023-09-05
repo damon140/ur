@@ -15,7 +15,6 @@
 package web
 
 import com.damon140.ur.*
-import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlin.random.Random
 
@@ -99,7 +98,7 @@ class WebGame {
         }
 
         // UI iteration 3!
-        urWebView.drawAll(currentTeam, dice, moves, playArea, continueFunction)
+        urWebView.drawBoardAndSetContinueFunction(currentTeam, dice, moves, playArea, continueFunction)
 
         if (currentPlayerIsAi()) {
             playPart4()
@@ -120,7 +119,7 @@ class WebGame {
 
         if (skipTurn) {
             ur.skipTurn()
-            urWebView.drawMost(playArea)
+            urWebView.drawBoard(playArea)
             console.log("Skipping turn of $currentTeam. roll is $roll and moves size is ${moves.size}")
 
             playPart1()
@@ -182,7 +181,7 @@ class WebGame {
         val moves: Map<Square, Square> = ur.askMoves(currentTeam, roll)
 
         console.log("About to drawAll().")
-        urWebView.drawAll(currentTeam, this.dice, moves, playArea, continueFunction)
+        urWebView.drawBoardAndSetContinueFunction(currentTeam, this.dice, moves, playArea, continueFunction)
 
         // loop the game loop
         playPart1()

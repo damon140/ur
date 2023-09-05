@@ -14,14 +14,11 @@
 
 package web
 
-import com.damon140.ur.Dice
 import com.damon140.ur.PlayArea
 import com.damon140.ur.Square
 import com.damon140.ur.Square.*
 import com.damon140.ur.Team
 import com.damon140.ur.Team.*
-import kotlinx.browser.document
-import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
 import web.UrCanvasBoard.CounterSize.Big
@@ -29,36 +26,16 @@ import web.UrCanvasBoard.CounterSize.Little
 import kotlin.math.PI
 import kotlin.math.floor
 
-class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: UrWebSound) {
-    private val lastMove: LastMove
-
-    private val urWebSound: UrWebSound
+class UrCanvasBoard(pageObject: UrPageObject) {
 
     private val htmlCanvasElement: HTMLCanvasElement
     private val canvas: CanvasRenderingContext2D
 
-    private val rollSpace: HTMLDivElement
-    private val rollPartsWhite: HTMLDivElement
-    private val rollPartsBlack: HTMLDivElement
-    private val rollBlack: HTMLDivElement
-    private val rollWhite: HTMLDivElement
-
-    private var moveCounterIntervalHandle = 0
-    private var animateMovesIntervalHandle = 0
-
     private val squarePairMap: Map<Square, Pair<Int, Int>>
 
     init {
-        this.lastMove = lastMove
-        this.urWebSound = urWebSound
         this.htmlCanvasElement = pageObject.findCanvasBoard()
         this.canvas = htmlCanvasElement.getContext("2d") as CanvasRenderingContext2D
-
-        this.rollSpace = pageObject.findRollSpace();
-        this.rollPartsWhite = pageObject.findRollPartsWhite()
-        this.rollPartsBlack = pageObject.findRollPartsBlack()
-        this.rollBlack = pageObject.findRollBlack()
-        this.rollWhite = pageObject.findRollWhite()
 
         this.squarePairMap = mapOf(
             White_run_on_1 to Pair(2, 3),
@@ -87,65 +64,9 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
             Off_board_unstarted to Pair(0, 0),
             Off_board_finished to Pair(0, 0)
         )
-
-        val slider = pageObject.findLevelSlider()
-        slider.addEventListener("change", {
-            console.log("Slider change to " + slider.value)
-
-            val levelName = "level " + (slider.value.toInt() + 1).toString();
-            console.log("AI level name: " + levelName)
-
-            // FIXME: Damon add fun AI names
-            // 0 plodder pl0dder
-            // 1 roller  ro11er
-            // 2 taker  2aker
-            // 3 hogger hogg3r
-            // 4 supreme supr4me
-            pageObject.findAiLevel().innerText = levelName
-        })
     }
 
-    fun drawShowRollButton(playArea: PlayArea, continueFunction: () -> Unit) {
-        blank()
-        // TODO: can replace with draw most?
-        drawGrid()
-
-        updateWhiteCounters(playArea.unstartedCount(White), playArea.completedCount(White))
-        updateBlackCounters(playArea.unstartedCount(Black), playArea.completedCount(Black))
-        updateBoard(playArea)
-
-        // instructions
-        rollSpace.innerText = ""
-
-        val button = document.createElement("button") as HTMLButtonElement
-        button.innerHTML = "Click to roll"
-
-        // blank out last roll
-        rollBlack.innerText = ""
-        rollWhite.innerText = ""
-
-        button.addEventListener("click", {
-            console.log("Clicked on button!")
-
-            // run continue function here
-            continueFunction()
-        })
-        rollSpace.append(button)
-
-        rollPartsWhite.innerText = ""
-        rollPartsBlack.innerText = ""
-    }
-
-    fun drawRobotThinking() {
-        rollSpace.innerHTML = "<i>AI is thinking</i>"
-
-        // blank out last roll
-        rollBlack.innerText = ""
-        rollWhite.innerText = ""
-    }
-
-    // TODO: make private??
-    fun drawMost(playArea: PlayArea) {
+    fun draw(playArea: PlayArea) {
         blank()
         drawGrid()
 
@@ -154,18 +75,34 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
         updateBoard(playArea)
     }
 
-    fun drawAll(
-        currentTeam: Team,
-        dice: Dice,
-        moves: Map<Square, Square>,
-        playArea: PlayArea,
-        continueFunction: () -> Unit
-    ) {
-        drawMost(playArea)
+    fun click(squareClicked: (Square) -> Unit) {
+        htmlCanvasElement.onclick = { event: MouseEvent ->
+            val clientX = event.clientX
+            val clientY = event.clientY
 
-        attachClickHandler(moves, continueFunction)
+            val rect = this.htmlCanvasElement.getBoundingClientRect()
+            val xIndex = floor((clientX - rect.left) / 50).toInt()
+            val yIndex = floor((clientY - rect.top) / 50).toInt()
+            //console.log("x ind: $xIndex, y ind: $yIndex")
 
-        updateInstructions(currentTeam, dice, moves.isEmpty(), continueFunction)
+            val matchingSquairPairsList =
+                squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
+            val size = matchingSquairPairsList.size
+            //console.log("matching list size " + size);
+
+            var clickedSquare: Square? = null
+            if (0 != size) {
+                clickedSquare = matchingSquairPairsList
+                    .map { entry -> entry.key }
+                    .first()
+            } else if (yIndex < 4) {
+                // off board unstarted
+                clickedSquare = Off_board_unstarted
+            }
+
+            squareClicked.invoke(clickedSquare!!)
+            this
+        }
     }
 
     private fun updateWhiteCounters(unstartedCount: Int, completedCount: Int) {
@@ -225,54 +162,6 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
         playArea.countersForTeam(Black).forEach { s -> drawCounterByIndex(s, Black, Big) }
     }
 
-    private fun updateInstructions(currentTeam: Team, dice: Dice, zeroMoves: Boolean, continueFunction: () -> Unit) {
-        val roll = dice.getLastValue()
-        val spanToUpdate: HTMLDivElement
-        val spanToBlank: HTMLDivElement
-        if (White == currentTeam) {
-            spanToUpdate = rollWhite
-            spanToBlank = rollBlack
-        } else {
-            spanToUpdate = rollBlack
-            spanToBlank = rollWhite
-        }
-
-        spanToUpdate.innerText = "" + roll
-        spanToBlank.innerText = ""
-        val findRollSpace = rollSpace
-        findRollSpace.innerText = ""
-
-        if (currentTeam == White) {
-            rollPartsWhite.innerText = dice.getLastString()
-            rollPartsBlack.innerText = ""
-        } else {
-            rollPartsWhite.innerText = ""
-            rollPartsBlack.innerText = dice.getLastString()
-        }
-
-        if (roll == 0) {
-            val button = document.createElement("button") as HTMLButtonElement
-            button.innerHTML = "You rolled zero, can't move, bummer!!"
-
-            button.addEventListener("click", {
-                console.log("Clicked on button!")
-                // run continue function here
-                continueFunction()
-            })
-            findRollSpace.append(button)
-        } else if (zeroMoves) {
-            val button = document.createElement("button") as HTMLButtonElement
-            button.innerHTML = "All moves blocked, bummer!!"
-
-            button.addEventListener("click", {
-                console.log("Clicked on button!")
-                // run continue function here
-                continueFunction()
-            })
-            findRollSpace.append(button)
-        }
-    }
-
     private fun drawCounterByIndex(square: Square, team: Team, size: CounterSize) {
         drawCounterByIndex(squarePairMap.getValue(square), team, size)
     }
@@ -318,56 +207,7 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
         Square.drawableSquares().forEach(::drawSquare)
     }
 
-    private fun attachClickHandler(moves: Map<Square, Square>, continueFunction: () -> Unit) {
 
-        htmlCanvasElement.onclick = { event: MouseEvent ->
-            val clientX = event.clientX
-            val clientY = event.clientY
-
-            val rect = this.htmlCanvasElement.getBoundingClientRect()
-            val xIndex = floor((clientX - rect.left) / 50).toInt()
-            val yIndex = floor((clientY - rect.top) / 50).toInt()
-            //console.log("x ind: $xIndex, y ind: $yIndex")
-
-            val matchingSquairPairsList =
-                squarePairMap.entries.filter { s -> s.value.first == xIndex && s.value.second == yIndex }
-            val size = matchingSquairPairsList.size
-            //console.log("matching list size " + size);
-
-            var clickedSquare: Square? = null
-            if (0 != size) {
-                clickedSquare = matchingSquairPairsList
-                    .map { entry -> entry.key }
-                    .first()
-            } else if (yIndex < 4) {
-                // off board unstarted
-                clickedSquare = Off_board_unstarted
-            }
-
-            console.log("move for clicked square $clickedSquare: ${moves.containsKey(clickedSquare)}")
-            console.log(moves.keys.joinToString(","))
-
-            var found = false
-
-            if (null != clickedSquare) {
-                for ((index, entry) in moves.entries.withIndex()) {
-                    if (entry.key == clickedSquare) {
-                        console.log("matched move of $clickedSquare")
-                        lastMove.setLastChosen((index + 1).toString())
-                        // run continue function here
-                        continueFunction()
-                        found = true
-                    }
-                }
-            }
-            if (!found) {
-                // FIXME: push up somehow, split view out
-                urWebSound.playBaBowSound()
-            }
-
-            this
-        }
-    }
 
     private fun drawSquare(square: Square) {
         val pair = squarePairMap.getValue(square)
@@ -427,47 +267,6 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
             }
     }
 
-    fun animate(playArea: PlayArea, team: Team, fromSquare: Square, toSquare: Square, continueFunction: () -> Unit) {
-        val squares = Square.calculateSquaresBetween(team, fromSquare, toSquare)
-        console.log("Will animate counter path $squares")
-
-        var oneSqaureAnim = 0
-
-        var lastSquare = squares.removeFirst()
-        var currentSquare = squares.removeFirst()
-
-        // Hmm, this sort of works
-        val handler: () -> Unit = {
-            val countCompleted = oneSqaureAnim++ == 5
-            var draw = true
-            if (countCompleted) {
-                if (squares.isEmpty()) {
-                    window.clearInterval(this.moveCounterIntervalHandle)
-                    draw = false
-                    drawMost(playArea)
-                    continueFunction()
-                } else {
-                    oneSqaureAnim = 0
-                    lastSquare = currentSquare
-                    currentSquare = squares.removeFirst()
-                }
-                // TODO: push up and out of this class
-                urWebSound.playTicSound()
-            }
-
-            if (draw) {
-                val square1Pos: Pair<Int, Int> = positionForAnimation(team, lastSquare)
-                val square2Pos: Pair<Int, Int> = positionForAnimation(team, currentSquare)
-
-                val pair = tween(oneSqaureAnim.toDouble(), 5.toDouble(), square1Pos, square2Pos)
-                console.log("anim of $currentSquare step $oneSqaureAnim$pair")
-
-                drawCounterByIndex(pair, team, Big)
-            }
-        }
-
-        this.moveCounterIntervalHandle = window.setInterval(handler, 85)
-    }
 
     private fun positionForAnimation(team: Team, square: Square): Pair<Int, Int> {
         // use special positions for each team for finishing and starting squares
@@ -492,7 +291,7 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
         return Pair(first, second)
     }
 
-    fun startMovesAnimation(playArea: PlayArea, team: Team, movesFrom: Set<Square>) {
+    fun startMovesAnimation(playArea: PlayArea, team: Team, movesFrom: Set<Square>): () -> Unit {
         val unstartedCount = playArea.unstartedCount(team)
         val pairs = movesFrom.map { square ->
             if (square == Off_board_unstarted) {
@@ -510,12 +309,17 @@ class UrCanvasBoard(lastMove: LastMove, pageObject: UrPageObject, urWebSound: Ur
             bigAnim = !bigAnim
             console.log("anim")
         }
-
-        this.animateMovesIntervalHandle = window.setInterval(handler, 777)
+        return handler;
     }
 
-    fun endMovesAnimation() {
-        window.clearInterval(this.animateMovesIntervalHandle)
+    fun drawCounterAnimationFrame(team: Team, lastSquare: Square, currentSquare: Square, frameNumber: Int) {
+        val square1Pos: Pair<Int, Int> = positionForAnimation(team, lastSquare)
+        val square2Pos: Pair<Int, Int> = positionForAnimation(team, currentSquare)
+
+        val pair = tween(frameNumber.toDouble(), 5.toDouble(), square1Pos, square2Pos)
+        console.log("anim of $currentSquare step $frameNumber$pair")
+
+        drawCounterByIndex(pair, team, UrCanvasBoard.CounterSize.Big)
     }
 
 }
