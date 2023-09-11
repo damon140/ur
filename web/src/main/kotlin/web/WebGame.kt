@@ -24,7 +24,15 @@ class WebGame {
     private var playArea = PlayArea(Team.random())
     private var lastMove = LastMove()
     private var ur: Ur = Ur(playArea)
-    private var urWebView = UrWebView(lastMove)
+    private var aiNameMap: Map<Int, String> = mapOf(
+        0 to "pl0dder",
+        1 to "ro11er",
+        2 to "2aker",
+        3 to "hogg3r",
+        4 to "supr4me",
+    )
+
+    private var urWebView = UrWebView(lastMove, aiNameMap)
 
     private var roll: Int = 0
 

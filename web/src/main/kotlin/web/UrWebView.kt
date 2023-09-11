@@ -25,7 +25,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSpanElement
 
-class UrWebView (lastMove: LastMove) {
+class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
 
     private val lastMove: LastMove
 
@@ -43,9 +43,12 @@ class UrWebView (lastMove: LastMove) {
     private val rollWhite: HTMLDivElement
     private var slider: HTMLInputElement
     private var findAiLevel: HTMLSpanElement
+    private val nameMap: Map<Int, String>
 
     init {
         this.lastMove = lastMove
+        this.nameMap = aiNameMap
+
         this.urCanvasBoard = UrCanvasBoard(pageObject)
 
         // FIXME: Damon switch to setZ methods here to hide members
@@ -64,23 +67,16 @@ class UrWebView (lastMove: LastMove) {
         updateAiName()
     }
 
+
+
     private fun updateAiName() {
         val levelInt = slider.value.toInt()
         console.log("Slider change to " + slider.value)
 
-        // TODO: damon pull up to web game?
-        val levelName = when (levelInt) {
-            0 -> "pl0dder"
-            1 -> "ro11er"
-            2 -> "2aker"
-            3 -> "hogg3r"
-            4 -> "supr4me"
-            else -> {
-                "unknown, is bug"
-            }
-        }
-        console.log("AI level name: " + levelName)
+        val map: Map<Int, String> = nameMap
+        val levelName = map.getValue(levelInt)
 
+        console.log("AI level name: " + levelName)
         findAiLevel.innerText = levelName
     }
 
