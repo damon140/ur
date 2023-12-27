@@ -29,7 +29,7 @@ class UrPageObject(document: Document) {
     private var rollPartsBlackDiv: HTMLDivElement
     private var levelSlider: HTMLInputElement
 
-    private var hmmSound:  HTMLAudioElement
+    private var hmmSound: HTMLAudioElement
     private var counterTakenSound:  HTMLAudioElement
     private var babowSound: HTMLAudioElement
     private var diceSound: HTMLAudioElement
@@ -42,36 +42,58 @@ class UrPageObject(document: Document) {
 
     init {
         this.document = document
-
-        // iteration 3
+        
         this.canvasBoard = htmlCanvasElement("canvas-board")
         this.rollWhite = htmlDivElement("roll-white")
         this.rollBlack = htmlDivElement("roll-black")
         this.rollSpace = htmlDivElement("roll-space2")
-
-        // iteration 4
         this.hmmSound = htmlAudioElement("hmm-audio")
         this.counterTakenSound = htmlAudioElement("counter-taken-audio")
         this.babowSound = htmlAudioElement("babow-sound")
         this.diceSound = htmlAudioElement("dice-sound")
         this.ticSound = htmlAudioElement("tic-sound")
-
-        // iteration 5
         this.rollPartsWhiteDiv = htmlDivElement("roll-parts-white")
         this.rollPartsBlackDiv = htmlDivElement("roll-parts-black")
-        this.levelSlider = document.getElementById("ai-slider")!! as HTMLInputElement
-
-        // iteration 6
+        this.levelSlider = htmlInputElement("ai-slider")
         this.aiWinsSound = htmlAudioElement("ai-wins-sound")
         this.clapsSound = htmlAudioElement("claps-sound")
-
-        // iteration 7
         this.cantMoveSound1 = htmlAudioElement("wah-wah1-sound")
         this.cantMoveSound2 = htmlAudioElement("wah-wah2-sound")
-
-        // iteration 8
         this.counterMovedHomeSound = htmlAudioElement("ting-sound")
         this.aiDescription = htmlSpanElement("ai-description")
+
+        // Set initial sound volumes
+        this.diceSound.volume = 0.7
+        this.ticSound.volume = 0.4
+        this.cantMoveSound1.volume = 0.2
+        this.cantMoveSound2.volume = 0.2
+    }
+
+    // FIXME: Damon, move to UrWebView class, is logic not page access
+    fun bindAudioVolumeFromBase(baseId: String) {
+        val audio = htmlAudioElement(baseId)
+        val display =  htmlSpanElement(baseId + "-display")
+        val button = htmlButtonElement(baseId + "-button")
+        val volumeSlider = htmlInputElement(baseId + "-volume")
+
+        button.addEventListener("click", {
+            audio.play()
+        })
+
+        volumeSlider.addEventListener("input", {
+            val percentage = volumeSlider.value.toInt()
+            console.log("percentage is: " + percentage)
+            display.innerText = percentage.toString()
+
+            val newLevel = percentage/100f;
+            console.log("new level is: " + newLevel.toString())
+            audio.volume = newLevel.toDouble()
+        })
+
+        // set slider and display to audio control initial volume value
+        val volumeString: String = "" + (audio.volume * 100)
+        display.innerText = volumeString
+        volumeSlider.value = volumeString
     }
 
     private fun htmlAudioElement(elementId: String) =
@@ -85,6 +107,12 @@ class UrPageObject(document: Document) {
 
     private fun htmlSpanElement(elementId: String) =
         this.document.getElementById(elementId)!! as HTMLSpanElement
+
+    private fun htmlButtonElement(elementId: String) =
+        this.document.getElementById(elementId)!! as HTMLButtonElement
+
+    private fun htmlInputElement(elementId: String) =
+        this.document.getElementById(elementId)!! as HTMLInputElement
 
 
     ///////////////////////////////////
@@ -128,7 +156,6 @@ class UrPageObject(document: Document) {
         return this.levelSlider.value.toInt()
     }
 
-
     ///////////////////////////////////
     // Play Sounds
     ///////////////////////////////////
@@ -147,13 +174,11 @@ class UrPageObject(document: Document) {
     }
 
     fun playDiceSound() {
-        diceSound.volume = 0.7
         diceSound.currentTime = 0.65
         diceSound.play()
     }
 
     fun playTicSound() {
-        ticSound.volume = 0.4
         ticSound.currentTime = 0.65
         ticSound.play()
     }
@@ -169,12 +194,10 @@ class UrPageObject(document: Document) {
     fun playCantMoveSound() {
         if (4 != Random.nextInt(1, 4)) {
             // prefer this sound most of the time
-            cantMoveSound1.volume = 0.2
             cantMoveSound1.currentTime = 0.4
             cantMoveSound1.play()
         } else {
             // this is Jazz's funny sound!!
-            cantMoveSound2.volume = 0.2
             cantMoveSound2.currentTime = 0.65
             cantMoveSound2.play()
         }
@@ -185,4 +208,3 @@ class UrPageObject(document: Document) {
     }
 
 }
-

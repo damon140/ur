@@ -60,7 +60,7 @@ class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
         this.slider = pageObject.findLevelSlider()
         this.findAiLevel = pageObject.findAiLevel()
 
-        slider.addEventListener("change", {
+        slider.addEventListener("input", {
             updateAiName()
         })
 
