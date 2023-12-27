@@ -6,77 +6,77 @@
 
     <style>
 
-    body {
-        font-family: gill sans, sans-serif;
-        background: antiquewhite;
-        margin: 0;
-        border: 0;
-        width: 350px;
-    }
+        body {
+            font-family: gill sans, sans-serif;
+            background: antiquewhite;
+            margin: 0;
+            border: 0;
+            width: 350px;
+        }
 
-    button {
-        font-size: 16px;
-    }
+        button {
+            font-size: 16px;
+        }
 
-    div#title {
-        margin: 5px;
-        font-size: 20px;
-        color: #333;
-        border-top: 0px;
-        border-left: 0px;
-        border-right: 0px;
-        border-bottom: 1px;
-        border-style: solid;
-        border-color: #bbb;
-    }
+        div#title {
+            margin: 5px;
+            font-size: 20px;
+            color: #333;
+            border-top: 0px;
+            border-left: 0px;
+            border-right: 0px;
+            border-bottom: 1px;
+            border-style: solid;
+            border-color: #bbb;
+        }
 
-    .box {
-        display: flex;
-        font-family: monospace;
-    }
+        .box {
+            display: flex;
+            font-family: monospace;
+        }
 
-    .big {
-        font-size: 40px;
-    }
+        .big {
+            font-size: 40px;
+        }
 
-    .smol {
-        font-size: 11px;
-        color: grey;
-    }
+        .smol {
+            font-size: 11px;
+            color: grey;
+        }
 
-    .one {
-        flex: 1.7 1 0;
-        flex-wrap: wrap;
-    }
+        .one {
+            flex: 1.7 1 0;
+            flex-wrap: wrap;
+        }
 
-    .two {
-        font-size: 20px;
-        flex: 3.6 1 0;
-        flex-wrap: wrap;
-    }
+        .two {
+            font-size: 20px;
+            flex: 3.6 1 0;
+            flex-wrap: wrap;
+        }
 
-    .three {
-        flex: 1.7 1 0;
-        flex-wrap: wrap;
-    }
+        .three {
+            flex: 1.7 1 0;
+            flex-wrap: wrap;
+        }
 
-    .center {
-        text-align: center;
-    }
+        .center {
+            text-align: center;
+        }
 
-    #ai {
-        padding-top: 14px;
-        font-size: 18px;
-    }
-    #footer {
-        color: grey;
-        font-size: 18px;
-    }
+        #ai {
+            padding-top: 14px;
+            font-size: 18px;
+        }
+        #footer {
+            color: grey;
+            font-size: 18px;
+        }
 
-    #slideContainer {
-        border-top: 5px;
-        font-size: 18px;
-    }
+        #slideContainer {
+            border-top: 5px;
+            font-size: 18px;
+        }
 
     </style>
 
@@ -86,70 +86,184 @@
 </head>
 <body>
 
-<!-- Transpiled kotlin here -->
-<script src="ur.js?v=0.9"></script>
+    <!-- Transpiled kotlin here -->
+    <script src="ur.js?v=0.9"></script>
 
-<div id="play-area-wrapper">
+    <div id="play-area-wrapper">
 
-<!--
-Damon add menu here:
-https://www.w3schools.com/howto/howto_js_mobile_navbar.asp
--->
-<div id="title">
-    <b>Damon's Ur </b><span style="font-size: 15px">v0.9</span>
-</div>
+        <!--
+        Damon add menu here:
+        https://www.w3schools.com/howto/howto_js_mobile_navbar.asp
+        -->
+        <div id="title">
+            <b>Damon's Ur </b><span style="font-size: 15px">v0.9</span>
+        </div>
 
-<div class="box" style="width: 350px; height: 10px">
-<div id="roll-parts-white" class="one smol center"></div>
-<div class="two center"></div>
-<div id="roll-parts-black" class="three smol center"></div>
-</div>
+        <div class="box" style="width: 350px; height: 10px">
+            <div id="roll-parts-white" class="one smol center"></div>
+            <div class="two center"></div>
+            <div id="roll-parts-black" class="three smol center"></div>
+        </div>
 
-<div class="box" style="width: 350px; height: 55px">
-<div id="roll-white" class="one big center">-</div>
-<div id="roll-space2" class="two big center">l</div>
-<div id="roll-black" class="three big center">-</div>
-</div>
+        <div class="box" style="width: 350px; height: 55px">
+            <div id="roll-white" class="one big center">-</div>
+            <div id="roll-space2" class="two big center">l</div>
+            <div id="roll-black" class="three big center">-</div>
+        </div>
 
-<div>
-<canvas id="canvas-board" width="350" height="404">
-</canvas>
-</div>
-<div id="slideContainer">
-AI level: <span id="ai-description"></span>
-</div>
-<div>
-<input type="range" min="0" max="4" value="4" class="slider" id="ai-slider">
-</div>
-<div id="footer">
-<div class="grey">
-    <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
-    | <a href="https://github.com/damon140/ur">Github</a>
-</div>
-<div class="grey">
-    &copy; Damon van Opdorp 2023
-</div>
-</div>
+        <div>
+            <canvas id="canvas-board" width="350" height="404">
+            </canvas>
+        </div>
+        <div id="slideContainer">
+            AI level: <span id="ai-description"></span>
+        </div>
+        <div>
+            <input type="range" min="0" max="4" value="4" class="slider" id="ai-slider" />
+        </div>
+        <div id="footer">
+            <div class="grey">
+                <a href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Wikipedia</a>
+                | <a href="https://github.com/damon140/ur">Github</a>
+            </div>
+            <div class="grey">
+                &copy; Damon van Opdorp 2023
+            </div>
+        </div>
 
-</div>
+    </div>
 
-<!-- board sounds -->
-<audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
-<audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
-<audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
-<audio id="ting-sound" src="ting-ting.m4a" preload="auto"></audio>
+    <!-- board sounds -->
+    <audio id="counter-taken-audio" src="wa-pish.mp3" preload="auto"></audio>
+    <audio id="dice-sound" src="dice.mp3" preload="auto"></audio>
+    <audio id="tic-sound" src="tic.mp3" preload="auto"></audio>
+    <audio id="ting-sound" src="ting-ting.m4a" preload="auto"></audio>
 
-<!-- Human player sounds -->
-<audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
-<audio id="claps-sound" src="claps.mp3" preload="auto"></audio>
-<audio id="wah-wah1-sound" src="wah-wah1.m4a" preload="auto"></audio>
-<audio id="wah-wah2-sound" src="wah-wah2.m4a" preload="auto"></audio>
+    <!-- Human player sounds -->
+    <audio id="babow-sound" src="babow.mp3" preload="auto"></audio>
+    <audio id="claps-sound" src="claps.mp3" preload="auto"></audio>
+    <audio id="wah-wah1-sound" src="wah-wah1.m4a" preload="auto"></audio>
+    <audio id="wah-wah2-sound" src="wah-wah2.m4a" preload="auto"></audio>
 
-<!-- AI Sounds -->
-<audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
+    <!-- AI Sounds -->
+    <audio id="hmm-audio" src="hmm.mp3" preload="auto"></audio>
+    <audio id="ai-wins-sound" src="ai-wins.mp3" preload="auto"></audio>
 
-<!-- FIXME: Damon add sound here! -->
-<audio id="ai-wins-sound" src="ai-wins.mp3" preload="auto"></audio>
+    <style>
+        .fold {
+        }
+
+        .unfolder { display: none; }
+
+        .toggle-label {
+            display: inline-block;
+            cursor: pointer;
+            font-size: 11px;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .unfold-icon, .fold-icon {
+          color: #999;
+          // fixed width to stop the icon from wiggling
+          width: 10px;
+          display: inline-block;
+        }
+        .unfolder ~ .fold {
+          display: none;
+        }
+        .unfolder ~ label .fold-icon {
+          display: none;
+        }
+
+        .unfolder:checked ~ .fold {
+          display: block;
+        }
+        .unfolder:checked ~ label .fold-icon {
+          display: inline-block;
+        }
+        .unfolder:checked ~ label .unfold-icon {
+          display: none;
+        }
+
+    </style>
+
+    <div>
+        <input type="checkbox" id="toggle" class="unfolder"/>
+        <label for="toggle" class="toggle-label"><span class="unfold-icon">&#9654;</span><span class="fold-icon">&#9660;</span>sound levels</label>
+        <div class="fold">
+            <div>
+                counter taken
+                <span id="counter-taken-audio-display">11</span>%
+                <button id="counter-taken-audio-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="counter-taken-audio-volume" />
+            </div>
+            <div>
+                dice
+                <span id="dice-sound-display">11</span>%
+                <button id="dice-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="dice-sound-volume" />
+            </div>
+            <div>
+                tic
+                <span id="tic-sound-display">11</span>%
+                <button id="tic-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="tic-sound-volume" />
+            </div>
+            <div>
+                ting
+                <span id="ting-sound-display">11</span>%
+                <button id="ting-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="ting-sound-volume" />
+            </div>
+            <div>
+                babow
+                <span id="babow-sound-display">11</span>%
+                <button id="babow-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="babow-sound-volume" />
+            </div>
+            <div>
+                claps
+                <span id="claps-sound-display">11</span>%
+                <button id="claps-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="claps-sound-volume" />
+            </div>
+            <div>
+                wah-wah1
+                <span id="wah-wah1-sound-display">11</span>%
+                <button id="wah-wah1-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="wah-wah1-sound-volume" />
+            </div>
+            <div>
+                wah-wah2
+                <span id="wah-wah2-sound-display">11</span>%
+                <button id="wah-wah2-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="wah-wah2-sound-volume" />
+            </div>
+            <div>
+                hmm
+                <span id="hmm-audio-display">11</span>%
+                <button id="hmm-audio-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="hmm-audio-volume" />
+            </div>
+            <div>
+                ai-wins
+                <span id="ai-wins-sound-display">11</span>%
+                <button id="ai-wins-sound-button">play</button>
+                <br />
+                <input type="range" min="1" max="100" value="100" class="slider" id="ai-wins-sound-volume" />
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>
