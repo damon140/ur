@@ -2,21 +2,19 @@ package web
 
 class UrWebSound (pageObject: UrPageObject) {
 
+    // FIXME: Damon, want to upgrade this to web audiop APIs for multiple sound playing etc
+    // https://stackoverflow.com/questions/67784820/js-play-multile-audio-sources-simultaneously-when-loaded
+
     private val pageObject: UrPageObject
 
     init {
         this.pageObject = pageObject
 
-        this.pageObject.bindAudioVolumeFromBase("counter-taken-audio")
-        this.pageObject.bindAudioVolumeFromBase("dice-sound")
-        this.pageObject.bindAudioVolumeFromBase("tic-sound")
-        this.pageObject.bindAudioVolumeFromBase("ting-sound")
-        this.pageObject.bindAudioVolumeFromBase("babow-sound")
-        this.pageObject.bindAudioVolumeFromBase("claps-sound")
-        this.pageObject.bindAudioVolumeFromBase("wah-wah1-sound")
-        this.pageObject.bindAudioVolumeFromBase("wah-wah2-sound")
-        this.pageObject.bindAudioVolumeFromBase("hmm-audio")
-        this.pageObject.bindAudioVolumeFromBase("ai-wins-sound")
+        listOf("counter-taken-audio", "dice-sound", "tic-sound", "ting-sound",
+            "babow-sound", "claps-sound", "wah-wah1-sound", "wah-wah2-sound",
+            "hmm-audio", "ai-wins-sound").forEach {
+            this.pageObject.bindAudioVolumeFromBase(it)
+        }
     }
 
     fun playDiceRoll() {
