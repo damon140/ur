@@ -2,8 +2,39 @@ package web
 
 class UrWebSound (pageObject: UrPageObject) {
 
-    // FIXME: Damon, want to upgrade this to web audiop APIs for multiple sound playing etc
-    // https://stackoverflow.com/questions/67784820/js-play-multile-audio-sources-simultaneously-when-loaded
+    // FIXME: Damon upgrade to web apis
+
+    /*
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Function to load an audio file into an AudioBuffer
+    function loadAudio(url) {
+        return fetch(url)
+            .then(response => response.arrayBuffer())
+            .then(data => audioContext.decodeAudioData(data));
+    }
+
+    // Load the three sounds
+    const soundUrls = ['ai-wins.mp3', 'babow.mp3', 'claps.mp3'];
+    const sounds = [];
+
+    Promise.all(soundUrls.map(url => loadAudio(url))).then(loadedSounds => {
+        loadedSounds.forEach((sound, index) => {
+            sounds[index] = sound;
+        });
+    });
+
+    // Function to play all three sounds
+    function playSounds() {
+        sounds.forEach(sound => {
+            const source = audioContext.createBufferSource();
+            source.buffer = sound;
+            source.connect(audioContext.destination);
+            source.start();
+        });
+    }
+     */
+
 
     private val pageObject: UrPageObject
 
