@@ -70,6 +70,7 @@ class UrCanvasBoard(pageObject: UrPageObject) {
         blank()
         drawGrid()
 
+        // TODO: push in play area lookup
         updateWhiteCounters(playArea.unstartedCount(White), playArea.completedCount(White))
         updateBlackCounters(playArea.unstartedCount(Black), playArea.completedCount(Black))
         updateBoard(playArea)
@@ -187,6 +188,32 @@ class UrCanvasBoard(pageObject: UrPageObject) {
     enum class CounterSize(val pixels: Double) { Big(19.toDouble()), Little(16.toDouble()) }
 
     private fun drawCounterByCoordinates(x: Double, y: Double, team: Team, size: CounterSize) {
+        drawUnicornCounter(x, y, team)
+        //drawSquareCounter(x, y)
+        //drawRoundCounter(x, y)
+    }
+
+    // FIXME: need glyph interface and implementations and config
+
+    private fun drawUnicornCounter(x: Double, y: Double, team: Team) {
+        val moveSvgPath = "M$x $y "
+        var lTorSvgPath = if (team == White) Unicorns.lTorSvgPath else Unicorns.rToLSvgPath
+
+        val path = Path2D(moveSvgPath + lTorSvgPath)
+
+        canvas.fillStyle = if (team == Black) "pink" else "orange"
+        canvas.fill(path)
+    }
+
+    private fun drawSquareCounter(x: Double, y: Double) {
+        val moveSvgPath = "M$x $y "
+        val squareSvgPath = "h 20 v 20 h -20 Z"
+        val path = Path2D(moveSvgPath + squareSvgPath)
+
+        canvas.stroke(path)
+    }
+
+    private fun drawRoundCounter(x: Double, y: Double, team: Team, size: CounterSize) {
         canvas.beginPath()
         canvas.arc(x, y, size.pixels, 0.0, 2 * PI)
         canvas.lineWidth = 3.0
@@ -194,13 +221,13 @@ class UrCanvasBoard(pageObject: UrPageObject) {
         canvas.fill()
         canvas.stroke()
 
-//        // FIXME: add lines for greyscale play
-//        if (team == black) {
-//            canvas.beginPath()
-//            canvas.moveTo(x - 15, y + 10)
-//            canvas.lineTo(x, y + 3)
-//            canvas.stroke()
-//        }
+        //        // FIXME: add lines for greyscale play
+        //        if (team == black) {
+        //            canvas.beginPath()
+        //            canvas.moveTo(x - 15, y + 10)
+        //            canvas.lineTo(x, y + 3)
+        //            canvas.stroke()
+        //        }
     }
 
     private fun drawGrid() {
@@ -309,7 +336,7 @@ class UrCanvasBoard(pageObject: UrPageObject) {
             bigAnim = !bigAnim
             console.log("anim")
         }
-        return handler;
+        return handler
     }
 
     fun drawCounterAnimationFrame(team: Team, lastSquare: Square, currentSquare: Square, frameNumber: Int) {
@@ -319,7 +346,7 @@ class UrCanvasBoard(pageObject: UrPageObject) {
         val pair = tween(frameNumber.toDouble(), 5.toDouble(), square1Pos, square2Pos)
         console.log("anim of $currentSquare step $frameNumber$pair")
 
-        drawCounterByIndex(pair, team, UrCanvasBoard.CounterSize.Big)
+        drawCounterByIndex(pair, team, Big)
     }
 
 }

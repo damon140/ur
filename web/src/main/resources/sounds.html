@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Three Sounds with Web Audio API</title>
+</head>
+<body>
+
+<button id="playSoundsButton">Play Sounds</button>
+
+<script>
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Function to load an audio file into an AudioBuffer
+    function loadAudio(url) {
+        return fetch(url)
+            .then(response => response.arrayBuffer())
+            .then(data => audioContext.decodeAudioData(data));
+    }
+
+    // Load the three sounds
+    const soundUrls = ['ai-wins.mp3', 'babow.mp3', 'claps.mp3'];
+    const sounds = [];
+
+    Promise.all(soundUrls.map(url => loadAudio(url))).then(loadedSounds => {
+        loadedSounds.forEach((sound, index) => {
+            sounds[index] = sound;
+        });
+    });
+
+    // Function to play all three sounds
+    function playSounds() {
+        sounds.forEach(sound => {
+            const source = audioContext.createBufferSource();
+            source.buffer = sound;
+            source.connect(audioContext.destination);
+            source.start();
+        });
+    }
+
+    // Add event listener to the button
+    document.getElementById('playSoundsButton').addEventListener('click', playSounds);
+</script>
+
+</body>
+</html>

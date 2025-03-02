@@ -30,6 +30,7 @@ class Ur(private val playArea: PlayArea) {
         Illegal, Legal, CounterTaken, CounterOffboard, GameOver
     }
 
+    // FIXME: this doesn't suit callers very well, switch to movesMap and moveNumber
     fun moveCounter(square: Square, count: Int): MoveResult {
         return moveCounter(playArea.currentTeam(), square, count)
     }

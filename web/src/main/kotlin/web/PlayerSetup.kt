@@ -37,18 +37,6 @@ class PlayerSetup(playArea: PlayArea, lastMove: LastMove) {
     }
 
     fun getPlayer(team: Team): InputSupplier {
-        // TODO: need to read from web here
-        // urView....
-
-//        println("Player for $team will be")
-//        println("1 human via console")
-//        println("2 computer bad ai 1")
-//        return when (scanner.next()) {
-//            "1" -> ConsoleSupplier(scanner)
-//            "2" -> BadAi1()
-//            else -> null
-//        }
-
         return when(team) {
             Team.White -> HtmlSupplier()
             Black -> AiWithLevels(playArea)

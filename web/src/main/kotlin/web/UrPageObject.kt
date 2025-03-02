@@ -14,6 +14,7 @@
 
 package web
 
+import com.damon140.ur.Team
 import org.w3c.dom.*
 import kotlin.random.Random
 
@@ -72,9 +73,9 @@ class UrPageObject(document: Document) {
     // FIXME: Damon, move to UrWebView class, is logic not page access
     fun bindAudioVolumeFromBase(baseId: String) {
         val audio = htmlAudioElement(baseId)
-        val display =  htmlSpanElement(baseId + "-display")
-        val button = htmlButtonElement(baseId + "-button")
-        val volumeSlider = htmlInputElement(baseId + "-volume")
+        val display =  htmlSpanElement("$baseId-display")
+        val button = htmlButtonElement("$baseId-button")
+        val volumeSlider = htmlInputElement("$baseId-volume")
 
         button.addEventListener("click", {
             audio.play()
@@ -82,11 +83,11 @@ class UrPageObject(document: Document) {
 
         volumeSlider.addEventListener("input", {
             val percentage = volumeSlider.value.toInt()
-            console.log("percentage is: " + percentage)
+            console.log("percentage is: $percentage")
             display.innerText = percentage.toString()
 
-            val newLevel = percentage/100f;
-            console.log("new level is: " + newLevel.toString())
+            val newLevel = percentage/100f
+            console.log("new level is: $newLevel")
             audio.volume = newLevel.toDouble()
         })
 
@@ -207,4 +208,10 @@ class UrPageObject(document: Document) {
         counterMovedHomeSound.play()
     }
 
+    fun makeWonButton(currentTeam: Team): Element {
+        val button = kotlinx.browser.document.createElement("button") as HTMLButtonElement
+        button.innerHTML = "Game won by $currentTeam. Click to restart"
+
+        return button;
+    }
 }

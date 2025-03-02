@@ -68,7 +68,6 @@ class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
     }
 
 
-
     private fun updateAiName() {
         val levelInt = slider.value.toInt()
         console.log("Slider change to " + slider.value)
@@ -76,7 +75,7 @@ class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
         val map: Map<Int, String> = nameMap
         val levelName = map.getValue(levelInt)
 
-        console.log("AI level name: " + levelName)
+        console.log("AI level name: $levelName")
         findAiLevel.innerText = levelName
     }
 
@@ -87,10 +86,10 @@ class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
     fun drawShowRollButton(playArea: PlayArea, continueFunction: () -> Unit) {
         urCanvasBoard.draw(playArea)
 
-        // instructions
         rollSpace.innerText = ""
 
         // FIXME: Damon move to urPageObject
+        //pageObject.makeRollButton()
         val button = document.createElement("button") as HTMLButtonElement
         button.innerHTML = "Click to roll"
 
@@ -260,13 +259,10 @@ class UrWebView (lastMove: LastMove, aiNameMap: Map<Int, String>) {
     }
 
     fun gameWon(currentTeam: Team) {
-        // black rolls
         rollWhite.innerHTML = ""
         rollBlack.innerHTML = ""
 
-        // FIXME: Damon move to page object
-        val button = document.createElement("button") as HTMLButtonElement
-        button.innerHTML = "Game won by $currentTeam. Click to restart"
+        val button = pageObject.makeWonButton(currentTeam)
 
         button.addEventListener("click", {
             // FIXME: want a function handle to call here on game won
